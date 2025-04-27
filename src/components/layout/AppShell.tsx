@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   AppBar,
@@ -17,6 +17,7 @@ import { LanguageSwitcher } from '../';
 import Navigation from './Navigation';
 import Footer from './Footer';
 import Sidebar from './Sidebar';
+import BottomNavigation from './BottomNavigation';
 
 /**
  * AppShell component that wraps the entire application and provides common layout elements
@@ -26,6 +27,19 @@ const AppShell: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Add CSS variables for safe area insets for iOS devices
+  useEffect(() => {
+    // Only needed for iOS devices with notches/home indicators
+    document.documentElement.style.setProperty(
+      '--safe-area-inset-bottom',
+      'env(safe-area-inset-bottom, 0px)',
+    );
+    document.documentElement.style.setProperty(
+      '--bottom-nav-height',
+      isMobile ? 'calc(56px + var(--safe-area-inset-bottom))' : '0px',
+    );
+  }, [isMobile]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -90,12 +104,18 @@ const AppShell: React.FC = () => {
             py: { xs: 2, md: 4 },
             px: { xs: 2, md: 3 },
             width: '100%',
+            // Add padding bottom when on mobile to account for BottomNavigation
+            pb: isMobile ? 'var(--bottom-nav-height)' : 'inherit',
           }}
         >
           <Outlet />
         </Container>
       </Box>
 
+      {/* Show bottom navigation only on mobile devices */}
+      {isMobile && <BottomNavigation />}
+
+      {/* Footer appears below content but above BottomNavigation */}
       <Footer />
     </Box>
   );

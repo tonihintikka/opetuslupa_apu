@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+// Import mobile PWA styles
+import './styles/mobile.css';
 // Import i18n instance (import before App)
 import './i18n';
 // Import database initialization

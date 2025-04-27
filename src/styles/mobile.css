@@ -1,0 +1,79 @@
+/* Mobile and PWA specific styles */
+
+/* Prevent overscrolling/bouncing effect on iOS */
+html {
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  overflow: auto;
+  height: 100%;
+  overscroll-behavior: none;
+  /* Ensure content is not hidden under status bar in PWA mode */
+  padding-top: env(safe-area-inset-top, 0);
+  /* Disable pull-to-refresh and text selection for better native feel */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection in input elements */
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Disable tap highlight color */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Add smooth fade animation when switching between routes */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+/* Hide scrollbar but keep functionality */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* iOS specific PWA status bar style for dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pwa-status-bar-bg: #121212; /* Match dark theme background */
+  }
+
+  body {
+    background-color: var(--pwa-status-bar-bg);
+  }
+}
+
+/* iOS specific PWA status bar style for light mode */
+@media (prefers-color-scheme: light) {
+  :root {
+    --pwa-status-bar-bg: #ffffff; /* Match light theme background */
+  }
+
+  body {
+    background-color: var(--pwa-status-bar-bg);
+  }
+}
