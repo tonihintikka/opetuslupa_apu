@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Opetuslupa-sovellus",
+    "name": "Ajo-opetuksen Tracker",
     "loading": "Ladataan...",
     "error": "Tapahtui virhe",
     "errorTryAgain": "Tapahtui virhe. Yritä uudelleen."
@@ -8,8 +8,16 @@
   "navigation": {
     "students": "Oppilaat",
     "lessons": "Ajotunnit",
-    "milestones": "Virstanpylväät",
-    "settings": "Asetukset"
+    "milestones": "Tavoitteet",
+    "settings": "Asetukset",
+    "exportImport": "Vienti/Tuonti"
+  },
+  "footer": {
+    "copyright": "Kaikki oikeudet pidätetään",
+    "version": "Versio",
+    "privacyPolicy": "Tietosuojaseloste",
+    "termsOfService": "Käyttöehdot",
+    "help": "Ohje"
   },
   "actions": {
     "add": "Lisää",
@@ -61,5 +69,43 @@
     "deleted": "Poistettiin!",
     "imported": "Tuotu onnistuneesti!",
     "exported": "Viety onnistuneesti!"
+  },
+  "buttons": {
+    "save": "Tallenna",
+    "cancel": "Peruuta",
+    "delete": "Poista",
+    "edit": "Muokkaa",
+    "add": "Lisää"
+  },
+  "errors": {
+    "boundary": {
+      "title": "Tapahtui virhe",
+      "message": "Sovelluksessa tapahtui virhe. Voit yrittää korjata ongelman päivittämällä sivun.",
+      "tryAgain": "Yritä uudelleen"
+    }
+  },
+  "dataManagement": {
+    "title": "Tietojen hallinta",
+    "info": "Tässä voit viedä, tuoda ja varmuuskopioida oppilaasi ja ajotuntisi.",
+    "export": {
+      "title": "Vie tiedot",
+      "description": "Vie kaikki oppilas- ja ajotuntitiedot JSON-tiedostona.",
+      "button": "Vie tiedot"
+    },
+    "import": {
+      "title": "Tuo tiedot",
+      "description": "Tuo aiemmin viedyt tiedot sovellukseen.",
+      "button": "Tuo tiedot"
+    },
+    "backup": {
+      "title": "Varmuuskopio",
+      "description": "Luo varmuuskopio tiedoistasi myöhempää käyttöä varten.",
+      "button": "Luo varmuuskopio"
+    },
+    "dangerZone": {
+      "title": "Vaaravyöhyke",
+      "description": "Tämä toiminto poistaa kaikki tiedot. Toimintoa ei voi perua.",
+      "button": "Tyhjennä kaikki tiedot"
+    }
   }
 }

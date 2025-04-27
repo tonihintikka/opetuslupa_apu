@@ -1,22 +1,19 @@
 import React from 'react';
 import {
   Box,
-  Drawer,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  IconButton,
   Divider,
-  useMediaQuery,
   useTheme,
+  Typography,
 } from '@mui/material';
 import {
   People as PeopleIcon,
   CalendarMonth as CalendarIcon,
   EmojiEvents as MilestoneIcon,
-  Menu as MenuIcon,
   Settings as SettingsIcon,
   Backup as BackupIcon,
 } from '@mui/icons-material';
@@ -32,13 +29,10 @@ interface SidebarProps {
  * Sidebar/drawer navigation component
  * Provides a responsive navigation drawer that can be toggled on mobile
  */
-const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, handleDrawerToggle }) => {
+const Sidebar: React.FC<SidebarProps> = ({ handleDrawerToggle }) => {
   const { t } = useTranslation(['common']);
   const location = useLocation();
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-
-  const drawerWidth = 240;
 
   const navItems = [
     { path: '/students', label: t('navigation.students'), icon: <PeopleIcon /> },
@@ -48,84 +42,44 @@ const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, handleDrawerToggle }) => 
     { path: '/export-import', label: t('navigation.exportImport'), icon: <BackupIcon /> },
   ];
 
-  const drawer = (
-    <>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
-        <IconButton onClick={handleDrawerToggle} sx={{ display: { md: 'none' } }}>
-          <MenuIcon />
-        </IconButton>
+  return (
+    <Box sx={{ width: 240 }}>
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h6" noWrap>
+          {t('app.name')}
+        </Typography>
       </Box>
       <Divider />
-      <List>
+      <List sx={{ pt: 1 }}>
         {navItems.map(item => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton
               component={NavLink}
               to={item.path}
-              onClick={isSmallScreen ? handleDrawerToggle : undefined}
+              onClick={handleDrawerToggle}
               selected={location.pathname === item.path}
               sx={{
+                py: 1.5,
+                minHeight: 48,
                 '&.active': {
                   backgroundColor: theme.palette.action.selected,
+                  borderLeft: `4px solid ${theme.palette.primary.main}`,
                 },
               }}
             >
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
+              <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{
+                  variant: 'body1',
+                  fontWeight: location.pathname === item.path ? 'bold' : 'normal',
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-    </>
-  );
-
-  return (
-    <>
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        edge="start"
-        onClick={handleDrawerToggle}
-        sx={{ mr: 2, display: { md: 'none' } }}
-      >
-        <MenuIcon />
-      </IconButton>
-
-      <Box component="nav" sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}>
-        {/* Mobile drawer */}
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better performance on mobile
-          }}
-          sx={{
-            display: { xs: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-        >
-          {drawer}
-        </Drawer>
-
-        {/* Desktop permanent drawer */}
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: 'none', md: 'block' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-              position: 'relative',
-              height: '100%',
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-    </>
+    </Box>
   );
 };
 

@@ -13,17 +13,21 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { useStudents } from '../../hooks';
 import { Student } from '../../services';
 import LoadingIndicator from '../common/LoadingIndicator';
+import { useTranslation } from 'react-i18next';
 
 const StudentsPage: React.FC = () => {
+  const { t } = useTranslation(['common', 'students']);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { students, loading, error, addStudent, updateStudent, deleteStudent } = useStudents();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
@@ -83,7 +87,7 @@ const StudentsPage: React.FC = () => {
   };
 
   const handleDeleteStudent = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this student?')) {
+    if (window.confirm(t('students:confirmDelete'))) {
       try {
         await deleteStudent(id);
       } catch (error) {
@@ -98,85 +102,127 @@ const StudentsPage: React.FC = () => {
 
   if (error) {
     return (
-      <Container>
+      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
         <Typography color="error">Error loading students: {error.message}</Typography>
       </Container>
     );
   }
 
   return (
-    <Container>
-      <Box sx={{ py: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4">Students</Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={() => handleOpenDialog()}
-          >
-            Add Student
-          </Button>
-        </Box>
-
-        {students.length === 0 ? (
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
-              <Typography variant="body1" align="center">
-                No students found. Add your first student to get started.
-              </Typography>
-            </CardContent>
-          </Card>
-        ) : (
-          <List>
-            {students.map(student => (
-              <React.Fragment key={student.id}>
-                <ListItem>
-                  <ListItemText
-                    primary={student.name}
-                    secondary={
-                      <>
-                        {student.email && <span>Email: {student.email}</span>}
-                        {student.email && student.phone && <span> | </span>}
-                        {student.phone && <span>Phone: {student.phone}</span>}
-                      </>
-                    }
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      edge="end"
-                      aria-label="edit"
-                      onClick={() => handleOpenDialog(student)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => handleDeleteStudent(student.id!)}
-                      sx={{ ml: 1 }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-                <Divider />
-              </React.Fragment>
-            ))}
-          </List>
-        )}
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h4" component="h1">
+          {t('students:title')}
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={() => handleOpenDialog()}
+          size={isMobile ? 'small' : 'medium'}
+        >
+          {t('students:addStudent')}
+        </Button>
       </Box>
 
+      {students.length === 0 ? (
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="body1" align="center">
+              {t('students:noStudentsFound')}
+            </Typography>
+          </CardContent>
+        </Card>
+      ) : (
+        <List
+          sx={{
+            bgcolor: 'background.paper',
+            borderRadius: 1,
+            boxShadow: 1,
+          }}
+        >
+          {students.map(student => (
+            <React.Fragment key={student.id}>
+              <ListItem
+                alignItems="flex-start"
+                sx={{
+                  py: 2,
+                  flexDirection: isMobile ? 'column' : 'row',
+                  alignItems: isMobile ? 'flex-start' : 'center',
+                }}
+              >
+                <Box
+                  sx={{
+                    flex: 1,
+                    width: isMobile ? '100%' : 'auto',
+                    pr: isMobile ? 0 : 8, // Make room for action buttons on desktop
+                  }}
+                >
+                  <Typography variant="h6" component="div" sx={{ mb: 0.5 }}>
+                    {student.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" component="div">
+                    {student.email && (
+                      <Box component="span" display="block" sx={{ mb: 0.5 }}>
+                        Email: {student.email}
+                      </Box>
+                    )}
+                    {student.phone && (
+                      <Box component="span" display="block">
+                        Phone: {student.phone}
+                      </Box>
+                    )}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    mt: isMobile ? 1 : 0,
+                    width: isMobile ? '100%' : 'auto',
+                    justifyContent: isMobile ? 'flex-end' : 'flex-end',
+                  }}
+                >
+                  <IconButton
+                    aria-label="edit"
+                    onClick={() => handleOpenDialog(student)}
+                    size={isMobile ? 'small' : 'medium'}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="delete"
+                    onClick={() => handleDeleteStudent(student.id!)}
+                    sx={{ ml: 1 }}
+                    size={isMobile ? 'small' : 'medium'}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              </ListItem>
+              <Divider component="li" />
+            </React.Fragment>
+          ))}
+        </List>
+      )}
+
       {/* Add/Edit Student Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+        fullScreen={isMobile}
+      >
         <form onSubmit={handleSubmit}>
-          <DialogTitle>{editingStudent ? 'Edit Student' : 'Add New Student'}</DialogTitle>
+          <DialogTitle>
+            {editingStudent ? t('students:editStudent') : t('students:addNewStudent')}
+          </DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
               margin="dense"
               name="name"
-              label="Name"
+              label={t('students:name')}
               type="text"
               fullWidth
               required
@@ -187,7 +233,7 @@ const StudentsPage: React.FC = () => {
             <TextField
               margin="dense"
               name="email"
-              label="Email"
+              label={t('students:email')}
               type="email"
               fullWidth
               value={formData.email || ''}
@@ -197,22 +243,22 @@ const StudentsPage: React.FC = () => {
             <TextField
               margin="dense"
               name="phone"
-              label="Phone"
+              label={t('students:phone')}
               type="tel"
               fullWidth
               value={formData.phone || ''}
               onChange={handleInputChange}
             />
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
+          <DialogActions sx={{ px: 3, pb: 2 }}>
+            <Button onClick={handleCloseDialog}>{t('common:buttons.cancel')}</Button>
             <Button type="submit" variant="contained" color="primary">
-              {editingStudent ? 'Update' : 'Add'}
+              {t('common:buttons.save')}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
-    </Container>
+    </Box>
   );
 };
 

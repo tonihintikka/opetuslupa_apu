@@ -1,14 +1,30 @@
 {
-  "studentManagement": "Oppilaiden hallinta",
+  "title": "Oppilaat",
   "addStudent": "Lisää oppilas",
-  "editStudent": "Muokkaa oppilaan tietoja",
+  "editStudent": "Muokkaa oppilasta",
+  "addNewStudent": "Lisää uusi oppilas",
+  "noStudentsFound": "Oppilaita ei löytynyt. Lisää ensimmäinen oppilas aloittaaksesi.",
+  "confirmDelete": "Haluatko varmasti poistaa tämän oppilaan?",
+  "name": "Nimi",
+  "email": "Sähköposti",
+  "phone": "Puhelinnumero",
+  "details": "Oppilaan tiedot",
+  "totalLessons": "Ajotunteja yhteensä",
+  "totalHours": "Tunteja yhteensä",
+  "lastLesson": "Viimeisin ajotunti",
+  "firstLesson": "Ensimmäinen ajotunti",
+  "progress": "Edistyminen",
+  "created": "Oppilas lisätty onnistuneesti!",
+  "updated": "Oppilaan tiedot päivitetty onnistuneesti!",
+  "deleted": "Oppilas poistettu onnistuneesti!",
+  "studentManagement": "Oppilaiden hallinta",
   "studentDetails": "Oppilaan tiedot",
   "studentsList": "Oppilaslista",
   "searchStudents": "Hae oppilaita",
   "filterStudents": "Suodata oppilaita",
   "deleteStudent": "Poista oppilas",
   "deleteStudentConfirm": "Haluatko varmasti poistaa oppilaan {{name}}? Tämä poistaa myös kaikki oppilaan ajotunnit.",
-  
+
   "studentInfo": {
     "name": "Nimi",
     "email": "Sähköposti",
@@ -18,7 +34,7 @@
     "lessonsTotal": "Ajotunteja yhteensä",
     "drivingMinutesTotal": "Ajominuutteja yhteensä"
   },
-  
+
   "studentStats": {
     "title": "Tilastot",
     "lessonsCount": "{{count}} ajotuntia",
@@ -28,7 +44,7 @@
     "lastLesson": "Viimeisin ajotunti",
     "progress": "Edistyminen"
   },
-  
+
   "forms": {
     "nameLabel": "Oppilaan nimi",
     "namePlaceholder": "Syötä oppilaan koko nimi",
@@ -39,11 +55,11 @@
     "notesLabel": "Muistiinpanot",
     "notesPlaceholder": "Lisää muistiinpanoja oppilaasta"
   },
-  
+
   "emptyState": {
     "noStudents": "Ei oppilaita",
     "addYourFirst": "Lisää ensimmäinen oppilas aloittaaksesi",
     "noSearchResults": "Ei hakutuloksia",
     "tryDifferent": "Kokeile eri hakuehtoja"
   }
-} 
+}
