@@ -1,0 +1,63 @@
+{
+  "app": {
+    "name": "Opetuslupa-sovellus",
+    "loading": "Ladataan...",
+    "error": "Tapahtui virhe",
+    "errorTryAgain": "Tapahtui virhe. Yritä uudelleen."
+  },
+  "navigation": {
+    "students": "Oppilaat",
+    "lessons": "Ajotunnit",
+    "settings": "Asetukset"
+  },
+  "actions": {
+    "add": "Lisää",
+    "edit": "Muokkaa",
+    "delete": "Poista",
+    "save": "Tallenna",
+    "cancel": "Peruuta",
+    "confirm": "Vahvista",
+    "back": "Takaisin",
+    "search": "Hae",
+    "filter": "Suodata",
+    "reset": "Nollaa",
+    "import": "Tuo",
+    "export": "Vie"
+  },
+  "validation": {
+    "required": "Pakollinen kenttä",
+    "email": "Virheellinen sähköpostiosoite",
+    "minLength": "Vähintään {{count}} merkkiä",
+    "maxLength": "Enintään {{count}} merkkiä",
+    "invalidFormat": "Virheellinen muoto"
+  },
+  "dateTime": {
+    "today": "Tänään",
+    "yesterday": "Eilen",
+    "tomorrow": "Huomenna",
+    "minutes": "{{count}} minuuttia",
+    "minutesSingular": "{{count}} minuutti",
+    "date": "Päivämäärä",
+    "time": "Aika",
+    "duration": "Kesto"
+  },
+  "emptyStates": {
+    "noResults": "Ei tuloksia",
+    "noStudents": "Ei oppilaita",
+    "noLessons": "Ei ajotunteja",
+    "startAdding": "Aloita lisäämällä {{item}}"
+  },
+  "confirmations": {
+    "deleteTitle": "Vahvista poisto",
+    "deleteMessage": "Oletko varma, että haluat poistaa tämän?",
+    "cannotUndo": "Tätä toimintoa ei voi kumota"
+  },
+  "notifications": {
+    "success": "Onnistui!",
+    "error": "Virhe!",
+    "saved": "Tallennettiin!",
+    "deleted": "Poistettiin!",
+    "imported": "Tuotu onnistuneesti!",
+    "exported": "Viety onnistuneesti!"
+  }
+} 

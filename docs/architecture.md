@@ -24,6 +24,7 @@ As a client-side only application, this solution doesn't require a backend serve
 | Workbox | Library for service worker generation and caching strategies |
 | Zod | TypeScript-first schema validation library for data validation |
 | ESLint | Static code analysis tool for identifying problematic patterns |
+| react-i18next | Internationalization framework for React |
 
 ## Architectural Diagrams
 
@@ -150,8 +151,13 @@ interface ExportData {
 │   │   └── index.ts          # Shared type interfaces
 │   ├── /utils                # Utility functions
 │   │   └── validation.ts     # Data validation helpers
+│   ├── /locales              # Internationalization resources
+│   │   ├── /fi               # Finnish translations (primary)
+│   │   ├── /en               # English translations
+│   │   └── /sv               # Swedish translations
 │   ├── App.tsx               # Main App component
 │   ├── main.tsx              # Application entry point
+│   ├── i18n.ts               # i18next configuration
 │   ├── vite-env.d.ts         # Vite environment type declarations
 │   └── sw-register.ts        # Service Worker registration
 ├── .eslintrc.js              # ESLint configuration
@@ -189,4 +195,133 @@ As a client-side only PWA, this application doesn't require traditional backend 
 
 | Date | Version | Description |
 |------|---------|-------------|
-| 2025-07-01 | 0.1.0 | Initial architecture document | 
+| 2025-07-01 | 0.1.0 | Initial architecture document |
+
+## Core Architecture Components
+
+### Component Organization
+
+The application follows a feature-based component organization:
+
+1. **Layout Components**: Define the overall structure of the application
+   - `AppShell`: The main container with navigation
+   - `PageContainer`: Standardized page layout
+
+2. **Feature Components**: Components specific to a feature area
+   - `students/`: Student management components
+   - `lessons/`: Lesson tracking components
+   - `settings/`: Application settings components
+
+3. **Common Components**: Reusable across features
+   - `LoadingIndicator`
+   - `ErrorBoundary`
+   - `EmptyState`
+   - `ConfirmationDialog`
+
+### Data Flow
+
+The application uses a unidirectional data flow:
+
+1. **Data Storage**: IndexedDB via Dexie.js
+2. **Data Access**: Custom hooks using `useLiveQuery` from Dexie
+3. **UI Components**: Consume data hooks and dispatch actions
+
+```
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│              │    │              │    │              │
+│  Components  │◄───┤  Data Hooks  │◄───┤  Dexie.js    │
+│              │    │              │    │              │
+└──────┬───────┘    └──────────────┘    └──────────────┘
+       │                                        ▲
+       │                                        │
+       ▼                                        │
+┌──────────────┐                        ┌──────────────┐
+│              │                        │              │
+│   Actions    │───────────────────────►│  IndexedDB   │
+│              │                        │              │
+└──────────────┘                        └──────────────┘
+```
+
+### Internationalization Architecture
+
+The app uses react-i18next for internationalization with the following setup:
+
+1. **Translation Organization**:
+   - Namespaced by feature (common, students, lessons)
+   - JSON files per language in `/locales/{lang}/{namespace}.json`
+   - Finnish as the default language with English and Swedish support
+
+2. **i18n Integration**:
+   - Configured in `i18n.ts` 
+   - I18nextProvider wraps the application in `App.tsx`
+   - Component access via `useTranslation` hook
+
+3. **Language Handling**:
+   - Language detection based on browser preferences
+   - Manual language switching via settings
+   - Persistent language preference in local storage
+
+4. **Date/Number Formatting**:
+   - Locale-aware date formatting using Intl.DateTimeFormat
+   - Number formatting respecting locale conventions
+
+### Offline Capabilities
+
+The application works offline through several mechanisms:
+
+1. **Service Worker**: Caches app shell and assets
+2. **IndexedDB**: Stores all application data locally
+3. **PWA Manifest**: Enables installation on devices
+
+### Progressive Enhancement
+
+The application follows progressive enhancement principles:
+
+1. **Core Functionality**: Works with basic JavaScript
+2. **Enhanced Experience**: Added features with modern APIs
+3. **Offline Support**: Service worker as an enhancement
+4. **Installation**: PWA capabilities as an enhancement
+
+## Development Patterns
+
+### Component Patterns
+
+- **Compound Components**: For complex, stateful components
+- **Controlled Components**: For form elements
+- **Render Props**: For sharing complex rendering logic
+
+### TypeScript Patterns
+
+- **Type-First Development**: Define types before implementation
+- **Interface Segregation**: Small, focused interfaces
+- **Discriminated Unions**: For state management
+
+### State Management
+
+- **Local Component State**: For UI-specific state
+- **Shared State**: Using React Context when needed
+- **Database State**: Using Dexie.js reactive queries
+
+## Future Enhancements
+
+Future architecture enhancements may include:
+
+1. **State Machine**: For complex workflows
+2. **Server Synchronization**: Optional cloud backup
+3. **Performance Optimizations**: Virtualized lists, memoization
+4. **Automated Testing**: Component and integration tests
+
+## Dependencies
+
+| Dependency | Purpose |
+|------------|---------|
+| React | UI library |
+| TypeScript | Type safety |
+| Vite | Build tool |
+| Material-UI | UI component library |
+| Dexie.js | IndexedDB wrapper |
+| react-i18next | Internationalization |
+| i18next | Core i18n library |
+| i18next-browser-languagedetector | Auto language detection |
+| zod | Data validation |
+| date-fns | Date manipulation | 

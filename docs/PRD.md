@@ -18,6 +18,7 @@ Driving-Lesson Tracker is a Progressive Web Application designed to help driving
 - Minimize learning curve for non-technical driving instructors
 - Create a responsive design that works equally well on desktop and mobile
 - Ensure data privacy by storing all information locally
+- Support Finnish as the primary language with English and Swedish as secondary options
 
 ## Features and Requirements
 
@@ -51,6 +52,12 @@ Driving-Lesson Tracker is a Progressive Web Application designed to help driving
   - Responsive design for all screen sizes
   - App icon and splash screen
   - Offline capabilities via service worker
+
+- **Internationalization**
+  - Finnish as primary language
+  - Support for English and Swedish as secondary languages
+  - Date and number formatting according to locale
+  - Ability to switch languages within the application
 
 ## Epic List
 
@@ -87,13 +94,16 @@ Status: Not Started
   - Implement base CRUD operations
   - Create data migration strategy for future updates
 
-- Story 3: Basic UI Navigation
-  Status: Not Started
+- Story 3: Basic UI Navigation and Internationalization
+  Status: In Progress
   Requirements:
   - Create AppShell component with navigation
   - Implement responsive layout
   - Create placeholder pages for main features
   - Add loading states and error handling
+  - Set up react-i18next for multilingual support
+  - Implement language switching functionality
+  - Create initial Finnish translations
 
 ## Epic 2: Story List
 
@@ -136,7 +146,9 @@ Status: Not Started
 | vite-plugin-pwa | PWA integration for Vite projects including service worker and manifest |
 | Workbox | Library for service worker generation and caching strategies |
 | Zod | TypeScript-first schema validation library for data validation |
-| ESLint | Static code analysis tool for identifying problematic patterns |
+| react-i18next | Internationalization framework for React applications |
+| i18next | Core i18n library that powers react-i18next |
+| i18next-browser-languagedetector | Auto language detection for i18next |
 
 ## Reference
 
@@ -150,6 +162,7 @@ graph TD
     C --> E[LessonTimeline]
     C --> F[ProgressBars]
     B --> G[ExportImportDialog]
+    B --> L[LanguageSwitcher]
     
     H[MUI Theme Provider] --> A
     I[useDrivingStore Hook] --> C
@@ -160,6 +173,7 @@ graph TD
     
     J[DrivingDB Service] --> I
     K[Service Worker] -.-> A
+    M[i18next Provider] --> A
 ```
 
 ### User Flow Diagram
@@ -232,8 +246,13 @@ interface ExportData {
 │   ├── /theme                # MUI theme configuration
 │   ├── /types                # TypeScript type definitions
 │   ├── /utils                # Utility functions
+│   ├── /locales              # i18n translation files
+│   │   ├── /fi               # Finnish translations (primary)
+│   │   ├── /en               # English translations
+│   │   └── /sv               # Swedish translations
 │   ├── App.tsx               # Main App component
 │   ├── main.tsx              # Application entry point
+│   ├── i18n.ts               # i18next configuration
 │   └── sw-register.ts        # Service Worker registration
 ```
 
@@ -241,4 +260,5 @@ interface ExportData {
 
 | Date       | Version | Description |
 |------------|---------|-------------|
-| 2024-06-04 | 1.0.0   | Initial PRD draft created | 
+| 2024-06-04 | 1.0.0   | Initial PRD draft created |
+| 2024-06-08 | 1.0.1   | Added internationalization requirements | 

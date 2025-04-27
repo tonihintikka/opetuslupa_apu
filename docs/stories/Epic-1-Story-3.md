@@ -1,6 +1,6 @@
 # Epic-1 - Story-3
 
-Basic UI Navigation
+Basic UI Navigation and Internationalization
 
 **As a** driving instructor
 **I want** an intuitive navigation system in the application
@@ -8,7 +8,7 @@ Basic UI Navigation
 
 ## Status
 
-Not Started
+In Progress
 
 ## Context
 
@@ -52,6 +52,12 @@ Story Points: 2
    2. - [ ] Implement route guards if needed
    3. - [ ] Add navigation history management
    4. - [ ] Create route transitions
+
+6. - [ ] Set up react-i18next configuration
+   1. - [ ] Create initial translation files for Finnish (primary language)
+   2. - [ ] Create language switcher component
+   3. - [ ] Configure date/number formatters for locale support
+   4. - [ ] Document i18n usage guidelines for future development
 
 ## Constraints
 
@@ -134,3 +140,44 @@ flowchart LR
 - Using React Router v6 for declarative routing
 - Creating a single AppShell to maintain consistent layout across all pages
 - Implementing error boundaries at multiple levels for graceful degradation 
+
+## Best Practices for i18n Implementation
+
+1. Namespace organization
+   - Separate translation files by feature area (common, students, lessons, etc.)
+   - Use consistent key naming conventions (camelCase)
+
+2. Handling dynamic content
+   - Use interpolation for variables within translations
+   - Support pluralization with ICU message format
+
+3. Performance considerations
+   - Load only the active language at startup
+   - Implement code splitting for translation bundles
+   - Lazy load non-primary languages when selected
+
+4. Development workflow
+   - Set up tooling to detect missing translations
+   - Document process for adding new translation keys
+
+## Resources
+
+- [React i18next Documentation](https://react.i18next.com/)
+- [Material UI Internationalization Guide](https://mui.com/material-ui/guides/localization/)
+- [ICU Message Format](https://formatjs.io/docs/core-concepts/icu-syntax/)
+
+## Dependencies
+
+- Story 1: Project Setup and Configuration
+- Story 2: Database Implementation
+
+## Definition of Done
+
+- AppShell component is implemented and responsive
+- Navigation works across all main feature areas
+- i18n framework is set up and working with Finnish translations
+- Language switcher UI is implemented in settings
+- Documentation is created for adding new translations
+- All UI text is externalized to translation files
+- Loading and error states are implemented
+- Review and testing show intuitive navigation experience 

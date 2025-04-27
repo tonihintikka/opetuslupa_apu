@@ -1,34 +1,59 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { ThemeProvider } from '@mui/material/styles'
+import { CssBaseline, Box, Typography, AppBar, Toolbar } from '@mui/material'
+import { I18nextProvider } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
+import i18n from './i18n'
+import theme from './theme'
+import { LanguageSwitcher, TranslatedText } from './components'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+function AppContent() {
+  const { t } = useTranslation(['common'])
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            {t('app.name')}
+          </Typography>
+          <LanguageSwitcher />
+        </Toolbar>
+      </AppBar>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 'calc(100vh - 64px)',
+          padding: 3,
+          textAlign: 'center',
+        }}
+      >
+        <TranslatedText
+          textKey="app.name"
+          variant="h3"
+          component="h1"
+          gutterBottom
+        />
+        <Typography variant="body1" paragraph>
+          {t('app.loading')}
+        </Typography>
+      </Box>
     </>
+  )
+}
+
+function App() {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppContent />
+      </ThemeProvider>
+    </I18nextProvider>
   )
 }
 

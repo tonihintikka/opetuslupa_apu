@@ -1,0 +1,129 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# React Internationalization (i18n) Best Practices
+
+## Critical Rules
+
+- Set up i18n from day one of the project to avoid costly refactoring
+- Use react-i18next for React applications (built on i18next core)
+- Organize translations by feature/namespace (common, students, lessons, etc.)
+- Use descriptive key naming with consistent conventions (camelCase, dot notation)
+- Never hardcode UI text strings; always use translation functions
+- Use the `useTranslation` hook in functional components: `const { t } = useTranslation()`
+- For complex translations with JSX/HTML, use the `<Trans>` component
+- Store translations in separate JSON files by language and namespace
+- Support pluralization using the ICU message format
+- Format dates, numbers, and currencies according to locale standards
+- Include context or comments for translators when meanings might be ambiguous
+- Apply code splitting for translation bundles to improve initial load time
+- Set up tools to identify missing translations during development
+- Preserve whitespace appropriately in translations
+- Document your translation key structure and naming conventions
+- Implement a fallback chain for missing translations
+
+## Examples
+
+<example>
+// i18n configuration (i18n.ts)
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
+// Import translation files
+import commonFI from './locales/fi/common.json';
+import studentsFI from './locales/fi/students.json';
+
+i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources: {
+      fi: {
+        common: commonFI,
+        students: studentsFI
+      }
+    },
+    fallbackLng: 'fi',
+    defaultNS: 'common',
+    interpolation: {
+      escapeValue: false // React already escapes values
+    }
+  });
+
+export default i18n;
+
+// Using translations in a component
+import { useTranslation } from 'react-i18next';
+
+const StudentCard = ({ student }) => {
+  const { t } = useTranslation(['common', 'students']);
+  
+  return (
+    <div>
+      <h2>{t('students:studentDetails')}</h2>
+      <p>{t('common:name')}: {student.name}</p>
+      <p>{t('common:email')}: {student.email}</p>
+      <p>{t('students:lessonsCompleted', { count: student.lessons.length })}</p>
+    </div>
+  );
+};
+
+// Using the Trans component for complex content
+import { Trans } from 'react-i18next';
+
+const LessonSummary = ({ lesson, instructor }) => {
+  return (
+    <p>
+      <Trans i18nKey="lessons:summary" values={{ date: lesson.date, minutes: lesson.durationMinutes }}>
+        Lesson on <strong>{{ date }}</strong> lasted for {{ minutes }} minutes with <Link to="/instructors/{{ instructorId }}">{{ instructor }}</Link>.
+      </Trans>
+    </p>
+  );
+};
+</example>
+
+<example type="invalid">
+// Hardcoding text strings
+const StudentCard = ({ student }) => {
+  return (
+    <div>
+      <h2>Student Details</h2>
+      <p>Name: {student.name}</p>
+      <p>Email: {student.email}</p>
+      <p>Lessons Completed: {student.lessons.length}</p>
+    </div>
+  );
+};
+
+// Mixing translation namespaces inconsistently
+const ProfileView = () => {
+  const { t } = useTranslation();
+  
+  return (
+    <div>
+      <h2>{t('profile.title')}</h2>
+      <p>{t('common.lastUpdated')}</p>
+      <p>{t('user-settings.language')}</p> // Inconsistent naming (hyphen vs. camelCase)
+    </div>
+  );
+};
+
+// Inefficient loading of all translations at once
+i18n.init({
+  resources: {
+    en: { translation: require('./locales/en.json') }, // All translations in one file
+    fi: { translation: require('./locales/fi.json') },
+    sv: { translation: require('./locales/sv.json') }
+  }
+});
+
+// Manually concatenating strings with translations
+const Greeting = ({ count }) => {
+  const { t } = useTranslation();
+  
+  return <p>{t('greeting')} {count} {t('items')}</p>; // Should use interpolation instead
+};
+</example>

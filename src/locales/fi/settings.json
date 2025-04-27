@@ -1,0 +1,69 @@
+{
+  "settingsTitle": "Asetukset",
+  "generalSettings": "Yleiset asetukset",
+  "preferences": "Käyttöasetukset",
+  "account": "Tili",
+  "dataManagement": "Tietojen hallinta",
+  "aboutApp": "Tietoja sovelluksesta",
+  
+  "appearance": {
+    "title": "Ulkoasu",
+    "theme": "Teema",
+    "darkMode": "Tumma tila",
+    "lightMode": "Vaalea tila",
+    "systemDefault": "Järjestelmän oletus"
+  },
+  
+  "language": {
+    "title": "Kieli",
+    "selectLanguage": "Valitse kieli",
+    "finnish": "Suomi",
+    "english": "Englanti",
+    "swedish": "Ruotsi"
+  },
+  
+  "notifications": {
+    "title": "Ilmoitukset",
+    "enableNotifications": "Ota ilmoitukset käyttöön",
+    "upcomingLessons": "Tulevat ajotunnit",
+    "reminders": "Muistutukset"
+  },
+  
+  "dataExport": {
+    "title": "Tietojen vienti",
+    "exportData": "Vie tiedot",
+    "exportHelp": "Vie kaikki oppilas- ja ajotuntitiedot JSON-tiedostona",
+    "lastExport": "Viimeisin vienti"
+  },
+  
+  "dataImport": {
+    "title": "Tietojen tuonti",
+    "importData": "Tuo tiedot",
+    "importHelp": "Tuo tiedot aiemmin viedystä tiedostosta",
+    "warning": "Varoitus: Tietojen tuonti saattaa korvata olemassa olevia tietoja",
+    "confirmImport": "Vahvista tuonti",
+    "importQuestion": "Haluatko varmasti tuoda nämä tiedot?",
+    "mergeStrategy": "Tietojen yhdistäminen",
+    "replaceAll": "Korvaa kaikki tiedot",
+    "mergeDuplicates": "Yhdistä duplikaatit",
+    "keepBoth": "Säilytä molemmat"
+  },
+  
+  "dataDeletion": {
+    "title": "Tietojen poisto",
+    "deleteAllData": "Poista kaikki tiedot",
+    "deleteHelp": "Poistaa pysyvästi kaikki sovelluksen tiedot",
+    "warning": "Varoitus: Tätä toimintoa ei voi kumota",
+    "confirmDelete": "Vahvista poisto kirjoittamalla 'POISTA'",
+    "confirmInput": "POISTA"
+  },
+  
+  "about": {
+    "version": "Versio",
+    "developer": "Kehittäjä",
+    "privacyPolicy": "Tietosuojakäytäntö",
+    "termsOfService": "Käyttöehdot",
+    "licenses": "Lisenssit",
+    "privacyInfo": "Kaikki tiedot tallennetaan paikallisesti laitteellesi. Tietoja ei koskaan lähetetä ulkoisille palvelimille."
+  }
+} 

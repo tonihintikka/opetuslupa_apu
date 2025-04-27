@@ -1,0 +1,49 @@
+{
+  "studentManagement": "Oppilaiden hallinta",
+  "addStudent": "Lisää oppilas",
+  "editStudent": "Muokkaa oppilaan tietoja",
+  "studentDetails": "Oppilaan tiedot",
+  "studentsList": "Oppilaslista",
+  "searchStudents": "Hae oppilaita",
+  "filterStudents": "Suodata oppilaita",
+  "deleteStudent": "Poista oppilas",
+  "deleteStudentConfirm": "Haluatko varmasti poistaa oppilaan {{name}}? Tämä poistaa myös kaikki oppilaan ajotunnit.",
+  
+  "studentInfo": {
+    "name": "Nimi",
+    "email": "Sähköposti",
+    "phone": "Puhelinnumero",
+    "notes": "Muistiinpanot",
+    "createdAt": "Luotu",
+    "lessonsTotal": "Ajotunteja yhteensä",
+    "drivingMinutesTotal": "Ajominuutteja yhteensä"
+  },
+  
+  "studentStats": {
+    "title": "Tilastot",
+    "lessonsCount": "{{count}} ajotuntia",
+    "lessonsCountSingular": "{{count}} ajotunti",
+    "totalDriving": "Ajoa yhteensä",
+    "averageDuration": "Keskimääräinen kesto",
+    "lastLesson": "Viimeisin ajotunti",
+    "progress": "Edistyminen"
+  },
+  
+  "forms": {
+    "nameLabel": "Oppilaan nimi",
+    "namePlaceholder": "Syötä oppilaan koko nimi",
+    "emailLabel": "Sähköposti",
+    "emailPlaceholder": "Syötä oppilaan sähköposti",
+    "phoneLabel": "Puhelinnumero",
+    "phonePlaceholder": "Syötä oppilaan puhelinnumero",
+    "notesLabel": "Muistiinpanot",
+    "notesPlaceholder": "Lisää muistiinpanoja oppilaasta"
+  },
+  
+  "emptyState": {
+    "noStudents": "Ei oppilaita",
+    "addYourFirst": "Lisää ensimmäinen oppilas aloittaaksesi",
+    "noSearchResults": "Ei hakutuloksia",
+    "tryDifferent": "Kokeile eri hakuehtoja"
+  }
+} 

@@ -1,0 +1,74 @@
+{
+  "lessonManagement": "Ajotuntien hallinta",
+  "addLesson": "Lisää ajotunti",
+  "editLesson": "Muokkaa ajotuntia",
+  "lessonDetails": "Ajotunnin tiedot",
+  "lessonsList": "Ajotuntilista",
+  "searchLessons": "Hae ajotunteja",
+  "filterLessons": "Suodata ajotunteja",
+  "deleteLesson": "Poista ajotunti",
+  "deleteLessonConfirm": "Haluatko varmasti poistaa ajotunnin päivämäärältä {{date}}?",
+  
+  "lessonInfo": {
+    "student": "Oppilas",
+    "date": "Päivämäärä",
+    "time": "Aika",
+    "duration": "Kesto",
+    "durationMinutes": "{{count}} minuuttia",
+    "durationMinutesSingular": "{{count}} minuutti",
+    "topics": "Käsitellyt aiheet",
+    "notes": "Muistiinpanot"
+  },
+  
+  "topics": {
+    "selectTopics": "Valitse aiheet",
+    "addTopic": "Lisää aihe",
+    "cityDriving": "Kaupunkiajo",
+    "highwayDriving": "Moottoritieajo",
+    "parking": "Pysäköinti",
+    "maneuvers": "Kääntyminen",
+    "trafficRules": "Liikennesäännöt",
+    "nightDriving": "Pimeäajo",
+    "winterDriving": "Talviajo",
+    "defensiveDriving": "Ennakoiva ajo",
+    "ecodriving": "Taloudellinen ajo"
+  },
+  
+  "forms": {
+    "studentLabel": "Oppilas",
+    "studentPlaceholder": "Valitse oppilas",
+    "dateLabel": "Päivämäärä",
+    "datePlaceholder": "Valitse päivämäärä",
+    "timeLabel": "Aika",
+    "timePlaceholder": "Valitse aika",
+    "durationLabel": "Kesto (minuutteja)",
+    "durationPlaceholder": "Syötä kesto minuutteina",
+    "topicsLabel": "Aiheet",
+    "topicsPlaceholder": "Valitse käsitellyt aiheet",
+    "notesLabel": "Muistiinpanot",
+    "notesPlaceholder": "Lisää muistiinpanoja ajotunnista"
+  },
+  
+  "timeline": {
+    "title": "Ajotuntien aikajana",
+    "upcoming": "Tulevat ajotunnit",
+    "past": "Menneet ajotunnit",
+    "today": "Tänään",
+    "noUpcoming": "Ei tulevia ajotunteja",
+    "noPast": "Ei menneitä ajotunteja"
+  },
+  
+  "summary": {
+    "title": "Yhteenveto",
+    "lessonCount": "Ajotunteja yhteensä: {{count}}",
+    "totalMinutes": "Ajominuutteja yhteensä: {{count}}",
+    "averageDuration": "Keskimääräinen kesto: {{duration}} minuuttia"
+  },
+  
+  "emptyState": {
+    "noLessons": "Ei ajotunteja",
+    "addYourFirst": "Lisää ensimmäinen ajotunti aloittaaksesi",
+    "noSearchResults": "Ei hakutuloksia",
+    "tryDifferent": "Kokeile eri hakuehtoja"
+  }
+} 
