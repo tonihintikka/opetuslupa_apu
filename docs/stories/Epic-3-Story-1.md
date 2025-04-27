@@ -37,12 +37,12 @@ Story Points: 5
    4. - [x] Add progress indicators and summary preview
    5. - [x] Implement responsive design for mobile and desktop views
 
-2. - [ ] Build Progress Matrix dashboard
-   1. - [ ] Design table listing each topic with statistics (recommended minutes, completed minutes, percentage, remaining)
-   2. - [ ] Implement color-coding system (red/yellow/green) based on completion percentages
-   3. - [ ] Create progress aggregation functions to calculate statistics
+2. - [x] Build Progress Matrix dashboard
+   1. - [x] Design table listing each topic with statistics (recommended minutes, completed minutes, percentage, remaining)
+   2. - [x] Implement color-coding system (red/yellow/green) based on completion percentages
+   3. - [x] Create progress aggregation functions to calculate statistics
    4. - [ ] Add filtering and sorting options for the matrix view
-   5. - [ ] Design compact view for mobile devices
+   5. - [x] Design compact view for mobile devices
 
 3. - [ ] Implement topic recommendation system
    1. - [ ] Develop "Suggest next topic" algorithm that highlights topics with <50% completion
