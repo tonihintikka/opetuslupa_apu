@@ -1,0 +1,110 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# State Management (useDrivingStore/Dexie)
+
+## Critical Rules
+
+- **Always use `useDrivingStore` hook for state access:** Components MUST interact with IndexedDB data (students, lessons) exclusively through the `useDrivingStore` custom hook. Direct Dexie calls from components are prohibited.
+- **Encapsulate Dexie logic within `useDrivingStore`:** All Dexie/IndexedDB operations (CRUD) MUST be implemented as methods within the `useDrivingStore` hook.
+- **Handle async operations correctly:** All Dexie methods return Promises. Ensure proper `async/await` usage within the hook and handle potential errors (e.g., using `try...catch`). Provide loading/error states from the hook where appropriate.
+- **Define clear interfaces for data:** Use TypeScript interfaces (defined preferably in a shared types file or near `DrivingDB.ts`) for `Student` and `Lesson` objects stored in Dexie. Ensure these interfaces are used consistently within the hook and components.
+- **Update Dexie schema (`DrivingDB.ts`) carefully:** When modifying the database schema (adding tables, indexes, or changing fields):
+    - Increment the Dexie database version number.
+    - Define upgrade logic using Dexie's `version().stores().upgrade()` method to handle data migration if necessary.
+    - Test schema changes thoroughly.
+- **Keep hook state minimal:** The `useDrivingStore` hook should expose necessary data and action methods, but avoid storing excessive derived or temporary state that can be calculated within components.
+
+## Examples
+
+<example>
+  // Correct usage within a component:
+  import { useDrivingStore } from '@/hooks/useDrivingStore';
+
+  function StudentDetails({ studentId }: { studentId: string }) {
+    const { students, lessons, addLesson, isLoading, error } = useDrivingStore();
+    const student = students.find(s => s.id === studentId);
+
+    const handleAddLesson = async (lessonData: Omit<Lesson, 'id' | 'studentId'>) => {
+      try {
+        await addLesson(studentId, lessonData);
+        // Show success message
+      } catch (err) {
+        // Show error message
+      }
+    };
+
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Error loading data: {error.message}</p>;
+    // ... render student and lesson details ...
+  }
+
+  // Correct implementation within useDrivingStore.ts:
+  // (Assuming db is the initialized Dexie instance)
+  import { db, Student, Lesson } from '@/services/DrivingDB';
+  import { useLiveQuery } from 'dexie-react-hooks';
+  import { useState } from 'react';
+
+  export function useDrivingStore() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const students = useLiveQuery(() => db.students.toArray(), []);
+    const lessons = useLiveQuery(() => db.lessons.toArray(), []);
+
+    const addLesson = async (studentId: string, lessonData: Omit<Lesson, 'id' | 'studentId'>) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const newLesson: Lesson = {
+          ...lessonData,
+          id: crypto.randomUUID(), // Or use auto-incrementing ID from Dexie
+          studentId,
+        };
+        await db.lessons.add(newLesson);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to add lesson'));
+        throw err; // Re-throw for component handling
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // ... other CRUD methods ...
+
+    return { students: students ?? [], lessons: lessons ?? [], addLesson, isLoading, error /* ... other methods */ };
+  }
+</example>
+
+<example type="invalid">
+  // Bad: Direct Dexie usage in component
+  import { db } from '@/services/DrivingDB';
+  import { useEffect, useState } from 'react';
+
+  function BadStudentList() {
+    const [students, setStudents] = useState([]);
+    useEffect(() => {
+      // Avoid this! Use the hook.
+      db.students.toArray().then(setStudents);
+    }, []);
+    // ...
+  }
+
+  // Bad: Not handling async/await or errors properly in hook
+  function useBadDrivingStore() {
+    const addStudent = (studentData: Student) => {
+      // Missing await, no error handling, no loading state
+      db.students.add(studentData);
+    }
+    // ...
+    return { addStudent };
+  }
+
+  // Bad: Modifying Dexie schema without versioning/upgrade
+  // In DrivingDB.ts:
+  // db.version(1).stores({ students: '++id, name' });
+  // ... later modification ...
+  // db.version(1).stores({ students: '++id, name, email' }); // ERROR! Version must be incremented.
+</example>

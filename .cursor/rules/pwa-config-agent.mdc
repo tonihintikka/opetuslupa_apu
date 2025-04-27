@@ -1,0 +1,199 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# PWA Configuration Standards
+
+## Critical Rules
+
+- **Use `vite-plugin-pwa` as the PWA solution:** All PWA capabilities must be configured through vite-plugin-pwa. Do not use other PWA solutions or custom service workers.
+- **Configure the correct caching strategy:** Use appropriate Workbox caching strategies:
+  - `NetworkFirst` for dynamic API requests
+  - `CacheFirst` for static assets (images, fonts)
+  - `StaleWhileRevalidate` for semi-dynamic content
+- **Ensure offline availability:** The app MUST work completely offline once loaded. All essential assets must be precached.
+- **Maintain a complete manifest:** The web app manifest MUST include:
+  - Appropriate names (`name`, `short_name`)
+  - Meaningful description
+  - Correct `start_url` (typically `/`)
+  - `display: 'standalone'` for app-like experience
+  - Appropriate theme and background colors
+  - Complete icon set (at minimum 192x192, 512x512)
+- **Register service worker safely:** Use the recommended service worker registration pattern with proper event handlers and error catching.
+- **Implement cache versioning:** Service worker should use versioning to ensure updates are properly applied.
+- **Handle service worker updates gracefully:** Provide a mechanism to notify users of updates and prompt for refresh.
+- **Test PWA features regularly:** Verify offline functionality, installation, and update processes.
+- **Include PWA meta tags in HTML:** Ensure all appropriate meta tags for PWA support are included in the HTML template.
+
+## Examples
+
+<example>
+  // Good: vite-plugin-pwa configuration in vite.config.ts
+  import { defineConfig } from 'vite';
+  import react from '@vitejs/plugin-react';
+  import { VitePWA } from 'vite-plugin-pwa';
+
+  export default defineConfig({
+    plugins: [
+      react(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
+        manifest: {
+          name: 'Driving-Lesson Tracker',
+          short_name: 'DrivingTracker',
+          description: 'Track driving lessons, topics, and student progress',
+          theme_color: '#1976d2',
+          background_color: '#ffffff',
+          display: 'standalone',
+          orientation: 'portrait',
+          start_url: '/',
+          icons: [
+            {
+              src: 'pwa-192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: 'pwa-512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any maskable',
+            },
+          ],
+        },
+        workbox: {
+          // Cache static assets with CacheFirst strategy
+          runtimeCaching: [
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|woff|woff2|ttf|eot)$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'assets-cache',
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                },
+              },
+            },
+            // Cache dynamic data with StaleWhileRevalidate
+            {
+              urlPattern: new RegExp('^https://api\\.example\\.com/'),
+              handler: 'StaleWhileRevalidate',
+              options: {
+                cacheName: 'api-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 6, // 6 hours
+                },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+          ],
+        },
+      }),
+    ],
+  });
+
+  // Good: Service Worker registration in src/sw-register.ts
+  export function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const BASE_URL = import.meta.env.BASE_URL || '/';
+        
+        navigator.serviceWorker
+          .register(`${BASE_URL}sw.js`)
+          .then((registration) => {
+            console.log('SW registered:', registration);
+            
+            // Handle updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              
+              newWorker?.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New content is available, show a notification to the user
+                  showUpdateNotification();
+                }
+              });
+            });
+          })
+          .catch((error) => {
+            console.error('SW registration failed:', error);
+          });
+      });
+    }
+  }
+
+  function showUpdateNotification() {
+    // Implementation of notification UI to alert users about updates
+    // For example, using MUI Snackbar with a refresh button
+  }
+</example>
+
+<example type="invalid">
+  // Bad: Incomplete or incorrect PWA configuration
+  import { defineConfig } from 'vite';
+  import react from '@vitejs/plugin-react';
+  import { VitePWA } from 'vite-plugin-pwa';
+
+  export default defineConfig({
+    plugins: [
+      react(),
+      VitePWA({
+        // Missing registerType
+        manifest: {
+          name: 'Driving App',
+          // Missing short_name
+          // Missing description
+          // Missing theme_color
+          // Missing background_color
+          icons: [
+            {
+              src: 'icon.png', // Only one icon size
+              sizes: '192x192',
+              type: 'image/png',
+            },
+          ],
+        },
+        // Missing workbox configuration for caching strategies
+      }),
+    ],
+  });
+
+  // Bad: Unsafe service worker registration without error handling or update management
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+    // Missing error handling
+    // Missing update detection
+  }
+
+  // Bad: Custom service worker that reinvents Workbox functionality
+  // In a custom sw.js file:
+  const CACHE_NAME = 'v1';
+  
+  self.addEventListener('install', (event) => {
+    event.waitUntil(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.addAll([
+          '/',
+          '/index.html',
+          '/main.js',
+          // Manually listing all assets is error-prone
+        ]);
+      })
+    );
+  });
+  
+  // Reinventing caching strategies that Workbox provides
+  self.addEventListener('fetch', (event) => {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request);
+      })
+    );
+  });
+</example>

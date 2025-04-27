@@ -1,0 +1,341 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# JSON Export/Import Standards
+
+## Critical Rules
+
+- **Include version metadata:** All exported JSON data MUST include a version field to ensure forward/backward compatibility during future schema changes.
+- **Validate imported data thoroughly:** All imported JSON data MUST be validated against a schema before being inserted into IndexedDB. Never trust input data.
+- **Handle all import errors gracefully:** When validating imported data, handle and display specific error messages. Don't allow partial imports that could corrupt the database.
+- **Provide detailed export options:** Allow users to export a subset of data (e.g., specific students or date ranges) or a complete database dump.
+- **Implement secure data handling:** When exporting/importing potentially sensitive data, consider implementing optional encryption/decryption (e.g., using Web Crypto API with a user-provided password).
+- **Use proper typing for export/import functions:** Define TypeScript interfaces for the exported data structure and validation functions.
+- **Follow progressive enhancement:** The export/import functionality should start with basic features and progressively enhance based on browser capabilities.
+- **Use async operations correctly:** JSON parsing/stringifying and file I/O should be handled as asynchronous operations to prevent UI freezing.
+- **Include clear user feedback:** Show progress during export/import operations, especially for large datasets.
+
+## Examples
+
+<example>
+  // Good: Export with version metadata and proper typing
+  import { db, Student, Lesson } from '@/services/DrivingDB';
+
+  interface ExportData {
+    version: string;
+    exportDate: string;
+    students: Student[];
+    lessons: Lesson[];
+  }
+
+  async function exportDatabase(): Promise<string> {
+    try {
+      const students = await db.students.toArray();
+      const lessons = await db.lessons.toArray();
+      
+      const exportData: ExportData = {
+        version: '1.0', // Schema version for compatibility checks
+        exportDate: new Date().toISOString(),
+        students,
+        lessons,
+      };
+      
+      return JSON.stringify(exportData, null, 2);
+    } catch (error) {
+      console.error('Export failed:', error);
+      throw new Error('Failed to export database');
+    }
+  }
+
+  // Good: Validating imported data with schema validation
+  import { z } from 'zod'; // Or another validation library
+
+  // Define validation schema matching your database structure
+  const StudentSchema = z.object({
+    id: z.string().uuid(),
+    name: z.string().min(1),
+    email: z.string().email().optional().nullable(),
+    // other fields...
+  });
+
+  const LessonSchema = z.object({
+    id: z.string().uuid(),
+    studentId: z.string().uuid(),
+    date: z.string().datetime(),
+    durationMinutes: z.number().int().positive(),
+    topics: z.array(z.string()),
+    notes: z.string().optional(),
+    // other fields...
+  });
+
+  const ImportDataSchema = z.object({
+    version: z.string(),
+    exportDate: z.string().datetime(),
+    students: z.array(StudentSchema),
+    lessons: z.array(LessonSchema),
+  });
+
+  async function importDatabase(jsonData: string): Promise<void> {
+    try {
+      // Parse JSON data
+      const parsedData = JSON.parse(jsonData);
+      
+      // Validate against schema
+      const validationResult = ImportDataSchema.safeParse(parsedData);
+      
+      if (!validationResult.success) {
+        throw new Error(`Invalid import data: ${validationResult.error.message}`);
+      }
+      
+      const data = validationResult.data;
+      
+      // Version check
+      if (data.version !== '1.0') {
+        // Handle version mismatch - you might need migration logic
+        console.warn(`Import data version (${data.version}) differs from current (1.0)`);
+      }
+      
+      // Import in a transaction to ensure atomicity
+      await db.transaction('rw', [db.students, db.lessons], async () => {
+        // Optional: Clear existing data first
+        // await db.students.clear();
+        // await db.lessons.clear();
+        
+        // Add all students
+        for (const student of data.students) {
+          // Check if student already exists
+          const existingStudent = await db.students.get(student.id);
+          if (existingStudent) {
+            await db.students.update(student.id, student);
+          } else {
+            await db.students.add(student);
+          }
+        }
+        
+        // Add all lessons
+        for (const lesson of data.lessons) {
+          // Check if lesson already exists
+          const existingLesson = await db.lessons.get(lesson.id);
+          if (existingLesson) {
+            await db.lessons.update(lesson.id, lesson);
+          } else {
+            await db.lessons.add(lesson);
+          }
+        }
+      });
+      
+      console.log('Import completed successfully');
+    } catch (error) {
+      console.error('Import failed:', error);
+      throw error; // Re-throw for UI handling
+    }
+  }
+
+  // Good: UI Component for import/export with user feedback
+  import { useState } from 'react';
+  import { 
+    Button, Dialog, DialogTitle, DialogContent, DialogActions,
+    LinearProgress, Typography, Alert, Tab, Tabs, Box 
+  } from '@mui/material';
+
+  export function ExportImportDialog({ open, onClose }) {
+    const [activeTab, setActiveTab] = useState(0);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+    
+    const handleExport = async () => {
+      setIsProcessing(true);
+      setError(null);
+      setSuccess(null);
+      
+      try {
+        const jsonData = await exportDatabase();
+        
+        // Create a downloadable file
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `driving-tracker-export-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Clean up
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 0);
+        
+        setSuccess('Data exported successfully');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Export failed');
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+    
+    const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      
+      setIsProcessing(true);
+      setError(null);
+      setSuccess(null);
+      
+      try {
+        const jsonData = await file.text();
+        await importDatabase(jsonData);
+        setSuccess('Data imported successfully');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Import failed');
+      } finally {
+        setIsProcessing(false);
+        
+        // Reset file input
+        event.target.value = '';
+      }
+    };
+    
+    return (
+      <Dialog open={open} onClose={isProcessing ? undefined : onClose} fullWidth maxWidth="sm">
+        <DialogTitle>Export/Import Data</DialogTitle>
+        
+        <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} centered>
+          <Tab label="Export" />
+          <Tab label="Import" />
+        </Tabs>
+        
+        <DialogContent>
+          {isProcessing && <LinearProgress />}
+          
+          {error && (
+            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          
+          {success && (
+            <Alert severity="success" sx={{ mt: 2, mb: 2 }}>
+              {success}
+            </Alert>
+          )}
+          
+          <Box sx={{ mt: 2 }}>
+            {activeTab === 0 ? (
+              <Box>
+                <Typography variant="body2" sx={{ mb: 2 }}>
+                  Export your driving lesson data as a JSON file. You can use this file for
+                  backup or to import your data into another device.
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleExport}
+                  disabled={isProcessing}
+                >
+                  Export Data
+                </Button>
+              </Box>
+            ) : (
+              <Box>
+                <Typography variant="body2" sx={{ mb: 2 }}>
+                  Import previously exported driving lesson data. This will merge with your
+                  existing data. Make sure the file is in the correct format.
+                </Typography>
+                <input
+                  accept=".json"
+                  id="import-file"
+                  type="file"
+                  style={{ display: 'none' }}
+                  onChange={handleImportFile}
+                  disabled={isProcessing}
+                />
+                <label htmlFor="import-file">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    component="span"
+                    disabled={isProcessing}
+                  >
+                    Select File to Import
+                  </Button>
+                </label>
+              </Box>
+            )}
+          </Box>
+        </DialogContent>
+        
+        <DialogActions>
+          <Button onClick={onClose} disabled={isProcessing}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+</example>
+
+<example type="invalid">
+  // Bad: No version information, no validation, insecure handling
+  async function badExport() {
+    const students = await db.students.toArray();
+    const lessons = await db.lessons.toArray();
+    
+    // Missing version info, directly stringifying database objects
+    return JSON.stringify({ students, lessons });
+  }
+  
+  // Bad: No validation, blindly importing data
+  async function badImport(jsonData) {
+    try {
+      const data = JSON.parse(jsonData);
+      
+      // Directly adding data without validation
+      if (data.students) {
+        await db.students.bulkAdd(data.students);
+      }
+      
+      if (data.lessons) {
+        await db.lessons.bulkAdd(data.lessons);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+  // Bad: Poor error handling, no progress indication
+  function BadExportImportComponent() {
+    const handleExport = () => {
+      badExport()
+        .then(json => {
+          // Direct manipulation of DOM without React
+          const a = document.createElement('a');
+          a.href = 'data:text/json,' + encodeURIComponent(json);
+          a.download = 'export.json';
+          a.click();
+        });
+    };
+    
+    const handleImport = (event) => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = (e) => {
+        badImport(e.target.result);
+        // No error handling or user feedback
+      };
+      
+      reader.readAsText(file);
+    };
+    
+    return (
+      <div>
+        <button onClick={handleExport}>Export</button>
+        <input type="file" onChange={handleImport} />
+      </div>
+    );
+  }
+</example>

@@ -1,0 +1,216 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Material-UI (MUI) Components Standards
+
+## Critical Rules
+
+- **Use the project-defined theme:** All component styling MUST use the centralized theme object through the MUI theme provider. Avoid hardcoded colors, spacing values, or typography styles.
+- **Follow responsive design principles:** Use MUI's responsive utilities (`useMediaQuery`, `sx` prop with breakpoints, `Grid` with responsive props) to ensure mobile-first design. Components MUST be usable on all screen sizes (mobile, tablet, desktop).
+- **Use typed props with interfaces:** Define clear TypeScript interfaces for all component props.
+- **Prefer composition over customization:** Build complex UI elements by composing smaller MUI components rather than deeply customizing individual components with CSS overrides.
+- **All forms must use proper validation:** Implement form validation using MUI's `TextField` error props and helper text. Display appropriate validation messages.
+- **Make best use of MUI components:**
+  - Use `AppBar` and `Drawer` for navigation
+  - Use `Dialog` for modals (StudentForm, ExportImportDialog)
+  - Use `Card` for discrete content blocks
+  - Use `LinearProgress` or `CircularProgress` for loading states
+  - Use `Alert` or `Snackbar` for notifications
+  - Use the `sx` prop for custom styling (preferred over `styled` or CSS-in-JS)
+- **Support light and dark themes:** All components MUST work correctly in both light and dark themes with appropriate contrast.
+- **Maintain accessibility:** Ensure all components have appropriate ARIA attributes, labels, and keyboard navigation support.
+
+## Examples
+
+<example>
+  // Good: Using theme, responsive design, and proper component composition
+  import { Box, Card, CardContent, Typography, Chip, Grid, useTheme, useMediaQuery } from '@mui/material';
+  import { Student } from '@/services/DrivingDB';
+
+  interface StudentCardProps {
+    student: Student;
+    onClick: (id: string) => void;
+  }
+
+  export function StudentCard({ student, onClick }: StudentCardProps) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    
+    return (
+      <Card 
+        sx={{ 
+          cursor: 'pointer',
+          transition: theme.transitions.create('transform'),
+          '&:hover': {
+            transform: 'scale(1.02)',
+            boxShadow: theme.shadows[4],
+          },
+          mb: 2 
+        }}
+        onClick={() => onClick(student.id)}
+      >
+        <CardContent>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} sm={8}>
+              <Typography variant="h6" component="h2">
+                {student.name}
+              </Typography>
+              <Typography color="text.secondary" variant="body2">
+                {student.email}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={4} sx={{ textAlign: isMobile ? 'left' : 'right' }}>
+              <Chip 
+                label={`${student.totalMinutes || 0} min`}
+                color="primary"
+                size={isMobile ? "small" : "medium"}
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Good: Form with validation
+  import { useState } from 'react';
+  import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+
+  export function StudentForm({ open, onClose, onSubmit, initialData }) {
+    const [name, setName] = useState(initialData?.name || '');
+    const [email, setEmail] = useState(initialData?.email || '');
+    const [errors, setErrors] = useState({ name: '', email: '' });
+
+    const validate = () => {
+      const newErrors = { name: '', email: '' };
+      let isValid = true;
+
+      if (!name.trim()) {
+        newErrors.name = 'Name is required';
+        isValid = false;
+      }
+
+      if (email && !/\S+@\S+\.\S+/.test(email)) {
+        newErrors.email = 'Please enter a valid email address';
+        isValid = false;
+      }
+
+      setErrors(newErrors);
+      return isValid;
+    };
+
+    const handleSubmit = () => {
+      if (validate()) {
+        onSubmit({ name, email });
+        onClose();
+      }
+    };
+
+    return (
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+        <DialogTitle>{initialData ? 'Edit Student' : 'Add New Student'}</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="normal"
+            label="Name"
+            fullWidth
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            error={!!errors.name}
+            helperText={errors.name}
+            autoFocus
+          />
+          <TextField
+            margin="normal"
+            label="Email"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={!!errors.email}
+            helperText={errors.email}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSubmit} variant="contained">Save</Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+</example>
+
+<example type="invalid">
+  // Bad: Inline styles, no theme usage, no responsive design
+  function BadStudentCard({ student, onClick }) {
+    return (
+      <div 
+        style={{ 
+          border: '1px solid #ccc', 
+          borderRadius: '4px',
+          padding: '16px',
+          marginBottom: '10px',
+          cursor: 'pointer',
+          backgroundColor: 'white' // Hardcoded color, won't work in dark mode
+        }}
+        onClick={() => onClick(student.id)}
+      >
+        <h3 style={{ fontSize: '18px', color: '#333' }}>{student.name}</h3>
+        <p style={{ color: '#666' }}>{student.email}</p>
+        <span style={{ 
+          backgroundColor: '#2196F3', 
+          color: 'white',
+          padding: '4px 8px',
+          borderRadius: '16px',
+          fontSize: '12px'
+        }}>
+          {student.totalMinutes || 0} min
+        </span>
+      </div>
+    );
+  }
+
+  // Bad: No validation, inconsistent UI elements, mixing different UI libraries
+  import { useState } from 'react';
+  import { TextField, Button } from '@mui/material';
+  
+  function BadStudentForm({ onSubmit }) {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    
+    return (
+      <div className="form-container" style={{ padding: '20px' }}>
+        <h2>Add Student</h2>
+        <div className="form-group">
+          <label>Name:</label>
+          <TextField 
+            value={name} 
+            onChange={(e) => setName(e.target.value)} 
+          />
+        </div>
+        <div className="form-group">
+          <label>Email:</label>
+          {/* Mixing plain HTML with MUI */}
+          <input 
+            type="email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+            style={{ padding: '8px', width: '100%' }}
+          />
+        </div>
+        {/* Inconsistent button styling */}
+        <button 
+          onClick={() => onSubmit({ name, email })} 
+          style={{ 
+            backgroundColor: 'blue', 
+            color: 'white', 
+            padding: '10px 20px' 
+          }}
+        >
+          Submit
+        </button>
+      </div>
+    );
+  }
+</example>

@@ -1,0 +1,231 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Technology Stack Requirements
+
+## Critical Rules
+
+- **Core Framework and Build Tools**
+  - Use Vite 6.x as the build tool and development environment
+  - Configure TypeScript 5.x with strict type checking enabled (`"strict": true` in tsconfig.json)
+  - Use React 18.x with matching TypeScript declarations (`@types/react`, `@types/react-dom`)
+  - Configure ESLint for TypeScript with `@vitejs/eslint` recommended settings
+
+- **UI Component Library**
+  - Use Material-UI (MUI) 5.x as the primary UI component library
+  - Import MUI components directly from their specific packages (e.g., `@mui/material/Button` instead of `@mui/material`)
+  - Use the Emotion styling engine with MUI (`@emotion/react`, `@emotion/styled`)
+  - Define a centralized theme object for consistent styling
+  - Use MUI's built-in theming system for light/dark mode support
+
+- **Data Storage and Management**
+  - Use Dexie.js 3.x for IndexedDB interaction
+  - Use `dexie-react-hooks` (specifically `useLiveQuery`) for reactive data access
+  - Use `dexie-export-import` for JSON data export/import capabilities
+  - Implement schema versioning correctly with migration paths
+  - Use Zod for JSON data validation during import operations
+
+- **PWA Configuration**
+  - Use `vite-plugin-pwa` 0.18.x or newer for PWA features
+  - Implement appropriate Workbox caching strategies:
+    - `CacheFirst` for static assets
+    - `NetworkFirst` for dynamic API requests
+    - `StaleWhileRevalidate` for semi-dynamic content
+  - Include complete Web App Manifest with proper icons and metadata
+  - Handle service worker updates with user notifications
+  - Ensure offline functionality works for all core features
+
+- **Package Management**
+  - All npm packages must specify semantic versioning with ^ prefix
+  - Core dependencies must be kept up-to-date but avoid major version jumps without testing
+  - For MUI, always use matching versions between packages (`@mui/material`, `@mui/icons-material`)
+
+## Examples
+
+<example>
+  // Good: package.json with correct versions and dependencies
+  {
+    "name": "driving-lesson-tracker",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+      "dev": "vite",
+      "build": "tsc && vite build",
+      "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+      "preview": "vite preview"
+    },
+    "dependencies": {
+      "@emotion/react": "^11.11.3",
+      "@emotion/styled": "^11.11.0",
+      "@fontsource/roboto": "^5.0.8",
+      "@mui/icons-material": "^5.15.6",
+      "@mui/material": "^5.15.6",
+      "dexie": "^3.2.4",
+      "dexie-export-import": "^4.0.7",
+      "dexie-react-hooks": "^1.1.7",
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0",
+      "zod": "^3.22.4"
+    },
+    "devDependencies": {
+      "@types/react": "^18.2.48",
+      "@types/react-dom": "^18.2.18",
+      "@typescript-eslint/eslint-plugin": "^6.19.0",
+      "@typescript-eslint/parser": "^6.19.0",
+      "@vitejs/plugin-react": "^4.2.1",
+      "eslint": "^8.56.0",
+      "eslint-plugin-react-hooks": "^4.6.0",
+      "eslint-plugin-react-refresh": "^0.4.5",
+      "typescript": "^5.3.3",
+      "vite": "^5.0.12",
+      "vite-plugin-pwa": "^0.18.1"
+    }
+  }
+
+  // Good: Vite config with PWA plugin
+  // vite.config.ts
+  import { defineConfig } from 'vite';
+  import react from '@vitejs/plugin-react';
+  import { VitePWA } from 'vite-plugin-pwa';
+
+  export default defineConfig({
+    plugins: [
+      react(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
+        manifest: {
+          name: 'Driving-Lesson Tracker',
+          short_name: 'DrivingTracker',
+          description: 'Track driving lessons, topics, and student progress',
+          theme_color: '#1976d2',
+          background_color: '#ffffff',
+          display: 'standalone',
+          orientation: 'portrait',
+          start_url: '/',
+          icons: [
+            {
+              src: 'pwa-192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: 'pwa-512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'any maskable',
+            },
+          ],
+        },
+        workbox: {
+          runtimeCaching: [
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|woff|woff2|ttf|eot)$/,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'assets-cache',
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                },
+              },
+            },
+          ],
+        },
+      }),
+    ],
+  });
+
+  // Good: Dexie database definition with proper typing
+  // src/services/DrivingDB.ts
+  import Dexie, { Table } from 'dexie';
+
+  export interface Student {
+    id?: string;
+    name: string;
+    email?: string;
+    notes?: string;
+    createdAt: Date;
+  }
+
+  export interface Lesson {
+    id?: string;
+    studentId: string;
+    date: Date;
+    durationMinutes: number;
+    topics: string[];
+    notes?: string;
+  }
+
+  export class DrivingDB extends Dexie {
+    students!: Table<Student, string>;
+    lessons!: Table<Lesson, string>;
+
+    constructor() {
+      super('DrivingLessonTracker');
+      
+      this.version(1).stores({
+        students: '++id, name, email',
+        lessons: '++id, studentId, date',
+      });
+    }
+  }
+
+  export const db = new DrivingDB();
+</example>
+
+<example type="invalid">
+  // Bad: Mixing incompatible versions
+  {
+    "dependencies": {
+      "@mui/material": "^5.15.6",
+      "@mui/icons-material": "^4.11.3", // Mismatched version with @mui/material
+      "react": "^17.0.2", // Older version of React
+      "dexie": "^2.0.4" // Outdated Dexie version
+    }
+  }
+
+  // Bad: Incorrect TypeScript configuration
+  // tsconfig.json
+  {
+    "compilerOptions": {
+      "strict": false, // Should be true
+      "target": "es5", // Should use at least es2015 for better browser support
+      "jsx": "react" // Should use react-jsx for React 18
+    }
+  }
+
+  // Bad: Direct use of IndexedDB without Dexie
+  // src/services/database.js
+  const openDB = () => {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('lessons', 1);
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        db.createObjectStore('students', { keyPath: 'id', autoIncrement: true });
+        db.createObjectStore('lessons', { keyPath: 'id', autoIncrement: true });
+      };
+    });
+  };
+
+  // Bad: Not using vite-plugin-pwa for PWA features
+  // Manually managing service worker
+  // service-worker.js
+  self.addEventListener('install', (event) => {
+    event.waitUntil(
+      caches.open('v1').then((cache) => {
+        return cache.addAll([
+          '/',
+          '/index.html',
+          '/main.js',
+          // Manually listing files is error-prone
+        ]);
+      })
+    );
+  });
+</example>
