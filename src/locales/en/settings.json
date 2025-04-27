@@ -1,0 +1,83 @@
+{
+  "title": "Settings",
+  "generalSettings": "General Settings",
+  "preferences": {
+    "title": "Preferences",
+    "darkMode": "Dark Theme",
+    "darkModeDescription": "Use dark color scheme in the application",
+    "notifications": "Notifications",
+    "notificationsDescription": "Allow app notifications",
+    "autoSave": "Auto Save",
+    "autoSaveDescription": "Save changes automatically"
+  },
+  "account": "Account",
+  "dataManagement": "Data Management",
+  "aboutApp": "About the App",
+
+  "appearance": {
+    "title": "Appearance",
+    "theme": "Theme",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "systemDefault": "System Default"
+  },
+
+  "language": {
+    "title": "Language",
+    "select": "Select Language",
+    "description": "Change the application language",
+    "finnish": "Finnish",
+    "english": "English",
+    "swedish": "Swedish"
+  },
+
+  "notifications": {
+    "title": "Notifications",
+    "enableNotifications": "Enable Notifications",
+    "upcomingLessons": "Upcoming Lessons",
+    "reminders": "Reminders"
+  },
+
+  "dataExport": {
+    "title": "Data Export",
+    "exportData": "Export Data",
+    "exportHelp": "Export all student and lesson data as a JSON file",
+    "lastExport": "Last Export"
+  },
+
+  "dataImport": {
+    "title": "Data Import",
+    "importData": "Import Data",
+    "importHelp": "Import data from a previously exported file",
+    "warning": "Warning: Data import may overwrite existing data",
+    "confirmImport": "Confirm Import",
+    "importQuestion": "Are you sure you want to import this data?",
+    "mergeStrategy": "Merge Strategy",
+    "replaceAll": "Replace All Data",
+    "mergeDuplicates": "Merge Duplicates",
+    "keepBoth": "Keep Both"
+  },
+
+  "dataDeletion": {
+    "title": "Data Deletion",
+    "deleteAllData": "Delete All Data",
+    "deleteHelp": "Permanently deletes all application data",
+    "warning": "Warning: This action cannot be undone",
+    "confirmDelete": "Confirm deletion by typing 'DELETE'",
+    "confirmInput": "DELETE"
+  },
+
+  "about": {
+    "version": "Version",
+    "developer": "Developer",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "licenses": "Licenses",
+    "privacyInfo": "All data is stored locally on your device. Data is never sent to external servers."
+  },
+
+  "storage": {
+    "title": "Data Storage",
+    "description": "All data is stored locally on your device. We recommend regular backups."
+  }
+}

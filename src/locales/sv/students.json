@@ -1,0 +1,65 @@
+{
+  "title": "Elever",
+  "addStudent": "Lägg till elev",
+  "editStudent": "Redigera elev",
+  "addNewStudent": "Lägg till ny elev",
+  "noStudentsFound": "Inga elever hittades. Lägg till din första elev för att komma igång.",
+  "confirmDelete": "Är du säker på att du vill ta bort den här eleven?",
+  "name": "Namn",
+  "email": "E-post",
+  "phone": "Telefonnummer",
+  "details": "Elevuppgifter",
+  "totalLessons": "Totalt antal lektioner",
+  "totalHours": "Totalt antal timmar",
+  "lastLesson": "Senaste körlektionen",
+  "firstLesson": "Första körlektionen",
+  "progress": "Framsteg",
+  "created": "Eleven har lagts till!",
+  "updated": "Elevinformationen har uppdaterats!",
+  "deleted": "Eleven har tagits bort!",
+  "studentManagement": "Elevhantering",
+  "studentDetails": "Elevuppgifter",
+  "studentsList": "Elevlista",
+  "searchStudents": "Sök elever",
+  "filterStudents": "Filtrera elever",
+  "deleteStudent": "Ta bort elev",
+  "deleteStudentConfirm": "Är du säker på att du vill ta bort eleven {{name}}? Detta tar också bort alla elevens körlektioner.",
+
+  "studentInfo": {
+    "name": "Namn",
+    "email": "E-post",
+    "phone": "Telefonnummer",
+    "notes": "Anteckningar",
+    "createdAt": "Skapad",
+    "lessonsTotal": "Totalt antal lektioner",
+    "drivingMinutesTotal": "Totalt antal körminuter"
+  },
+
+  "studentStats": {
+    "title": "Statistik",
+    "lessonsCount": "{{count}} lektioner",
+    "lessonsCountSingular": "{{count}} lektion",
+    "totalDriving": "Total körtid",
+    "averageDuration": "Genomsnittlig varaktighet",
+    "lastLesson": "Senaste lektion",
+    "progress": "Framsteg"
+  },
+
+  "forms": {
+    "nameLabel": "Elevens namn",
+    "namePlaceholder": "Ange elevens fullständiga namn",
+    "emailLabel": "E-post",
+    "emailPlaceholder": "Ange elevens e-postadress",
+    "phoneLabel": "Telefonnummer",
+    "phonePlaceholder": "Ange elevens telefonnummer",
+    "notesLabel": "Anteckningar",
+    "notesPlaceholder": "Lägg till anteckningar om eleven"
+  },
+
+  "emptyState": {
+    "noStudents": "Inga elever",
+    "addYourFirst": "Lägg till din första elev för att komma igång",
+    "noSearchResults": "Inga sökresultat",
+    "tryDifferent": "Prova olika sökkriterier"
+  }
+}

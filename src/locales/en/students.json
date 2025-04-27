@@ -1,0 +1,65 @@
+{
+  "title": "Students",
+  "addStudent": "Add Student",
+  "editStudent": "Edit Student",
+  "addNewStudent": "Add New Student",
+  "noStudentsFound": "No students found. Add your first student to get started.",
+  "confirmDelete": "Are you sure you want to delete this student?",
+  "name": "Name",
+  "email": "Email",
+  "phone": "Phone Number",
+  "details": "Student Details",
+  "totalLessons": "Total Lessons",
+  "totalHours": "Total Hours",
+  "lastLesson": "Last Lesson",
+  "firstLesson": "First Lesson",
+  "progress": "Progress",
+  "created": "Student successfully added!",
+  "updated": "Student information successfully updated!",
+  "deleted": "Student successfully deleted!",
+  "studentManagement": "Student Management",
+  "studentDetails": "Student Details",
+  "studentsList": "Student List",
+  "searchStudents": "Search Students",
+  "filterStudents": "Filter Students",
+  "deleteStudent": "Delete Student",
+  "deleteStudentConfirm": "Are you sure you want to delete student {{name}}? This will also delete all of the student's lessons.",
+
+  "studentInfo": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "notes": "Notes",
+    "createdAt": "Created",
+    "lessonsTotal": "Total Lessons",
+    "drivingMinutesTotal": "Total Driving Minutes"
+  },
+
+  "studentStats": {
+    "title": "Statistics",
+    "lessonsCount": "{{count}} lessons",
+    "lessonsCountSingular": "{{count}} lesson",
+    "totalDriving": "Total Driving",
+    "averageDuration": "Average Duration",
+    "lastLesson": "Last Lesson",
+    "progress": "Progress"
+  },
+
+  "forms": {
+    "nameLabel": "Student Name",
+    "namePlaceholder": "Enter student's full name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter student's email",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "Enter student's phone number",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Add notes about the student"
+  },
+
+  "emptyState": {
+    "noStudents": "No Students",
+    "addYourFirst": "Add your first student to get started",
+    "noSearchResults": "No search results",
+    "tryDifferent": "Try different search criteria"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "title": "Inställningar",
+  "generalSettings": "Allmänna inställningar",
+  "preferences": {
+    "title": "Inställningar",
+    "darkMode": "Mörkt tema",
+    "darkModeDescription": "Använd mörkt färgschema i applikationen",
+    "notifications": "Notifikationer",
+    "notificationsDescription": "Tillåt appnotifikationer",
+    "autoSave": "Automatisk sparning",
+    "autoSaveDescription": "Spara ändringar automatiskt"
+  },
+  "account": "Konto",
+  "dataManagement": "Datahantering",
+  "aboutApp": "Om applikationen",
+
+  "appearance": {
+    "title": "Utseende",
+    "theme": "Tema",
+    "darkMode": "Mörkt läge",
+    "lightMode": "Ljust läge",
+    "systemDefault": "Systemstandard"
+  },
+
+  "language": {
+    "title": "Språk",
+    "select": "Välj språk",
+    "description": "Ändra applikationens språk",
+    "finnish": "Finska",
+    "english": "Engelska",
+    "swedish": "Svenska"
+  },
+
+  "notifications": {
+    "title": "Notifikationer",
+    "enableNotifications": "Aktivera notifikationer",
+    "upcomingLessons": "Kommande körlektioner",
+    "reminders": "Påminnelser"
+  },
+
+  "dataExport": {
+    "title": "Dataexport",
+    "exportData": "Exportera data",
+    "exportHelp": "Exportera all elev- och lektionsdata som en JSON-fil",
+    "lastExport": "Senaste export"
+  },
+
+  "dataImport": {
+    "title": "Dataimport",
+    "importData": "Importera data",
+    "importHelp": "Importera data från en tidigare exporterad fil",
+    "warning": "Varning: Dataimport kan skriva över befintlig data",
+    "confirmImport": "Bekräfta import",
+    "importQuestion": "Är du säker på att du vill importera denna data?",
+    "mergeStrategy": "Sammanslagningsstrategi",
+    "replaceAll": "Ersätt all data",
+    "mergeDuplicates": "Slå samman dubbletter",
+    "keepBoth": "Behåll båda"
+  },
+
+  "dataDeletion": {
+    "title": "Databorttagning",
+    "deleteAllData": "Ta bort all data",
+    "deleteHelp": "Tar permanent bort all applikationsdata",
+    "warning": "Varning: Denna åtgärd kan inte ångras",
+    "confirmDelete": "Bekräfta borttagning genom att skriva 'TA BORT'",
+    "confirmInput": "TA BORT"
+  },
+
+  "about": {
+    "version": "Version",
+    "developer": "Utvecklare",
+    "privacyPolicy": "Integritetspolicy",
+    "termsOfService": "Användarvillkor",
+    "licenses": "Licenser",
+    "privacyInfo": "All data lagras lokalt på din enhet. Data skickas aldrig till externa servrar."
+  },
+
+  "storage": {
+    "title": "Datalagring",
+    "description": "All data lagras lokalt på din enhet. Vi rekommenderar regelbundna säkerhetskopior."
+  }
+}

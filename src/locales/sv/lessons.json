@@ -1,0 +1,74 @@
+{
+  "lessonManagement": "Hantering av körlektioner",
+  "addLesson": "Lägg till körlektion",
+  "editLesson": "Redigera körlektion",
+  "lessonDetails": "Lektionsdetaljer",
+  "lessonsList": "Lista över körlektioner",
+  "searchLessons": "Sök körlektioner",
+  "filterLessons": "Filtrera körlektioner",
+  "deleteLesson": "Ta bort körlektion",
+  "deleteLessonConfirm": "Är du säker på att du vill ta bort körlektionen från datum {{date}}?",
+
+  "lessonInfo": {
+    "student": "Elev",
+    "date": "Datum",
+    "time": "Tid",
+    "duration": "Varaktighet",
+    "durationMinutes": "{{count}} minuter",
+    "durationMinutesSingular": "{{count}} minut",
+    "topics": "Behandlade ämnen",
+    "notes": "Anteckningar"
+  },
+
+  "topics": {
+    "selectTopics": "Välj ämnen",
+    "addTopic": "Lägg till ämne",
+    "cityDriving": "Stadskörning",
+    "highwayDriving": "Motorvägskörning",
+    "parking": "Parkering",
+    "maneuvers": "Manövrering",
+    "trafficRules": "Trafikregler",
+    "nightDriving": "Mörkerkörning",
+    "winterDriving": "Vinterkörning",
+    "defensiveDriving": "Defensiv körning",
+    "ecodriving": "Ekonomisk körning"
+  },
+
+  "forms": {
+    "studentLabel": "Elev",
+    "studentPlaceholder": "Välj elev",
+    "dateLabel": "Datum",
+    "datePlaceholder": "Välj datum",
+    "timeLabel": "Tid",
+    "timePlaceholder": "Välj tid",
+    "durationLabel": "Varaktighet (minuter)",
+    "durationPlaceholder": "Ange varaktighet i minuter",
+    "topicsLabel": "Ämnen",
+    "topicsPlaceholder": "Välj behandlade ämnen",
+    "notesLabel": "Anteckningar",
+    "notesPlaceholder": "Lägg till anteckningar om körlektionen"
+  },
+
+  "timeline": {
+    "title": "Tidslinje för körlektioner",
+    "upcoming": "Kommande körlektioner",
+    "past": "Tidigare körlektioner",
+    "today": "Idag",
+    "noUpcoming": "Inga kommande körlektioner",
+    "noPast": "Inga tidigare körlektioner"
+  },
+
+  "summary": {
+    "title": "Sammanfattning",
+    "lessonCount": "Totalt antal körlektioner: {{count}}",
+    "totalMinutes": "Totalt körminuter: {{count}}",
+    "averageDuration": "Genomsnittlig varaktighet: {{duration}} minuter"
+  },
+
+  "emptyState": {
+    "noLessons": "Inga körlektioner",
+    "addYourFirst": "Lägg till din första körlektion för att komma igång",
+    "noSearchResults": "Inga sökresultat",
+    "tryDifferent": "Prova olika sökkriterier"
+  }
+}

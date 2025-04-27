@@ -9,7 +9,15 @@
     "students": "Students",
     "lessons": "Lessons",
     "milestones": "Milestones",
-    "settings": "Settings"
+    "settings": "Settings",
+    "exportImport": "Export/Import"
+  },
+  "footer": {
+    "copyright": "All rights reserved",
+    "version": "Version",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "help": "Help"
   },
   "actions": {
     "add": "Add",
@@ -61,5 +69,43 @@
     "deleted": "Deleted!",
     "imported": "Successfully imported!",
     "exported": "Successfully exported!"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add"
+  },
+  "errors": {
+    "boundary": {
+      "title": "An error occurred",
+      "message": "An error occurred in the application. You can try to fix the problem by refreshing the page.",
+      "tryAgain": "Try again"
+    }
+  },
+  "dataManagement": {
+    "title": "Data Management",
+    "info": "Here you can export, import and backup your students and lessons.",
+    "export": {
+      "title": "Export Data",
+      "description": "Export all student and lesson data as a JSON file.",
+      "button": "Export Data"
+    },
+    "import": {
+      "title": "Import Data",
+      "description": "Import previously exported data into the application.",
+      "button": "Import Data"
+    },
+    "backup": {
+      "title": "Backup",
+      "description": "Create a backup of your data for later use.",
+      "button": "Create Backup"
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "description": "This action deletes all data. The action cannot be undone.",
+      "button": "Clear All Data"
+    }
   }
 }

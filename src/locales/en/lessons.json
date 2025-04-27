@@ -1,28 +1,86 @@
 {
+  "lessonManagement": "Lesson Management",
   "addLesson": "Add Lesson",
   "editLesson": "Edit Lesson",
-  "startTimer": "Start Timer",
-  "lessonsFeature": "Lesson view is under development. Here you'll see a list of your recorded lessons.",
-  "recentLessons": "Recent Lessons",
-  "emptyState": {
-    "description": "Start recording your driving lessons to track progress and improve your teaching"
+  "lessonDetails": "Lesson Details",
+  "lessonsList": "Lessons List",
+  "searchLessons": "Search Lessons",
+  "filterLessons": "Filter Lessons",
+  "deleteLesson": "Delete Lesson",
+  "deleteLessonConfirm": "Are you sure you want to delete the lesson from date {{date}}?",
+
+  "lessonInfo": {
+    "student": "Student",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration",
+    "durationMinutes": "{{count}} minutes",
+    "durationMinutesSingular": "{{count}} minute",
+    "topics": "Topics Covered",
+    "notes": "Notes"
   },
+
+  "topics": {
+    "selectTopics": "Select Topics",
+    "addTopic": "Add Topic",
+    "cityDriving": "City Driving",
+    "highwayDriving": "Highway Driving",
+    "parking": "Parking",
+    "maneuvers": "Maneuvers",
+    "trafficRules": "Traffic Rules",
+    "nightDriving": "Night Driving",
+    "winterDriving": "Winter Driving",
+    "defensiveDriving": "Defensive Driving",
+    "ecodriving": "Eco-driving"
+  },
+
   "forms": {
     "studentLabel": "Student",
+    "studentPlaceholder": "Select Student",
     "dateLabel": "Date",
-    "startTimeLabel": "Start Time",
-    "endTimeLabel": "End Time",
-    "durationLabel": "Duration",
-    "learningStageLabel": "Learning Stage",
+    "datePlaceholder": "Select Date",
+    "timeLabel": "Time",
+    "timePlaceholder": "Select Time",
+    "durationLabel": "Duration (minutes)",
+    "durationPlaceholder": "Enter duration in minutes",
     "topicsLabel": "Topics",
+    "topicsPlaceholder": "Select topics covered",
     "notesLabel": "Notes",
+    "notesPlaceholder": "Add notes about the lesson",
+    "learningStageLabel": "Learning Stage",
     "kilometersLabel": "Kilometers"
   },
+
+  "timeline": {
+    "title": "Lessons Timeline",
+    "upcoming": "Upcoming Lessons",
+    "past": "Past Lessons",
+    "today": "Today",
+    "noUpcoming": "No upcoming lessons",
+    "noPast": "No past lessons"
+  },
+
+  "summary": {
+    "title": "Summary",
+    "lessonCount": "Total Lessons: {{count}}",
+    "totalMinutes": "Total Driving Minutes: {{count}}",
+    "averageDuration": "Average Duration: {{duration}} minutes"
+  },
+
+  "emptyState": {
+    "noLessons": "No Lessons",
+    "addYourFirst": "Add your first lesson to get started",
+    "noSearchResults": "No search results",
+    "tryDifferent": "Try different search criteria",
+    "description": "Start recording your driving lessons to track progress and improve your teaching"
+  },
+
   "stages": {
     "cognitive": "Cognitive",
     "associative": "Associative",
     "automatic": "Automatic"
   },
+
   "timer": {
     "title": "Lesson Timer",
     "start": "Start",
@@ -36,35 +94,11 @@
     "hours": "Hours",
     "minutes": "Minutes"
   },
+
   "validation": {
     "studentRequired": "Student is required",
     "dateRequired": "Date is required",
     "topicsRequired": "At least one topic is required",
     "stageRequired": "Learning stage is required"
-  },
-  "topics": {
-    "ajoasento": "Driving position and mirrors",
-    "liikkeellelahto": "Starting and stopping",
-    "vaihteet": "Gear shifting",
-    "ohjaus": "Steering control",
-    "peruutus": "Reversing",
-    "makilahto": "Hill starts",
-    "taajamaajo": "City driving",
-    "risteysajo": "Intersections",
-    "liikennevalot": "Traffic lights",
-    "liikenneympyrat": "Roundabouts",
-    "kaistanvaihto": "Lane changes and merging",
-    "maantieajo": "Highway driving",
-    "moottoritieajo": "Motorway driving",
-    "pysakointi": "Parking (parallel, angled, straight)",
-    "ajopimealla": "Night driving",
-    "ajosateella": "Driving in rain",
-    "riskientunnistus": "Risk recognition",
-    "valojenhallinta": "Light management",
-    "liukaskeli": "Slippery conditions",
-    "hatajarrutus": "Emergency braking",
-    "vaistamistilanne": "Evasive maneuvers",
-    "ajokoe_simulaatio": "Driving test simulation",
-    "itsenainen_ajo": "Independent driving"
   }
-} 
+}
