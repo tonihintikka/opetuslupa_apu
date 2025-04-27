@@ -8,7 +8,7 @@ Basic UI Navigation and Internationalization
 
 ## Status
 
-In Progress
+Completed
 
 ## Context
 
