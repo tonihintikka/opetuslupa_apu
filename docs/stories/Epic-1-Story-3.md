@@ -14,7 +14,9 @@ Completed
 
 This story focuses on creating the foundational UI structure and navigation system for the Driving-Lesson Tracker application. A well-designed navigation system is critical for user experience, especially on mobile devices where screen space is limited.
 
-The navigation should be intuitive, responsive, and provide clear access to all major features. This story builds upon the project setup (Story-1) and will integrate with the database implementation (Story-2) to provide a complete user experience.
+The navigation should be intuitive, responsive, and provide clear access to all major features. Based on research into best practices for driving instruction applications, the primary workflow is lesson-centric rather than student-centric. This means the navigation should prioritize lesson management as the default entry point, with student management as a supporting function.
+
+This story builds upon the project setup (Story-1) and will integrate with the database implementation (Story-2) to provide a complete user experience.
 
 ## Estimation
 
@@ -52,6 +54,7 @@ Story Points: 2
    2. - [ ] Implement route guards if needed
    3. - [x] Add navigation history management
    4. - [ ] Create route transitions
+   5. - [ ] Set default route to Lessons page to reflect lesson-centric workflow
 
 6. - [x] Set up react-i18next configuration
    1. - [x] Create initial translation files for Finnish (primary language)
@@ -62,7 +65,7 @@ Story Points: 2
 ## Achievements So Far
 
 - Successfully implemented AppShell with header and navigation
-- Set up React Router v6 with routes for Students, Lessons, and Milestones
+- Set up React Router v6 with routes for Lessons, Students, and Milestones
 - Created basic placeholder page components including Settings and Data Management
 - Added responsive drawer navigation that works on both mobile and desktop
 - Implemented ErrorBoundary component for graceful error handling
@@ -73,6 +76,7 @@ Story Points: 2
   - Set up date/number formatting based on locale
 - Added LoadingIndicator and EmptyState components for better UX
 - Created responsive layout using Material-UI
+- Organized navigation to prioritize the lesson-centric workflow for efficiency
 
 ## Constraints
 
@@ -80,6 +84,7 @@ Story Points: 2
 - UI must be accessible according to WCAG guidelines
 - Navigation should be usable offline
 - Performance must be optimized for mobile devices
+- Menu structure should reflect research-based workflow priorities
 
 ## Data Models / Schema
 
@@ -102,8 +107,8 @@ N/A for UI navigation - will use existing models defined in Story-2.
 │   │   │   ├── EmptyState.tsx        # Empty state component
 │   │   │   └── Toast.tsx             # Toast notification system (todo)
 │   │   └── /pages
+│   │       ├── LessonsPage.tsx       # Lessons page (primary entry point)
 │   │       ├── StudentsPage.tsx      # Students page
-│   │       ├── LessonsPage.tsx       # Lessons page
 │   │       ├── MilestonesPage.tsx    # Milestones page
 │   │       ├── SettingsPage.tsx      # Settings page
 │   │       └── DataManagementPage.tsx # Export/Import page
@@ -126,8 +131,8 @@ graph TD
     C --> G[Footer]
     
     F --> H[Dashboard]
-    F --> I[Students]
-    F --> J[Lessons]
+    F --> I[Lessons]
+    F --> J[Students]
     F --> K[Settings]
     F --> L[Export/Import]
     
@@ -155,7 +160,8 @@ flowchart LR
 - Applying MUI's useMediaQuery hook for responsive behavior
 - Using React Router v6 for declarative routing
 - Creating a single AppShell to maintain consistent layout across all pages
-- Implementing error boundaries at multiple levels for graceful degradation 
+- Implementing error boundaries at multiple levels for graceful degradation
+- Prioritizing lesson management in navigation to reflect real-world instructor workflow
 
 ## Best Practices for i18n Implementation
 
@@ -190,7 +196,8 @@ flowchart LR
 ## Definition of Done
 
 - AppShell component is implemented and responsive
-- Navigation works across all main feature areas
+- Navigation works across all main feature areas 
+- Navigation order reflects lesson-centric workflow
 - i18n framework is set up and working with Finnish translations
 - Language switcher UI is implemented in settings
 - Documentation is created for adding new translations

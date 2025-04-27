@@ -28,6 +28,7 @@ interface SidebarProps {
 /**
  * Sidebar/drawer navigation component
  * Provides a responsive navigation drawer that can be toggled on mobile
+ * Prioritizes lessons as the primary workflow element
  */
 const Sidebar: React.FC<SidebarProps> = ({ handleDrawerToggle }) => {
   const { t } = useTranslation(['common']);
@@ -35,8 +36,8 @@ const Sidebar: React.FC<SidebarProps> = ({ handleDrawerToggle }) => {
   const theme = useTheme();
 
   const navItems = [
-    { path: '/students', label: t('navigation.students'), icon: <PeopleIcon /> },
     { path: '/lessons', label: t('navigation.lessons'), icon: <CalendarIcon /> },
+    { path: '/students', label: t('navigation.students'), icon: <PeopleIcon /> },
     { path: '/milestones', label: t('navigation.milestones'), icon: <MilestoneIcon /> },
     { path: '/settings', label: t('navigation.settings'), icon: <SettingsIcon /> },
     { path: '/export-import', label: t('navigation.exportImport'), icon: <BackupIcon /> },

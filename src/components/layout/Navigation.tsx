@@ -10,28 +10,13 @@ import {
 
 /**
  * Main navigation component
+ * Prioritizes lessons as the primary workflow element
  */
 const Navigation: React.FC = () => {
   const { t } = useTranslation(['common']);
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-      <Button
-        component={NavLink}
-        to="/students"
-        startIcon={<PeopleIcon />}
-        color="inherit"
-        sx={{
-          textDecoration: 'none',
-          '&.active': {
-            fontWeight: 'bold',
-            textDecoration: 'underline',
-          },
-        }}
-      >
-        {t('navigation.students')}
-      </Button>
-
       <Button
         component={NavLink}
         to="/lessons"
@@ -46,6 +31,22 @@ const Navigation: React.FC = () => {
         }}
       >
         {t('navigation.lessons')}
+      </Button>
+
+      <Button
+        component={NavLink}
+        to="/students"
+        startIcon={<PeopleIcon />}
+        color="inherit"
+        sx={{
+          textDecoration: 'none',
+          '&.active': {
+            fontWeight: 'bold',
+            textDecoration: 'underline',
+          },
+        }}
+      >
+        {t('navigation.students')}
       </Button>
 
       <Button

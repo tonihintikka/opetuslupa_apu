@@ -18,6 +18,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
  * BottomNavigation component for mobile devices
  * Provides a fixed navigation bar at the bottom of the screen
  * with support for iOS safe area insets
+ * Prioritizes lessons as the primary workflow element
  */
 const BottomNavigation: React.FC = () => {
   const { t } = useTranslation(['common']);
@@ -55,14 +56,14 @@ const BottomNavigation: React.FC = () => {
         sx={{ height: '56px' }}
       >
         <BottomNavigationAction
-          label={t('navigation.students')}
-          value="/students"
-          icon={<PeopleIcon />}
-        />
-        <BottomNavigationAction
           label={t('navigation.lessons')}
           value="/lessons"
           icon={<CalendarIcon />}
+        />
+        <BottomNavigationAction
+          label={t('navigation.students')}
+          value="/students"
+          icon={<PeopleIcon />}
         />
         <BottomNavigationAction
           label={t('navigation.milestones')}

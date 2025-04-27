@@ -6,6 +6,16 @@ This directory contains detailed story documents for the Driving-Lesson Tracker 
 
 The Driving-Lesson Tracker is a Progressive Web Application designed for driving instructors to track student progress, lesson details, and driving minutes. It features offline-first functionality, local data storage, and a responsive design that works across devices.
 
+## Core Workflow
+
+Based on research into best practices for driving instruction applications, the primary workflow is lesson-centric rather than student-centric:
+
+1. **Daily workflow starts with lessons**: Instructors typically plan and conduct multiple lessons each day, so the app prioritizes lesson management as the default entry point
+2. **Student management as supporting function**: While student records are essential, they're referenced within the lesson workflow rather than being the primary focus
+3. **Progress visualization**: Both lesson history and student progress views provide different perspectives on the same underlying data
+
+This lesson-centric approach is reflected in the navigation structure and default landing pages throughout the application.
+
 ## Epic Structure
 
 ### Epic-1: Core Application Foundation
