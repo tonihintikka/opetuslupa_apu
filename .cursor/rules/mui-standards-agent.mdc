@@ -12,6 +12,11 @@ alwaysApply: false
 - **Use typed props with interfaces:** Define clear TypeScript interfaces for all component props.
 - **Prefer composition over customization:** Build complex UI elements by composing smaller MUI components rather than deeply customizing individual components with CSS overrides.
 - **All forms must use proper validation:** Implement form validation using MUI's `TextField` error props and helper text. Display appropriate validation messages.
+- **MUI v7 Grid component usage:**
+  - Use the **`size`** prop with an object for responsive sizing: `<Grid size={{ xs: 12, sm: 6 }}>`
+  - Never use direct breakpoint props like `xs={12}` or `sm={6}`
+  - Do not use the `item` prop as it's no longer needed in v7
+  - For auto-growing items, use `size="grow"` instead of the boolean `true` value
 - **Make best use of MUI components:**
   - Use `AppBar` and `Drawer` for navigation
   - Use `Dialog` for modals (StudentForm, ExportImportDialog)
@@ -53,7 +58,7 @@ alwaysApply: false
       >
         <CardContent>
           <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} sm={8}>
+            <Grid size={{ xs: 12, sm: 8 }}>
               <Typography variant="h6" component="h2">
                 {student.name}
               </Typography>
@@ -61,7 +66,7 @@ alwaysApply: false
                 {student.email}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={4} sx={{ textAlign: isMobile ? 'left' : 'right' }}>
+            <Grid size={{ xs: 12, sm: 4 }} sx={{ textAlign: isMobile ? 'left' : 'right' }}>
               <Chip 
                 label={`${student.totalMinutes || 0} min`}
                 color="primary"
@@ -211,6 +216,34 @@ alwaysApply: false
           Submit
         </button>
       </div>
+    );
+  }
+
+  // Bad: Incorrect Grid usage for MUI v7
+  function BadGridLayout() {
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <Typography>This uses the outdated Grid API</Typography>
+        </Grid>
+        <Grid xs={12} sm={6}>
+          <Typography>Missing the required size prop</Typography>
+        </Grid>
+      </Grid>
+    );
+  }
+
+  // Good: Correct Grid usage for MUI v7
+  function GoodGridLayout() {
+    return (
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <Typography>This uses the correct Grid API</Typography>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <Typography>With the size prop as an object</Typography>
+        </Grid>
+      </Grid>
     );
   }
 </example>

@@ -30,24 +30,28 @@ interface LessonFormProps {
   initialTimes?: InitialTimes;
 }
 
-const LessonForm: React.FC<LessonFormProps> = ({ 
-  students, 
-  lesson, 
-  onSubmit, 
+const LessonForm: React.FC<LessonFormProps> = ({
+  students,
+  lesson,
+  onSubmit,
   onCancel,
-  initialTimes 
+  initialTimes,
 }) => {
   const { t } = useTranslation(['common', 'lessons']);
 
   const [studentId, setStudentId] = useState<number | ''>(lesson?.studentId || '');
-  const [date, setDate] = useState<string>(lesson?.date.toISOString().split('T')[0] || new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState<string>(
+    lesson?.date.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+  );
   const [startTime, setStartTime] = useState<string>(
-    lesson?.startTime || initialTimes?.startTime || '09:00'
+    lesson?.startTime || initialTimes?.startTime || '09:00',
   );
   const [endTime, setEndTime] = useState<string>(
-    lesson?.endTime || initialTimes?.endTime || '10:00'
+    lesson?.endTime || initialTimes?.endTime || '10:00',
   );
-  const [learningStage, setLearningStage] = useState<LearningStage | ''>(lesson?.learningStage || '');
+  const [learningStage, setLearningStage] = useState<LearningStage | ''>(
+    lesson?.learningStage || '',
+  );
   const [selectedTopics, setSelectedTopics] = useState<string[]>(lesson?.topics || []);
   const [notes, setNotes] = useState<string>(lesson?.notes || '');
   const [kilometers, setKilometers] = useState<string>(lesson?.kilometers?.toString() || '');
@@ -61,7 +65,9 @@ const LessonForm: React.FC<LessonFormProps> = ({
   }, [initialTimes]);
 
   const handleTopicChange = (event: SelectChangeEvent<typeof selectedTopics>) => {
-    const { target: { value } } = event;
+    const {
+      target: { value },
+    } = event;
     setSelectedTopics(typeof value === 'string' ? value.split(',') : value);
   };
 
@@ -92,7 +98,7 @@ const LessonForm: React.FC<LessonFormProps> = ({
         {lesson ? t('lessons:editLesson') : t('lessons:addLesson')}
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <FormControl fullWidth required margin="normal">
             <InputLabel id="student-select-label">{t('lessons:forms.studentLabel')}</InputLabel>
             <Select
@@ -100,9 +106,9 @@ const LessonForm: React.FC<LessonFormProps> = ({
               id="studentId"
               value={studentId}
               label={t('lessons:forms.studentLabel')}
-              onChange={(e) => setStudentId(e.target.value as number)}
+              onChange={e => setStudentId(e.target.value as number)}
             >
-              {students.map((s) => (
+              {students.map(s => (
                 <MenuItem key={s.id} value={s.id}>
                   {s.name}
                 </MenuItem>
@@ -110,23 +116,31 @@ const LessonForm: React.FC<LessonFormProps> = ({
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <FormControl fullWidth required margin="normal">
-            <InputLabel id="learning-stage-select-label">{t('lessons:forms.learningStageLabel', 'Learning Stage')}</InputLabel>
+            <InputLabel id="learning-stage-select-label">
+              {t('lessons:forms.learningStageLabel', 'Learning Stage')}
+            </InputLabel>
             <Select
               labelId="learning-stage-select-label"
               id="learningStage"
               value={learningStage}
               label={t('lessons:forms.learningStageLabel', 'Learning Stage')}
-              onChange={(e) => setLearningStage(e.target.value as LearningStage)}
+              onChange={e => setLearningStage(e.target.value as LearningStage)}
             >
-              <MenuItem value="kognitiivinen">{t('lessons:stages.cognitive', 'Kognitiivinen')}</MenuItem>
-              <MenuItem value="assosiatiivinen">{t('lessons:stages.associative', 'Assosiatiivinen')}</MenuItem>
-              <MenuItem value="automaattinen">{t('lessons:stages.automatic', 'Automaattinen')}</MenuItem>
+              <MenuItem value="kognitiivinen">
+                {t('lessons:stages.cognitive', 'Kognitiivinen')}
+              </MenuItem>
+              <MenuItem value="assosiatiivinen">
+                {t('lessons:stages.associative', 'Assosiatiivinen')}
+              </MenuItem>
+              <MenuItem value="automaattinen">
+                {t('lessons:stages.automatic', 'Automaattinen')}
+              </MenuItem>
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             margin="normal"
             required
@@ -136,11 +150,11 @@ const LessonForm: React.FC<LessonFormProps> = ({
             name="date"
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={e => setDate(e.target.value)}
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
-        <Grid item xs={6} sm={4}>
+        <Grid size={{ xs: 6, sm: 4 }}>
           <TextField
             margin="normal"
             required
@@ -150,12 +164,12 @@ const LessonForm: React.FC<LessonFormProps> = ({
             name="startTime"
             type="time"
             value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            onChange={e => setStartTime(e.target.value)}
             InputLabelProps={{ shrink: true }}
             inputProps={{ step: 300 }} // 5 min steps
           />
         </Grid>
-        <Grid item xs={6} sm={4}>
+        <Grid size={{ xs: 6, sm: 4 }}>
           <TextField
             margin="normal"
             required
@@ -165,12 +179,12 @@ const LessonForm: React.FC<LessonFormProps> = ({
             name="endTime"
             type="time"
             value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
+            onChange={e => setEndTime(e.target.value)}
             InputLabelProps={{ shrink: true }}
             inputProps={{ step: 300 }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <FormControl fullWidth required margin="normal">
             <InputLabel id="topics-select-label">{t('lessons:forms.topicsLabel')}</InputLabel>
             <Select
@@ -179,24 +193,27 @@ const LessonForm: React.FC<LessonFormProps> = ({
               multiple
               value={selectedTopics}
               onChange={handleTopicChange}
-              input={<OutlinedInput id="select-multiple-chip" label={t('lessons:forms.topicsLabel')} />}
-              renderValue={(selected) => (
+              input={
+                <OutlinedInput id="select-multiple-chip" label={t('lessons:forms.topicsLabel')} />
+              }
+              renderValue={selected => (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  {selected.map((value) => (
+                  {selected.map(value => (
                     <Chip key={value} label={t(`lessons:topics.${value}`, getTopicLabel(value))} />
                   ))}
                 </Box>
               )}
             >
-              {lessonTopics.map((topic) => (
+              {lessonTopics.map(topic => (
                 <MenuItem key={topic.key} value={topic.key}>
-                  {t(`lessons:topics.${topic.key}`, topic.label)} ({t(`lessons:stages.${topic.stage}`)})
+                  {t(`lessons:topics.${topic.key}`, topic.label)} (
+                  {t(`lessons:stages.${topic.stage}`)})
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             margin="normal"
             fullWidth
@@ -205,11 +222,11 @@ const LessonForm: React.FC<LessonFormProps> = ({
             name="kilometers"
             type="number"
             value={kilometers}
-            onChange={(e) => setKilometers(e.target.value)}
+            onChange={e => setKilometers(e.target.value)}
             inputProps={{ min: 0, step: 0.1 }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <TextField
             margin="normal"
             fullWidth
@@ -219,7 +236,7 @@ const LessonForm: React.FC<LessonFormProps> = ({
             multiline
             rows={4}
             value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            onChange={e => setNotes(e.target.value)}
           />
         </Grid>
       </Grid>
@@ -235,4 +252,4 @@ const LessonForm: React.FC<LessonFormProps> = ({
   );
 };
 
-export default LessonForm; 
+export default LessonForm;
