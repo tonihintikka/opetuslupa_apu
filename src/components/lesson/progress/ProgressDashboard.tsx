@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Box, useMediaQuery, Theme, Typography, CircularProgress, Paper } from '@mui/material';
+import {
+  Box,
+  useMediaQuery,
+  Theme,
+  Typography,
+  CircularProgress,
+  Paper,
+  Button,
+} from '@mui/material';
+import { PlayArrow as StartIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { Lesson } from '../../../services/db';
+import { useNavigate } from 'react-router-dom';
+import { Lesson, Student } from '../../../services/db';
 import lessonService from '../../../services/lessonService';
+import studentService from '../../../services/studentService';
 import { useProgressCalculation } from '../../../hooks/useProgressCalculation';
 import ProgressMatrix from './ProgressMatrix';
 import ProgressIndicator from './ProgressIndicator';
+import SessionStarter from '../session/SessionStarter';
 
 interface ProgressDashboardProps {
   studentId?: number;
@@ -13,10 +25,14 @@ interface ProgressDashboardProps {
 
 const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
   const { t } = useTranslation(['common', 'lessons']);
+  const navigate = useNavigate();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
-  const { topicProgress, getOverallProgress } = useProgressCalculation(lessons);
+  const [studentData, setStudentData] = useState<Student | null>(null);
+  const { topicProgress, getOverallProgress, getLeastPracticedTopics } =
+    useProgressCalculation(lessons);
+  const [showSessionStarter, setShowSessionStarter] = useState(false);
 
   // Fetch lessons on component mount
   useEffect(() => {
@@ -27,6 +43,16 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
 
         if (studentId) {
           fetchedLessons = await lessonService.getByStudentId(studentId);
+
+          // Also fetch student data if studentId is provided
+          try {
+            const student = await studentService.getById(studentId);
+            if (student) {
+              setStudentData(student);
+            }
+          } catch (error) {
+            console.error('Error fetching student data:', error);
+          }
         } else {
           fetchedLessons = await lessonService.getAll();
         }
@@ -42,6 +68,26 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
     fetchLessons();
   }, [studentId]);
 
+  const handleStartSession = () => {
+    // Get topics that need attention for the session starter
+    getLeastPracticedTopics(10); // Use the result but don't store it
+    setShowSessionStarter(true);
+  };
+
+  const handleCloseSessionStarter = () => {
+    setShowSessionStarter(false);
+  };
+
+  const handleStartNewLesson = (selectedTopicIds: string[]) => {
+    // Navigate to lesson wizard with pre-selected topics and student
+    navigate('/lessons/new', {
+      state: {
+        preSelectedTopics: selectedTopicIds,
+        preSelectedStudentId: studentId,
+      },
+    });
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
@@ -50,28 +96,59 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
     );
   }
 
-  if (lessons.length === 0) {
-    return (
-      <Paper sx={{ p: 3, textAlign: 'center' }}>
-        <Typography variant="h6" gutterBottom>
-          {t('lessons:progress.noLessonsYet', 'No lessons recorded yet')}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {t(
-            'lessons:progress.noLessonsMessage',
-            'Complete some driving lessons to see your progress statistics here.',
-          )}
-        </Typography>
-      </Paper>
-    );
-  }
-
   return (
     <Box>
-      {isMobile ? (
-        <ProgressIndicator topicProgress={topicProgress} overallProgress={getOverallProgress()} />
+      {/* Start Session Button - Shown at the top for both mobile and desktop */}
+      {studentId && (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<StartIcon />}
+            onClick={handleStartSession}
+            sx={{ borderRadius: 2 }}
+          >
+            {t('lessons:progress.startNewSession', 'Start New Session')}
+          </Button>
+        </Box>
+      )}
+
+      {lessons.length === 0 ? (
+        <Paper sx={{ p: 3, textAlign: 'center' }}>
+          <Typography variant="h6" gutterBottom>
+            {t('lessons:progress.noLessonsYet', 'No lessons recorded yet')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {t(
+              'lessons:progress.noLessonsMessage',
+              'Complete some driving lessons to see your progress statistics here.',
+            )}
+          </Typography>
+        </Paper>
       ) : (
-        <ProgressMatrix lessons={lessons} studentId={studentId} />
+        <Box>
+          {isMobile ? (
+            <ProgressIndicator
+              topicProgress={topicProgress}
+              overallProgress={getOverallProgress()}
+              studentId={studentId}
+            />
+          ) : (
+            <ProgressMatrix lessons={lessons} studentId={studentId} />
+          )}
+        </Box>
+      )}
+
+      {/* Session Starter Dialog */}
+      {studentId && studentData && (
+        <SessionStarter
+          open={showSessionStarter}
+          onClose={handleCloseSessionStarter}
+          onStartSession={handleStartNewLesson}
+          suggestedTopics={topicProgress}
+          studentId={studentId}
+          studentName={studentData.name}
+        />
       )}
     </Box>
   );

@@ -8,7 +8,11 @@
   "filterLessons": "Suodata ajotunteja",
   "deleteLesson": "Poista ajotunti",
   "deleteLessonConfirm": "Haluatko varmasti poistaa ajotunnin päivämäärältä {{date}}?",
-  
+  "startTimer": "Käynnistä ajastin",
+  "startLesson": "Aloita ajotunti",
+  "lessonsFeature": "Ajotunnit-ominaisuus on työn alla.",
+  "recentLessons": "Viimeisimmät ajotunnit",
+
   "lessonInfo": {
     "student": "Oppilas",
     "date": "Päivämäärä",
@@ -19,7 +23,7 @@
     "topics": "Käsitellyt aiheet",
     "notes": "Muistiinpanot"
   },
-  
+
   "topics": {
     "selectTopics": "Valitse aiheet",
     "addTopic": "Lisää aihe",
@@ -33,7 +37,23 @@
     "defensiveDriving": "Ennakoiva ajo",
     "ecodriving": "Taloudellinen ajo"
   },
-  
+
+  "subTopics": {
+    "ajoasento_istuma": "Oikea istuma-asento",
+    "ajoasento_peilit": "Peilien säätö",
+    "ajoasento_turvavyo": "Turvavyön käyttö",
+    "liikkeellelahto_kytkin": "Kytkimen hallinta",
+    "liikkeellelahto_kaasu": "Kaasun annostelu",
+    "liikkeellelahto_jarrutus": "Pehmeä jarrutus",
+    "vaihteet_ylös": "Vaihto ylöspäin",
+    "vaihteet_alas": "Vaihto alaspäin",
+    "vaihteet_oikea_vaihde": "Oikean vaihteen valinta",
+    "risteysajo_liittyminen": "Liikenteeseen liittyminen",
+    "risteysajo_vaistamissaannot": "Väistämissäännöt"
+  },
+
+  "hasSubTopics": "Sisältää alatasoja",
+
   "forms": {
     "studentLabel": "Oppilas",
     "studentPlaceholder": "Valitse oppilas",
@@ -48,7 +68,7 @@
     "notesLabel": "Muistiinpanot",
     "notesPlaceholder": "Lisää muistiinpanoja ajotunnista"
   },
-  
+
   "timeline": {
     "title": "Ajotuntien aikajana",
     "upcoming": "Tulevat ajotunnit",
@@ -57,18 +77,97 @@
     "noUpcoming": "Ei tulevia ajotunteja",
     "noPast": "Ei menneitä ajotunteja"
   },
-  
+
   "summary": {
     "title": "Yhteenveto",
     "lessonCount": "Ajotunteja yhteensä: {{count}}",
     "totalMinutes": "Ajominuutteja yhteensä: {{count}}",
     "averageDuration": "Keskimääräinen kesto: {{duration}} minuuttia"
   },
-  
+
   "emptyState": {
     "noLessons": "Ei ajotunteja",
     "addYourFirst": "Lisää ensimmäinen ajotunti aloittaaksesi",
     "noSearchResults": "Ei hakutuloksia",
     "tryDifferent": "Kokeile eri hakuehtoja"
+  },
+
+  "timer": {
+    "title": "Ajotunnin ajastin",
+    "start": "Aloita",
+    "pause": "Tauko",
+    "resume": "Jatka",
+    "stop": "Lopeta",
+    "reset": "Nollaa",
+    "startTime": "Aloitusaika",
+    "endTime": "Lopetusaika",
+    "duration": "Kesto",
+    "elapsedTime": "Kulunut aika"
+  },
+
+  "progress": {
+    "title": "Edistymismatriisi",
+    "overallProgress": "Kokonaisedistyminen",
+    "totalTopics": "Aiheita yhteensä",
+    "filterByStage": "Suodata vaiheen mukaan",
+    "showingTopics": "Näytetään {{count}} aihetta",
+    "topic": "Aihe",
+    "stage": "Vaihe",
+    "completed": "Suoritettu",
+    "recommended": "Suositeltu",
+    "remaining": "Jäljellä",
+    "progress": "Edistyminen",
+    "lastPracticed": "Viimeksi harjoiteltu",
+    "good": "≥ 75% (Hyvä edistyminen)",
+    "medium": "≥ 50% (Edistyy)",
+    "needsAttention": "< 50% (Tarvitsee huomiota)",
+    "helpText": "Edistymismatriisi näyttää edistymisesi kussakin ajo-opetuksen aiheessa. Suositeltu aika on arvio tarvittavasta harjoittelusta.",
+    "noLessonsYet": "Ei vielä ajotunteja",
+    "noLessonsMessage": "Suorita ajotunteja nähdäksesi edistymistilastosi täällä.",
+    "topics": "aihetta",
+    "topicsNeedingAttention": "Huomiota vaativat aiheet",
+    "startNewSession": "Aloita uusi ajotunti",
+    "suggestedTopics": "Suositellut aiheet tälle ajotunnille",
+    "suggestedTopicsHelp": "Nämä aiheet vaativat eniten harjoittelua nykyisen edistymisesi perusteella",
+    "estimatedDuration": "Arvioitu kesto",
+    "customizeSession": "Muokkaa ajotuntia",
+    "startSession": "Aloita ajotunti",
+    "sessionPreview": "Ajotunnin esikatselu",
+    "highPriority": "Korkea prioriteetti",
+    "mediumPriority": "Keskitason prioriteetti",
+    "lowPriority": "Matala prioriteetti",
+    "allTopics": "Kaikki aiheet",
+    "startLesson": "Aloita ajotunti",
+    "startLessonForTopic": "Aloita ajotunti tästä aiheesta",
+    "startLessonForSubTopic": "Aloita ajotunti tästä ala-aiheesta",
+    "tryDifferentFilter": "Kokeile eri suodatinta"
+  },
+
+  "stages": {
+    "kognitiivinen": "Kognitiivinen",
+    "assosiatiivinen": "Assosiatiivinen",
+    "automaattinen": "Automaattinen",
+    "cognitive": "Kognitiivinen",
+    "associative": "Assosiatiivinen",
+    "automatic": "Automaattinen"
+  },
+
+  "wizard": {
+    "steps": {
+      "basicInfo": "Perustiedot",
+      "exercises": "Harjoitukset",
+      "goalsNotes": "Tavoitteet ja muistiinpanot"
+    },
+    "exercises": {
+      "title": "Valitse ajotunnin harjoitukset",
+      "description": "Valitse tämän ajotunnin aikana harjoitetut aiheet. Voit valita useita aiheita.",
+      "selectedTopics": "Valitut aiheet",
+      "suggestedTopics": "Suositellut aiheet"
+    },
+    "back": "Takaisin",
+    "next": "Seuraava",
+    "finish": "Viimeistele",
+    "summaryTitle": "Ajotunnin yhteenveto",
+    "createLesson": "Luo ajotunti"
   }
-} 
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Chip,
@@ -10,27 +10,43 @@ import {
   AccordionSummary,
   AccordionDetails,
   Stack,
+  Collapse,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
 } from '@mui/material';
 import {
   ExpandMore as ExpandMoreIcon,
   CheckCircle as CheckCircleIcon,
   Warning as WarningIcon,
   Error as ErrorIcon,
+  PlayArrow as PlayArrowIcon,
+  KeyboardArrowRight as ArrowRightIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { LearningStage } from '../../../services/db';
 import { TopicProgress } from '../../../hooks/useProgressCalculation';
+import { getSubTopicsForTopic } from '../../../constants/lessonSubTopics';
 
 interface ProgressIndicatorProps {
   topicProgress: TopicProgress[];
   overallProgress: number;
+  studentId?: number; // Add studentId to be able to start a lesson for the student
 }
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   topicProgress,
   overallProgress,
+  studentId,
 }) => {
   const { t } = useTranslation(['common', 'lessons']);
+  const navigate = useNavigate();
+
+  // Track expanded topic items to show sub-topics
+  const [expandedTopics, setExpandedTopics] = useState<string[]>([]);
 
   // Group topics by stage
   const groupedTopics = React.useMemo(() => {
@@ -72,6 +88,24 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
       };
     });
   }, [groupedTopics]);
+
+  // Toggle topic expansion to show sub-topics
+  const toggleTopicExpansion = (topicId: string) => {
+    setExpandedTopics(prev =>
+      prev.includes(topicId) ? prev.filter(id => id !== topicId) : [...prev, topicId],
+    );
+  };
+
+  // Start a new lesson focused on a specific topic or sub-topic
+  const handleStartLessonForTopic = (topicId: string, subTopicId?: string) => {
+    navigate('/lessons/new', {
+      state: {
+        preSelectedTopics: [topicId],
+        preSelectedSubTopics: subTopicId ? [subTopicId] : [],
+        preSelectedStudentId: studentId,
+      },
+    });
+  };
 
   // Get stage name
   const getStageName = (stage: LearningStage): string => {
@@ -174,9 +208,118 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
                 sx={{ height: 8, borderRadius: 1, mb: 2 }}
               />
 
+              <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
+                {t('lessons:progress.allTopics', 'All Topics')}:
+              </Typography>
+
+              <Stack spacing={1}>
+                {groupedTopics[stage.stage].map(topic => {
+                  const isExpanded = expandedTopics.includes(topic.topicId);
+                  const subTopics = getSubTopicsForTopic(topic.topicId);
+                  const hasSubTopics = subTopics.length > 0;
+
+                  return (
+                    <Box key={topic.topicId}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          p: 1.5,
+                          borderRadius: 1,
+                          bgcolor: 'background.paper',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          cursor: hasSubTopics ? 'pointer' : 'default',
+                        }}
+                        onClick={
+                          hasSubTopics ? () => toggleTopicExpansion(topic.topicId) : undefined
+                        }
+                      >
+                        {getProgressIcon(topic.progressPercent)}
+                        <Box sx={{ ml: 1, flex: 1 }}>
+                          <Typography variant="body1">{topic.topicLabel}</Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {topic.progressPercent}% · {formatMinutes(topic.completedMinutes)} /{' '}
+                            {formatMinutes(topic.recommendedMinutes)}
+                          </Typography>
+                        </Box>
+                        {studentId && (
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleStartLessonForTopic(topic.topicId);
+                            }}
+                            title={t(
+                              'lessons:progress.startLessonForTopic',
+                              'Start lesson for this topic',
+                            )}
+                          >
+                            <PlayArrowIcon />
+                          </IconButton>
+                        )}
+                        {hasSubTopics && (
+                          <IconButton
+                            size="small"
+                            sx={{
+                              transform: isExpanded ? 'rotate(90deg)' : 'none',
+                              transition: 'transform 0.2s',
+                            }}
+                          >
+                            <ArrowRightIcon />
+                          </IconButton>
+                        )}
+                      </Box>
+
+                      {/* Sub-topics collapse section */}
+                      {hasSubTopics && (
+                        <Collapse in={isExpanded}>
+                          <List disablePadding sx={{ pl: 4, mt: 1, mb: 1 }}>
+                            {subTopics.map(subTopic => (
+                              <ListItem
+                                key={subTopic.key}
+                                secondaryAction={
+                                  studentId && (
+                                    <IconButton
+                                      edge="end"
+                                      size="small"
+                                      color="primary"
+                                      onClick={() =>
+                                        handleStartLessonForTopic(topic.topicId, subTopic.key)
+                                      }
+                                      title={t(
+                                        'lessons:progress.startLessonForSubTopic',
+                                        'Start lesson for this sub-topic',
+                                      )}
+                                    >
+                                      <PlayArrowIcon fontSize="small" />
+                                    </IconButton>
+                                  )
+                                }
+                                sx={{
+                                  borderBottom: '1px solid',
+                                  borderColor: 'divider',
+                                  py: 0.75,
+                                }}
+                              >
+                                <ListItemText
+                                  primary={subTopic.label}
+                                  primaryTypographyProps={{ variant: 'body2' }}
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </Collapse>
+                      )}
+                    </Box>
+                  );
+                })}
+              </Stack>
+
               {stage.urgentTopics.length > 0 && (
                 <>
-                  <Typography variant="subtitle2" sx={{ mt: 1, mb: 1 }}>
+                  <Typography variant="subtitle2" sx={{ mt: 3, mb: 1 }}>
                     {t('lessons:progress.topicsNeedingAttention', 'Topics Needing Attention')}:
                   </Typography>
 
@@ -190,6 +333,8 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
                           p: 1,
                           borderRadius: 1,
                           bgcolor: 'background.paper',
+                          border: '1px solid',
+                          borderColor: 'divider',
                         }}
                       >
                         {getProgressIcon(topic.progressPercent)}
@@ -200,6 +345,16 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
                             {t('lessons:progress.remaining', 'remaining')}
                           </Typography>
                         </Box>
+                        {studentId && (
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<PlayArrowIcon />}
+                            onClick={() => handleStartLessonForTopic(topic.topicId)}
+                          >
+                            {t('lessons:progress.startLesson', 'Start Lesson')}
+                          </Button>
+                        )}
                       </Box>
                     ))}
                   </Stack>

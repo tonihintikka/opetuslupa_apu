@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Paper, Stepper, Step, StepLabel, Button, Typography, Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { Lesson, LearningStage, Student } from '../../../services/db';
 
 // Import step components
@@ -16,6 +17,7 @@ export interface LessonFormData {
   endTime: string;
   learningStage: LearningStage | '';
   topics: string[];
+  subTopics?: string[];
   notes: string;
   kilometers?: string;
   completed: boolean;
@@ -35,14 +37,25 @@ const LessonWizard: React.FC<LessonWizardProps> = ({
   onCancel,
 }) => {
   const { t } = useTranslation(['common', 'lessons']);
+  const location = useLocation();
   const [activeStep, setActiveStep] = useState(0);
+
+  // Check for navigation state with pre-selected topics, sub-topics and student
+  const locationState = location.state as {
+    preSelectedTopics?: string[];
+    preSelectedSubTopics?: string[];
+    preSelectedStudentId?: number;
+  } | null;
+
+  // Initialize form data with anything passed from navigation or props
   const [formData, setFormData] = useState<LessonFormData>({
-    studentId: initialData?.studentId || '',
+    studentId: initialData?.studentId || locationState?.preSelectedStudentId || '',
     date: initialData?.date || new Date().toISOString().split('T')[0],
     startTime: initialData?.startTime || '09:00',
     endTime: initialData?.endTime || '10:00',
     learningStage: initialData?.learningStage || '',
-    topics: initialData?.topics || [],
+    topics: initialData?.topics || locationState?.preSelectedTopics || [],
+    subTopics: initialData?.subTopics || locationState?.preSelectedSubTopics || [],
     notes: initialData?.notes || '',
     kilometers: initialData?.kilometers || '',
     completed: initialData?.completed || false,
@@ -83,6 +96,7 @@ const LessonWizard: React.FC<LessonWizardProps> = ({
       endTime: formData.endTime,
       learningStage: formData.learningStage,
       topics: formData.topics,
+      subTopics: formData.subTopics,
       notes: formData.notes,
       kilometers: formData.kilometers ? Number(formData.kilometers) : undefined,
       completed: formData.completed,
@@ -106,6 +120,23 @@ const LessonWizard: React.FC<LessonWizardProps> = ({
         return 'Unknown step';
     }
   };
+
+  // If we receive a student ID and topics in the state, automatically advance to the exercises step
+  useEffect(() => {
+    if (
+      activeStep === 0 &&
+      locationState?.preSelectedStudentId &&
+      locationState?.preSelectedTopics &&
+      locationState.preSelectedTopics.length > 0
+    ) {
+      // Wait a moment to let the form initialize then go to exercises step
+      const timer = setTimeout(() => {
+        setActiveStep(1); // Go to exercises step
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+  }, [activeStep, locationState]);
 
   return (
     <Paper elevation={0} sx={{ p: 2 }}>

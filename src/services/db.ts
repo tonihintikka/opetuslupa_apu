@@ -21,6 +21,7 @@ export interface Lesson {
   endTime: string;
   learningStage?: LearningStage; // New field for learning stage
   topics: string[];
+  subTopics?: string[]; // New field for sub-topics
   notes?: string;
   kilometers?: number;
   completed: boolean;
@@ -65,6 +66,17 @@ class DrivingLessonDB extends Dexie {
         // Migration logic (optional, Dexie might handle adding optional fields)
         // If needed, you could map existing lessons here
         console.warn('Upgrading schema to version 2, adding learningStage');
+      });
+
+    // Version 3: Add subTopics to lessons
+    this.version(3)
+      .stores({
+        lessons: '++id, studentId, date, completed, learningStage',
+        // Keep other tables the same, subTopics doesn't need indexing
+      })
+      .upgrade(_tx => {
+        // Migration logic for optional field
+        console.warn('Upgrading schema to version 3, adding subTopics to lessons');
       });
   }
 }
