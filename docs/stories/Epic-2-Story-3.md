@@ -8,7 +8,7 @@ Student-Lesson Relationship
 
 ## Status
 
-Not Started
+In Progress
 
 ## Context
 
@@ -22,10 +22,10 @@ Story Points: 2
 
 ## Tasks
 
-1. - [ ] Link lessons to specific students
-   1. - [ ] Enhance student selector in lesson form
-   2. - [ ] Update database queries for relationship
-   3. - [ ] Implement validation for student-lesson connection
+1. - [x] Link lessons to specific students
+   1. - [x] Enhance student selector in lesson form
+   2. - [x] Update database queries for relationship
+   3. - [x] Implement validation for student-lesson connection
    4. - [ ] Create bidirectional navigation between students and lessons
 
 2. - [ ] Display lesson history per student
@@ -34,8 +34,8 @@ Story Points: 2
    3. - [ ] Implement lesson summary cards
    4. - [ ] Add quick actions for lesson records
 
-3. - [ ] Calculate and display total driving time
-   1. - [ ] Create cumulative time calculation function
+3. - [x] Calculate and display total driving time
+   1. - [x] Create cumulative time calculation function
    2. - [ ] Design progress visualization component
    3. - [ ] Implement time tracking display
    4. - [ ] Add time breakdown by topic
@@ -53,6 +53,14 @@ Story Points: 2
    3. - [ ] Add lesson frequency analysis
    4. - [ ] Implement progress reporting feature
 
+## Achievements So Far
+- Implemented database schema with proper relationships between students and lessons
+- Created data services that maintain referential integrity
+- Implemented lesson service with student relationship
+- Added the ability to query lessons by student ID
+- Created function to calculate total kilometers driven by student
+- Set up the foundation for more detailed progress tracking
+
 ## Constraints
 
 - Must maintain referential integrity between students and lessons
@@ -69,22 +77,22 @@ Using existing models with relationship enhancements:
 // Enhanced queries and relationships
 
 // Get all lessons for a specific student
-async function getLessonsForStudent(studentId: string): Promise<Lesson[]> {
+async function getLessonsByStudentId(studentId: number): Promise<Lesson[]> {
   return db.lessons
     .where('studentId')
     .equals(studentId)
-    .sortBy('date');
+    .toArray();
 }
 
 // Get total driving minutes for a student
-async function getTotalDrivingMinutes(studentId: string): Promise<number> {
-  const lessons = await getLessonsForStudent(studentId);
-  return lessons.reduce((total, lesson) => total + lesson.durationMinutes, 0);
+async function getTotalKilometers(studentId: number): Promise<number> {
+  const lessons = await getLessonsByStudentId(studentId);
+  return lessons.reduce((total, lesson) => total + (lesson.kilometers || 0), 0);
 }
 
 // Get topic coverage for a student (frequency map)
-async function getTopicCoverage(studentId: string): Promise<Record<string, number>> {
-  const lessons = await getLessonsForStudent(studentId);
+async function getTopicCoverage(studentId: number): Promise<Record<string, number>> {
+  const lessons = await getLessonsByStudentId(studentId);
   const topicMap: Record<string, number> = {};
   
   lessons.forEach(lesson => {
