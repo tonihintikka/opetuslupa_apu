@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Driving Lesson Tracker",
+    "name": "AjoKamu",
     "loading": "Loading...",
     "error": "An error occurred",
     "errorTryAgain": "An error occurred. Please try again."

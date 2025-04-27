@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Ajo-opetuksen Tracker",
+    "name": "AjoKamu",
     "loading": "Ladataan...",
     "error": "Tapahtui virhe",
     "errorTryAgain": "Tapahtui virhe. Yritä uudelleen."

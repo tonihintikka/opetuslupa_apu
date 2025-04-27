@@ -39,6 +39,14 @@ const AppShell: React.FC = () => {
       '--bottom-nav-height',
       isMobile ? 'calc(56px + var(--safe-area-inset-bottom))' : '0px',
     );
+    document.documentElement.style.setProperty(
+      '--safe-area-inset-top',
+      'env(safe-area-inset-top, 0px)',
+    );
+    document.documentElement.style.setProperty(
+      '--app-bar-height',
+      'calc(64px + var(--safe-area-inset-top))',
+    );
   }, [isMobile]);
 
   const handleDrawerToggle = () => {
@@ -47,7 +55,13 @@ const AppShell: React.FC = () => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AppBar position="static">
+      <AppBar
+        position="fixed"
+        sx={{
+          zIndex: theme.zIndex.drawer + 1,
+          paddingTop: 'var(--safe-area-inset-top)',
+        }}
+      >
         <Toolbar>
           {isMobile && (
             <IconButton
@@ -73,6 +87,9 @@ const AppShell: React.FC = () => {
         </Toolbar>
       </AppBar>
 
+      {/* Toolbar placeholder to push content below fixed app bar */}
+      <Toolbar sx={{ marginBottom: 1, paddingTop: 'var(--safe-area-inset-top)' }} />
+
       <Box sx={{ display: 'flex', flexGrow: 1 }}>
         {/* Mobile drawer */}
         {isMobile && (
@@ -87,6 +104,7 @@ const AppShell: React.FC = () => {
               '& .MuiDrawer-paper': {
                 boxSizing: 'border-box',
                 width: 240,
+                marginTop: 'var(--app-bar-height)',
               },
             }}
           >
