@@ -29,7 +29,7 @@ This lesson-centric approach is reflected in the navigation structure and defaul
 - [Story 3: Student-Lesson Relationship](./Epic-2-Story-3.md)
 
 ### Epic-3: Data Visualization and Reporting
-- Coming soon
+- [Story 1: Enhanced Lesson Recording Experience](./Epic-3-Story-1.md)
 
 ### Epic-4: PWA Implementation
 - Coming soon

@@ -10,12 +10,16 @@ export interface Student {
   updatedAt: Date;
 }
 
+// Define the learning stages based on Finnish driving school curriculum
+export type LearningStage = 'kognitiivinen' | 'assosiatiivinen' | 'automaattinen';
+
 export interface Lesson {
   id?: number;
   studentId: number;
   date: Date;
   startTime: string;
   endTime: string;
+  learningStage?: LearningStage; // New field for learning stage
   topics: string[];
   notes?: string;
   kilometers?: number;
@@ -44,11 +48,24 @@ class DrivingLessonDB extends Dexie {
     super('DrivingLessonDB');
 
     // Define database schema
+    // Version 1: Initial schema
     this.version(1).stores({
       students: '++id, name, email, phone',
       lessons: '++id, studentId, date, completed',
       milestones: '++id, studentId, title, completedAt',
     });
+
+    // Version 2: Add learningStage to lessons
+    this.version(2)
+      .stores({
+        lessons: '++id, studentId, date, completed, learningStage',
+        // Keep other tables the same
+      })
+      .upgrade(_tx => {
+        // Migration logic (optional, Dexie might handle adding optional fields)
+        // If needed, you could map existing lessons here
+        console.warn('Upgrading schema to version 2, adding learningStage');
+      });
   }
 }
 
