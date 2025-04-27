@@ -1,2 +1,4 @@
 // Export layout components from this file
-export {}; 
+import AppShell from './AppShell';
+
+export { AppShell };
