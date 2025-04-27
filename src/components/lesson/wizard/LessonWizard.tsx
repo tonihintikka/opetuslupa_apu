@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Paper, Stepper, Step, StepLabel, Button, Typography } from '@mui/material';
+import { Box, Paper, Stepper, Step, StepLabel, Button, Typography, Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Lesson, LearningStage, Student } from '../../../services/db';
 
@@ -7,6 +7,7 @@ import { Lesson, LearningStage, Student } from '../../../services/db';
 import BasicInfoStep from './BasicInfoStep';
 import ExercisesStep from './ExercisesStep';
 import GoalsNotesStep from './GoalsNotesStep';
+import WizardSummary from './WizardSummary';
 
 export interface LessonFormData {
   studentId: number | '';
@@ -122,7 +123,7 @@ const LessonWizard: React.FC<LessonWizardProps> = ({
           <Typography variant="h6" gutterBottom>
             {t('lessons:wizard.summaryTitle')}
           </Typography>
-          {/* Summary content goes here */}
+          <WizardSummary formData={formData} students={students} currentStep={activeStep} />
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={onCancel}>{t('actions.cancel')}</Button>
@@ -132,30 +133,38 @@ const LessonWizard: React.FC<LessonWizardProps> = ({
           </Box>
         </Box>
       ) : (
-        // Step content
-        <Box>
-          {getStepContent(activeStep)}
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Button
-              variant="outlined"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              {t('lessons:wizard.back')}
-            </Button>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={onCancel}>{t('actions.cancel')}</Button>
-            <Button
-              variant="contained"
-              onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
-            >
-              {activeStep === steps.length - 1
-                ? t('lessons:wizard.finish')
-                : t('lessons:wizard.next')}
-            </Button>
-          </Box>
-        </Box>
+        // Step content with side summary
+        <Grid container spacing={3}>
+          {/* Main step content */}
+          <Grid size={{ xs: 12, md: 8 }}>
+            {getStepContent(activeStep)}
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+              <Button
+                variant="outlined"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                {t('lessons:wizard.back')}
+              </Button>
+              <Box sx={{ flex: '1 1 auto' }} />
+              <Button onClick={onCancel}>{t('actions.cancel')}</Button>
+              <Button
+                variant="contained"
+                onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
+              >
+                {activeStep === steps.length - 1
+                  ? t('lessons:wizard.finish')
+                  : t('lessons:wizard.next')}
+              </Button>
+            </Box>
+          </Grid>
+
+          {/* Side summary */}
+          <Grid size={{ xs: 12, md: 4 }} sx={{ display: { xs: 'none', md: 'block' } }}>
+            <WizardSummary formData={formData} students={students} currentStep={activeStep} />
+          </Grid>
+        </Grid>
       )}
     </Paper>
   );

@@ -8,7 +8,7 @@ Enhanced Lesson Recording Experience
 
 ## Status
 
-Not Started
+In Progress
 
 ## Context
 
@@ -30,12 +30,12 @@ Story Points: 5
 
 ## Tasks
 
-1. - [ ] Develop Wizard UI for lesson creation
-   1. - [ ] Design 3-step Stepper component (Basic info → Select exercises → Goals & notes)
-   2. - [ ] Implement stepper navigation (next/back/submit)
-   3. - [ ] Create form validation for each step
-   4. - [ ] Add progress indicators and summary preview
-   5. - [ ] Implement responsive design for mobile and desktop views
+1. - [x] Develop Wizard UI for lesson creation
+   1. - [x] Design 3-step Stepper component (Basic info → Select exercises → Goals & notes)
+   2. - [x] Implement stepper navigation (next/back/submit)
+   3. - [x] Create form validation for each step
+   4. - [x] Add progress indicators and summary preview
+   5. - [x] Implement responsive design for mobile and desktop views
 
 2. - [ ] Build Progress Matrix dashboard
    1. - [ ] Design table listing each topic with statistics (recommended minutes, completed minutes, percentage, remaining)
