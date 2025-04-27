@@ -1,0 +1,111 @@
+{
+  "app": {
+    "name": "AjoKamu",
+    "loading": "Laddar...",
+    "error": "Ett fel inträffade",
+    "errorTryAgain": "Ett fel inträffade. Försök igen."
+  },
+  "navigation": {
+    "students": "Elever",
+    "lessons": "Körlektioner",
+    "milestones": "Milstolpar",
+    "settings": "Inställningar",
+    "exportImport": "Export/Import"
+  },
+  "footer": {
+    "copyright": "Alla rättigheter förbehållna",
+    "version": "Version",
+    "privacyPolicy": "Integritetspolicy",
+    "termsOfService": "Användarvillkor",
+    "help": "Hjälp"
+  },
+  "actions": {
+    "add": "Lägg till",
+    "edit": "Redigera",
+    "delete": "Ta bort",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "confirm": "Bekräfta",
+    "back": "Tillbaka",
+    "search": "Sök",
+    "filter": "Filtrera",
+    "reset": "Återställ",
+    "import": "Importera",
+    "export": "Exportera"
+  },
+  "validation": {
+    "required": "Obligatoriskt fält",
+    "email": "Ogiltig e-postadress",
+    "minLength": "Minst {{count}} tecken",
+    "maxLength": "Högst {{count}} tecken",
+    "invalidFormat": "Ogiltigt format"
+  },
+  "dateTime": {
+    "today": "Idag",
+    "yesterday": "Igår",
+    "tomorrow": "Imorgon",
+    "minutes": "{{count}} minuter",
+    "minutesSingular": "{{count}} minut",
+    "date": "Datum",
+    "time": "Tid",
+    "duration": "Varaktighet"
+  },
+  "emptyStates": {
+    "noResults": "Inga resultat",
+    "noStudents": "Inga elever",
+    "noLessons": "Inga körlektioner",
+    "noMilestones": "Inga milstolpar",
+    "startAdding": "Börja med att lägga till {{item}}"
+  },
+  "confirmations": {
+    "deleteTitle": "Bekräfta borttagning",
+    "deleteMessage": "Är du säker på att du vill ta bort detta?",
+    "cannotUndo": "Denna åtgärd kan inte ångras"
+  },
+  "notifications": {
+    "success": "Lyckades!",
+    "error": "Fel!",
+    "saved": "Sparad!",
+    "deleted": "Borttagen!",
+    "imported": "Importerades framgångsrikt!",
+    "exported": "Exporterades framgångsrikt!"
+  },
+  "buttons": {
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "delete": "Ta bort",
+    "edit": "Redigera",
+    "add": "Lägg till"
+  },
+  "errors": {
+    "boundary": {
+      "title": "Ett fel inträffade",
+      "message": "Det uppstod ett fel i applikationen. Du kan försöka lösa problemet genom att uppdatera sidan.",
+      "tryAgain": "Försök igen"
+    }
+  },
+  "dataManagement": {
+    "title": "Datahantering",
+    "info": "Här kan du exportera, importera och säkerhetskopiera dina elever och körlektioner.",
+    "export": {
+      "title": "Exportera data",
+      "description": "Exportera all elev- och körlektionsdata som en JSON-fil.",
+      "button": "Exportera data"
+    },
+    "import": {
+      "title": "Importera data",
+      "description": "Importera tidigare exporterad data till applikationen.",
+      "button": "Importera data"
+    },
+    "backup": {
+      "title": "Säkerhetskopia",
+      "description": "Skapa en säkerhetskopia av din data för senare användning.",
+      "button": "Skapa säkerhetskopia"
+    },
+    "dangerZone": {
+      "title": "Riskzon",
+      "description": "Denna åtgärd raderar all data. Åtgärden kan inte ångras.",
+      "button": "Rensa all data"
+    }
+  }
+}
