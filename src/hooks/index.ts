@@ -2,3 +2,4 @@
 export { default as useStudents } from './useStudents';
 export { default as useLessons } from './useLessons';
 export { default as useMilestones } from './useMilestones';
+export { default as useTimer } from './useTimer';

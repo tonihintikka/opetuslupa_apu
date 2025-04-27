@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, SxProps, Theme } from '@mui/material';
+import { Box, Typography, SxProps, Theme, Button } from '@mui/material';
 import InboxIcon from '@mui/icons-material/Inbox';
 
 interface EmptyStateProps {
@@ -7,6 +7,8 @@ interface EmptyStateProps {
   message?: string;
   icon?: React.ReactNode;
   sx?: SxProps<Theme>;
+  actionText?: string;
+  onAction?: () => void;
 }
 
 /**
@@ -17,6 +19,8 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   message = 'There is nothing to display yet',
   icon,
   sx,
+  actionText,
+  onAction,
 }) => {
   return (
     <Box
@@ -36,9 +40,20 @@ const EmptyState: React.FC<EmptyStateProps> = ({
       <Typography variant="h6" gutterBottom>
         {title}
       </Typography>
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="text.secondary" sx={{ mb: actionText ? 3 : 0 }}>
         {message}
       </Typography>
+      
+      {actionText && onAction && (
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={onAction}
+          sx={{ mt: 2 }}
+        >
+          {actionText}
+        </Button>
+      )}
     </Box>
   );
 };

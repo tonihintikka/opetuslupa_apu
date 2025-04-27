@@ -1,0 +1,70 @@
+{
+  "addLesson": "Add Lesson",
+  "editLesson": "Edit Lesson",
+  "startTimer": "Start Timer",
+  "lessonsFeature": "Lesson view is under development. Here you'll see a list of your recorded lessons.",
+  "recentLessons": "Recent Lessons",
+  "emptyState": {
+    "description": "Start recording your driving lessons to track progress and improve your teaching"
+  },
+  "forms": {
+    "studentLabel": "Student",
+    "dateLabel": "Date",
+    "startTimeLabel": "Start Time",
+    "endTimeLabel": "End Time",
+    "durationLabel": "Duration",
+    "learningStageLabel": "Learning Stage",
+    "topicsLabel": "Topics",
+    "notesLabel": "Notes",
+    "kilometersLabel": "Kilometers"
+  },
+  "stages": {
+    "cognitive": "Cognitive",
+    "associative": "Associative",
+    "automatic": "Automatic"
+  },
+  "timer": {
+    "title": "Lesson Timer",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "reset": "Reset",
+    "editTime": "Edit Time",
+    "started": "Started at",
+    "notStarted": "Timer not started yet",
+    "hours": "Hours",
+    "minutes": "Minutes"
+  },
+  "validation": {
+    "studentRequired": "Student is required",
+    "dateRequired": "Date is required",
+    "topicsRequired": "At least one topic is required",
+    "stageRequired": "Learning stage is required"
+  },
+  "topics": {
+    "ajoasento": "Driving position and mirrors",
+    "liikkeellelahto": "Starting and stopping",
+    "vaihteet": "Gear shifting",
+    "ohjaus": "Steering control",
+    "peruutus": "Reversing",
+    "makilahto": "Hill starts",
+    "taajamaajo": "City driving",
+    "risteysajo": "Intersections",
+    "liikennevalot": "Traffic lights",
+    "liikenneympyrat": "Roundabouts",
+    "kaistanvaihto": "Lane changes and merging",
+    "maantieajo": "Highway driving",
+    "moottoritieajo": "Motorway driving",
+    "pysakointi": "Parking (parallel, angled, straight)",
+    "ajopimealla": "Night driving",
+    "ajosateella": "Driving in rain",
+    "riskientunnistus": "Risk recognition",
+    "valojenhallinta": "Light management",
+    "liukaskeli": "Slippery conditions",
+    "hatajarrutus": "Emergency braking",
+    "vaistamistilanne": "Evasive maneuvers",
+    "ajokoe_simulaatio": "Driving test simulation",
+    "itsenainen_ajo": "Independent driving"
+  }
+} 
