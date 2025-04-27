@@ -8,6 +8,7 @@
   "navigation": {
     "students": "Oppilaat",
     "lessons": "Ajotunnit",
+    "milestones": "Virstanpylväät",
     "settings": "Asetukset"
   },
   "actions": {
@@ -45,6 +46,7 @@
     "noResults": "Ei tuloksia",
     "noStudents": "Ei oppilaita",
     "noLessons": "Ei ajotunteja",
+    "noMilestones": "Ei virstanpylväitä",
     "startAdding": "Aloita lisäämällä {{item}}"
   },
   "confirmations": {
@@ -60,4 +62,4 @@
     "imported": "Tuotu onnistuneesti!",
     "exported": "Viety onnistuneesti!"
   }
-} 
+}

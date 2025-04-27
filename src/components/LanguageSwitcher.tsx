@@ -1,18 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Box,
-  Button,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText
-} from '@mui/material';
+import { Box, Button, Menu, MenuItem, ListItemText } from '@mui/material';
 import LanguageIcon from '@mui/icons-material/Language';
 
 /**
  * Language switcher component for changing the application language
- * 
+ *
  * Uses the i18next react hook and provides a dropdown menu with language options
  */
 const LanguageSwitcher = () => {
@@ -37,7 +30,7 @@ const LanguageSwitcher = () => {
   const languages = {
     fi: t('language.finnish'),
     en: t('language.english'),
-    sv: t('language.swedish')
+    sv: t('language.swedish'),
   };
 
   // Get current language
@@ -66,22 +59,13 @@ const LanguageSwitcher = () => {
           'aria-labelledby': 'language-button',
         }}
       >
-        <MenuItem 
-          onClick={() => changeLanguage('fi')} 
-          selected={currentLanguage === 'fi'}
-        >
+        <MenuItem onClick={() => changeLanguage('fi')} selected={currentLanguage === 'fi'}>
           <ListItemText>Suomi</ListItemText>
         </MenuItem>
-        <MenuItem 
-          onClick={() => changeLanguage('en')} 
-          selected={currentLanguage === 'en'}
-        >
+        <MenuItem onClick={() => changeLanguage('en')} selected={currentLanguage === 'en'}>
           <ListItemText>English</ListItemText>
         </MenuItem>
-        <MenuItem 
-          onClick={() => changeLanguage('sv')} 
-          selected={currentLanguage === 'sv'}
-        >
+        <MenuItem onClick={() => changeLanguage('sv')} selected={currentLanguage === 'sv'}>
           <ListItemText>Svenska</ListItemText>
         </MenuItem>
       </Menu>
@@ -89,4 +73,4 @@ const LanguageSwitcher = () => {
   );
 };
 
-export default LanguageSwitcher; 
+export default LanguageSwitcher;

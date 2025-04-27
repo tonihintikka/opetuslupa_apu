@@ -11,7 +11,7 @@ interface TranslatedTextProps extends Omit<TypographyProps, 'children'> {
   /** Namespace for the translation key, defaults to 'common' */
   ns?: string | string[];
   /** Values to interpolate into the translation */
-  values?: Record<string, any>;
+  values?: Record<string, unknown>;
   /** Component to use for rendering the translated text, defaults to 'p' */
   component?: React.ElementType;
   /** Function to format the translated text */
@@ -22,7 +22,7 @@ interface TranslatedTextProps extends Omit<TypographyProps, 'children'> {
 
 /**
  * Component for displaying translated text with consistent styling
- * 
+ *
  * Handles interpolation, formatting, and component mapping in one place
  * for more maintainable internationalized text.
  */
@@ -37,21 +37,20 @@ const TranslatedText = ({
   ...typographyProps
 }: TranslatedTextProps) => {
   const { t } = useTranslation(ns);
-  
+
   // Get translated text with optional interpolation and ensure it's a string
   const translationResult = t(textKey, values || {});
-  let translatedText = typeof translationResult === 'string' 
-    ? translationResult 
-    : JSON.stringify(translationResult);
-  
+  let translatedText =
+    typeof translationResult === 'string' ? translationResult : JSON.stringify(translationResult);
+
   // If translation is empty and defaultText is provided, use defaultText
   if (!translatedText && defaultText) {
     translatedText = defaultText;
   }
-  
+
   // Apply formatter if provided
   const formattedText = formatter ? formatter(translatedText) : translatedText;
-  
+
   return (
     <Typography variant={variant} component={component} {...typographyProps}>
       {formattedText}
@@ -59,4 +58,4 @@ const TranslatedText = ({
   );
 };
 
-export default TranslatedText; 
+export default TranslatedText;
