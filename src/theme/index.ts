@@ -1,2 +1,4 @@
-// Export theme configuration from this file
-export {}; 
+import theme from './theme';
+
+export { theme };
+export default theme;
