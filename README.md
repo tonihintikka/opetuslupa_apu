@@ -2,6 +2,8 @@
 
 A Progressive Web Application (PWA) designed for driving instructors in Finland to track driving lessons and monitor student progress effectively.
 
+![Driving Lesson Tracker Screenshot](docs/Screenshot%202025-04-28%20at%2016.20.06.png)
+
 ## Features
 
 - **Student Management**: Add, edit, and view student details.
