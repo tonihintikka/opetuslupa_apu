@@ -53,33 +53,40 @@ export default tseslint.config({
 })
 ```
 
-# Driving-Lesson Tracker
+# Driving-Lesson Tracker (Opetuslupa Apu)
 
-A Progressive Web Application for tracking driving lessons, designed for driving instructors to monitor student progress.
+A Progressive Web Application (PWA) designed for driving instructors in Finland to track driving lessons and monitor student progress effectively.
 
 ## Features
 
-- **Offline-First**: Works without internet connection
-- **PWA**: Installable on mobile devices
-- **Privacy-Focused**: All data stored locally on your device
-- **Responsive Design**: Works on desktop and mobile
-- **Multi-language Support**: Finnish (primary), with English and Swedish support
+- **Student Management**: Add, edit, and view student details.
+- **Lesson Tracking**: Record lesson date, time, duration, covered topics, notes, and kilometers.
+- **Topic Performance Rating**: Rate student performance on each topic (1-5 stars) during a lesson.
+- **Progress Dashboard**: Visualize overall and topic-specific progress for each student.
+- **Smart Session Starter**: Initiate new lessons focused on topics needing the most practice, based on progress data.
+- **Lesson Drafts**: Automatically save lesson progress as a draft, preventing data loss.
+- **Offline-First**: Fully functional without an internet connection using IndexedDB.
+- **PWA**: Installable on mobile devices for a native app-like experience.
+- **Privacy-Focused**: All data is stored locally on the user's device.
+- **Responsive Design**: Adapts to various screen sizes (desktop, tablet, mobile).
+- **Multi-language Support**: Primarily Finnish, with English support planned.
+- **Light/Dark Theme**: Supports user preference for light or dark mode.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18.x or higher
-- npm 10.x or higher
+- Node.js v18.x or higher
+- npm v10.x or higher
 
-### Installation
+### Installation & Running
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/driving-lesson-tracker.git
+git clone https://github.com/tonihintikka/opetuslupa_apu.git
 
 # Navigate to the project directory
-cd driving-lesson-tracker
+cd opetuslupa_apu
 
 # Install dependencies
 npm install
@@ -88,98 +95,76 @@ npm install
 npm run dev
 ```
 
+The application will be available at `http://localhost:5173` (or the next available port).
+
 ## Internationalization (i18n)
 
-The application uses react-i18next for internationalization with the following features:
+The application uses `react-i18next` for internationalization.
 
-- **Multiple Languages**: Finnish as primary, with English and Swedish support
-- **Namespace Organization**: Translations organized by feature area
-- **Language Detection**: Auto-detects browser language with manual override
-- **Date & Number Formatting**: Locale-aware formatting of dates and numbers
+- **Languages**: Finnish (primary), English planned.
+- **Namespaces**: Translations organized by feature (`common`, `students`, `lessons`, `settings`).
+- **Detection**: Browser language detection with localStorage persistence.
+- **Formatting**: Locale-aware date formatting.
 
-### Translation Structure
-
-Translations are organized in JSON files under `src/locales/{language}/{namespace}.json`:
-
-```
-src/locales/
-├── fi/         # Finnish (primary)
-│   ├── common.json
-│   ├── students.json
-│   ├── lessons.json
-│   └── settings.json
-├── en/         # English
-└── sv/         # Swedish
-```
-
-### Adding New Translations
-
-1. Add translation keys to the appropriate namespace files
-2. Use keys consistently across components
-3. For nested keys, use dot notation: `namespace:section.subsection.key`
+Translations are located in `src/locales/{language}/{namespace}.json`.
 
 ### Usage in Components
 
 ```tsx
-// Basic usage
 import { useTranslation } from 'react-i18next';
 
 function MyComponent() {
   const { t } = useTranslation(['common', 'students']);
-  
-  return (
-    <div>
-      <h1>{t('common:app.title')}</h1>
-      <p>{t('students:studentDetails')}</p>
-    </div>
-  );
-}
-
-// For complex content with HTML
-import { Trans } from 'react-i18next';
-
-function ComplexContent() {
-  return (
-    <Trans i18nKey="lessons:summary" values={{ date: '2023-06-01', minutes: 45 }}>
-      Lesson on <strong>{{ date }}</strong> lasted for {{ minutes }} minutes.
-    </Trans>
-  );
+  return <h1>{t('students:title')}</h1>;
 }
 ```
 
 ## Project Structure
 
 ```
-├── public/          # Static assets
+├── public/             # Static assets
 ├── src/
-│   ├── assets/      # Images, fonts, etc.
-│   ├── components/  # Reusable UI components
-│   ├── hooks/       # Custom React hooks
-│   ├── locales/     # Translation files
-│   ├── services/    # Business logic services
-│   ├── theme/       # Material-UI theme
-│   ├── types/       # TypeScript definitions
-│   ├── utils/       # Utility functions
-│   ├── App.tsx      # Main component
-│   ├── i18n.ts      # i18n configuration
-│   └── main.tsx     # Entry point
-├── docs/            # Documentation
-└── ...
+│   ├── assets/         # Images, fonts, etc.
+│   ├── components/     # React components (layout, common, feature-specific)
+│   ├── constants/      # Application constants (e.g., lesson topics)
+│   ├── hooks/          # Custom React hooks (data fetching, calculations)
+│   ├── locales/        # i18n translation files
+│   ├── services/       # Business logic, data persistence (Dexie.js wrappers)
+│   ├── theme/          # Material-UI theme configuration
+│   ├── types/          # TypeScript type definitions (global, db)
+│   ├── App.tsx         # Main application component, router setup
+│   ├── i18n.ts         # i18n configuration
+│   ├── main.tsx        # Application entry point
+│   └── router.tsx      # React Router configuration
+├── docs/               # Project documentation (stories, diagrams)
+├── .github/            # GitHub Actions workflows
+├── .husky/             # Git hooks configuration
+├── .vscode/            # VSCode settings
+├── eslint.config.js    # ESLint configuration
+├── index.html          # Main HTML file
+├── package.json        # Project dependencies and scripts
+├── README.md           # This file
+├── tsconfig.json       # TypeScript configuration (app)
+├── tsconfig.node.json  # TypeScript configuration (node env)
+└── vite.config.ts      # Vite configuration
 ```
 
 ## Tech Stack
 
-- **Vite**: Fast development and building
-- **React**: UI library
-- **TypeScript**: Type-safe JavaScript
-- **Material-UI**: Component library
-- **Dexie.js**: IndexedDB wrapper
-- **react-i18next**: Internationalization
-- **ESLint/Prettier**: Code quality tools
+- **Framework**: React with TypeScript
+- **UI Library**: Material-UI (MUI) v7
+- **Build Tool**: Vite
+- **Routing**: React Router
+- **State Management**: React Context API (primarily for UI coordination)
+- **Local Database**: Dexie.js (IndexedDB wrapper)
+- **Internationalization**: react-i18next
+- **Code Quality**: ESLint, Prettier
+- **Testing**: Vitest (planned)
+- **Date Handling**: date-fns
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+Contributions are welcome! Please follow standard Gitflow practices and ensure code quality checks pass.
 
 ## License
 
