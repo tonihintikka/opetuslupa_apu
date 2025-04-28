@@ -13,6 +13,7 @@ export interface TopicProgress {
   progressPercent: number;
   remainingMinutes: number;
   color: 'success' | 'warning' | 'error'; // Color based on progress
+  averageRating: number; // Average rating for the topic
 }
 
 // Define constants for recommended minutes and thresholds
@@ -74,6 +75,7 @@ export const useProgressCalculation = (lessons: Lesson[]) => {
         progressPercent: 0,
         remainingMinutes: DEFAULT_RECOMMENDED_MINUTES[topic.stage],
         color: 'error',
+        averageRating: 0, // Initialize average rating
       };
     });
 
@@ -82,12 +84,19 @@ export const useProgressCalculation = (lessons: Lesson[]) => {
       if (!lesson.completed) return; // Skip incomplete lessons
 
       const lessonDate = new Date(lesson.date);
-      const topicCount = lesson.topics.length || 1; // Avoid division by zero
+      // Extract topic IDs from topicRatings
+      const topicIds = lesson.topicRatings.map(tr => tr.topicId);
+      const topicCount = topicIds.length || 1; // Avoid division by zero
       const lessonDuration = calculateLessonDuration(lesson);
       const minutesPerTopic = lessonDuration / topicCount; // Equal distribution among topics
 
+      // Track ratings sum and count for calculating averages
+      const ratingSums: Record<string, { sum: number; count: number }> = {};
+
       // Update statistics for each topic in the lesson
-      lesson.topics.forEach(topicId => {
+      lesson.topicRatings.forEach(tr => {
+        const topicId = tr.topicId;
+
         if (progress[topicId]) {
           const topic = progress[topicId];
 
@@ -98,6 +107,31 @@ export const useProgressCalculation = (lessons: Lesson[]) => {
           if (!topic.lastPracticed || lessonDate > topic.lastPracticed) {
             topic.lastPracticed = lessonDate;
           }
+
+          // Track rating sums for later averaging
+          if (!ratingSums[topicId]) {
+            ratingSums[topicId] = { sum: 0, count: 0 };
+          }
+
+          // Only count ratings > 0
+          if (tr.rating > 0) {
+            ratingSums[topicId].sum += tr.rating;
+            ratingSums[topicId].count += 1;
+          }
+        }
+      });
+
+      // Calculate average ratings
+      Object.entries(ratingSums).forEach(([topicId, { sum, count }]) => {
+        if (count > 0 && progress[topicId]) {
+          // Calculate weighted average combining previous average and new ratings
+          const previousAvg = progress[topicId].averageRating;
+          const previousCount = previousAvg > 0 ? 1 : 0; // Simplify by treating previous as one "lesson"
+          const newAvg = sum / count;
+
+          // Simple weighted average, giving equal weight to previous average and new data
+          progress[topicId].averageRating =
+            (previousAvg * previousCount + newAvg) / (previousCount + 1);
         }
       });
     });
@@ -115,6 +149,9 @@ export const useProgressCalculation = (lessons: Lesson[]) => {
 
       // Determine color based on progress
       topic.color = getProgressColor(topic.progressPercent);
+
+      // Round average rating to one decimal place
+      topic.averageRating = Math.round(topic.averageRating * 10) / 10;
     });
 
     return Object.values(progress);

@@ -131,7 +131,7 @@ export const draftLessonService = {
       date: now,
       topics,
       subTopics,
-      learningStage: learningStage as any, // Type casting for safety
+      learningStage: learningStage as LessonDraft['learningStage'], // Using indexed type for type safety
       draftCreatedAt: now,
       lastModified: now,
     };

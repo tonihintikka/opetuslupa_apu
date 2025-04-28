@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Paper, Stepper, Step, StepLabel, Button, Typography, Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import { Lesson, LearningStage, Student } from '../../../services/db';
+import { Lesson, LearningStage, Student, TopicRating } from '../../../services/db';
 
 // Import step components
 import BasicInfoStep from './BasicInfoStep';
@@ -16,7 +16,8 @@ export interface LessonFormData {
   startTime: string;
   endTime: string;
   learningStage: LearningStage | '';
-  topics: string[];
+  topics: string[]; // Keep as topics in form data for simplicity
+  topicRatings?: Record<string, number>; // Add ratings map
   subTopics?: string[];
   notes: string;
   kilometers?: string;
@@ -55,6 +56,7 @@ const LessonWizard: React.FC<LessonWizardProps> = ({
     endTime: initialData?.endTime || '10:00',
     learningStage: initialData?.learningStage || '',
     topics: initialData?.topics || locationState?.preSelectedTopics || [],
+    topicRatings: initialData?.topicRatings || {}, // Initialize ratings map
     subTopics: initialData?.subTopics || locationState?.preSelectedSubTopics || [],
     notes: initialData?.notes || '',
     kilometers: initialData?.kilometers || '',
@@ -70,7 +72,23 @@ const LessonWizard: React.FC<LessonWizardProps> = ({
 
   // Handle form data updates from child components
   const updateFormData = (data: Partial<LessonFormData>) => {
-    setFormData(prev => ({ ...prev, ...data }));
+    setFormData(prev => {
+      const newData = { ...prev, ...data };
+
+      // If topics were updated, ensure topicRatings is synced
+      if (data.topics && (!prev.topicRatings || Object.keys(prev.topicRatings).length === 0)) {
+        // Initialize ratings for new topics with default 0
+        const ratingsMap: Record<string, number> = { ...newData.topicRatings };
+        data.topics.forEach(topicId => {
+          if (!(topicId in ratingsMap)) {
+            ratingsMap[topicId] = 0;
+          }
+        });
+        newData.topicRatings = ratingsMap;
+      }
+
+      return newData;
+    });
   };
 
   // Step navigation
@@ -89,13 +107,19 @@ const LessonWizard: React.FC<LessonWizardProps> = ({
       return;
     }
 
+    // Convert topics and ratings to topicRatings array
+    const topicRatings: TopicRating[] = formData.topics.map(topicId => ({
+      topicId,
+      rating: (formData.topicRatings && formData.topicRatings[topicId]) || 0,
+    }));
+
     const lessonData: Omit<Lesson, 'id' | 'createdAt' | 'updatedAt'> = {
       studentId: Number(formData.studentId),
       date: new Date(formData.date),
       startTime: formData.startTime,
       endTime: formData.endTime,
       learningStage: formData.learningStage,
-      topics: formData.topics,
+      topicRatings,
       subTopics: formData.subTopics,
       notes: formData.notes,
       kilometers: formData.kilometers ? Number(formData.kilometers) : undefined,

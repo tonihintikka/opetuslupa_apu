@@ -20,6 +20,7 @@ import {
   ListItemButton,
   Collapse,
   IconButton,
+  Rating,
 } from '@mui/material';
 import {
   CheckCircle as CheckCircleIcon,
@@ -41,18 +42,50 @@ const ExercisesStep: React.FC<ExercisesStepProps> = ({ formData, updateFormData 
   const { t } = useTranslation(['common', 'lessons']);
   const [expandedTopics, setExpandedTopics] = useState<string[]>([]);
 
-  // Initialize subTopics state if it's not present
+  // Initialize subTopics and topicRatings state if they're not present
   useEffect(() => {
+    const updates: Partial<LessonFormData> = {};
+
     if (!formData.subTopics) {
-      updateFormData({ subTopics: [] });
+      updates.subTopics = [];
     }
-  }, [formData.subTopics, updateFormData]);
+
+    if (!formData.topicRatings) {
+      const ratingsMap: Record<string, number> = {};
+      formData.topics.forEach(topicId => {
+        ratingsMap[topicId] = 0;
+      });
+      updates.topicRatings = ratingsMap;
+    }
+
+    if (Object.keys(updates).length > 0) {
+      updateFormData(updates);
+    }
+  }, [formData.subTopics, formData.topicRatings, formData.topics, updateFormData]);
 
   const handleTopicChange = (event: SelectChangeEvent<typeof formData.topics>) => {
     const {
       target: { value },
     } = event;
     const newTopics = typeof value === 'string' ? value.split(',') : value;
+
+    // Update the ratings map for added/removed topics
+    const currentRatings = formData.topicRatings || {};
+    const newRatings = { ...currentRatings };
+
+    // Add ratings for new topics
+    newTopics.forEach(topicId => {
+      if (!(topicId in newRatings)) {
+        newRatings[topicId] = 0;
+      }
+    });
+
+    // Remove ratings for removed topics
+    Object.keys(newRatings).forEach(topicId => {
+      if (!newTopics.includes(topicId)) {
+        delete newRatings[topicId];
+      }
+    });
 
     // When removing topics, also remove associated sub-topics
     if (formData.subTopics && formData.subTopics.length > 0) {
@@ -66,6 +99,7 @@ const ExercisesStep: React.FC<ExercisesStepProps> = ({ formData, updateFormData 
         updateFormData({
           topics: newTopics,
           subTopics: remainingSubTopics,
+          topicRatings: newRatings,
         });
         return;
       }
@@ -73,6 +107,17 @@ const ExercisesStep: React.FC<ExercisesStepProps> = ({ formData, updateFormData 
 
     updateFormData({
       topics: newTopics,
+      topicRatings: newRatings,
+    });
+  };
+
+  // Handle rating change for a topic
+  const handleRatingChange = (topicId: string, value: number | null) => {
+    const newRatings = { ...(formData.topicRatings || {}) };
+    newRatings[topicId] = value || 0;
+
+    updateFormData({
+      topicRatings: newRatings,
     });
   };
 
@@ -150,21 +195,37 @@ const ExercisesStep: React.FC<ExercisesStepProps> = ({ formData, updateFormData 
           <Typography variant="subtitle1" gutterBottom>
             {t('lessons:wizard.exercises.selectedTopics')}
           </Typography>
+
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {t(
+              'lessons:forms.topicRatingsHelp',
+              "Rate the student's performance for each topic on a scale of 1-5 stars.",
+            )}
+          </Typography>
+
           <List>
             {formData.topics.map(topicKey => {
               const topic = lessonTopics.find(t => t.key === topicKey);
               const topicSubTopics = getSubTopicsForTopic(topicKey);
               const isExpanded = expandedTopics.includes(topicKey);
+              const rating = formData.topicRatings?.[topicKey] || 0;
 
               return (
                 <React.Fragment key={topicKey}>
                   <ListItem
                     secondaryAction={
-                      topicSubTopics.length > 0 && (
-                        <IconButton edge="end" onClick={() => handleToggleExpand(topicKey)}>
-                          {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                        </IconButton>
-                      )
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Rating
+                          value={rating}
+                          onChange={(event, newValue) => handleRatingChange(topicKey, newValue)}
+                          precision={1}
+                        />
+                        {topicSubTopics.length > 0 && (
+                          <IconButton edge="end" onClick={() => handleToggleExpand(topicKey)}>
+                            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                          </IconButton>
+                        )}
+                      </Box>
                     }
                   >
                     <ListItemIcon>

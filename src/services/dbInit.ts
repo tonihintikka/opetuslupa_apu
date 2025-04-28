@@ -12,11 +12,11 @@ export const initializeDatabase = async (): Promise<void> => {
 
   if (studentCount > 0) {
     // Database already has data
-    console.log('Database already initialized');
+    console.warn('Database already initialized');
     return;
   }
 
-  console.log('Initializing database with sample data...');
+  console.warn('Initializing database with sample data...');
 
   try {
     // Add sample students
@@ -96,7 +96,7 @@ export const initializeDatabase = async (): Promise<void> => {
       description: 'Comfortable with starting, stopping, and basic maneuvers',
     });
 
-    console.log('Database initialized successfully');
+    console.warn('Database initialized successfully');
   } catch (error) {
     console.error('Error initializing database:', error);
   }

@@ -25,13 +25,16 @@ import {
   ShowChart as ShowChartIcon,
 } from '@mui/icons-material';
 import { useStudents } from '../../hooks';
-import { Student } from '../../services';
+import { Student, Lesson } from '../../services/db';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { useTranslation } from 'react-i18next';
 import ProgressDashboard from '../lesson/progress/ProgressDashboard';
+import LessonForm from '../lesson/LessonForm';
+import { useLessonForm } from '../lesson/LessonFormContext';
+import lessonService from '../../services/lessonService';
 
 const StudentsPage: React.FC = () => {
-  const { t } = useTranslation(['common', 'students']);
+  const { t } = useTranslation(['common', 'students', 'lessons']);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { students, loading, error, addStudent, updateStudent, deleteStudent } = useStudents();
@@ -44,6 +47,8 @@ const StudentsPage: React.FC = () => {
   });
   const [progressDialogOpen, setProgressDialogOpen] = useState<boolean>(false);
   const [selectedStudentId, setSelectedStudentId] = useState<number | undefined>(undefined);
+
+  const { isOpen: isLessonFormOpen, resetForm: resetLessonForm } = useLessonForm();
 
   const handleOpenDialog = (student?: Student) => {
     if (student) {
@@ -71,7 +76,7 @@ const StudentsPage: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev: Partial<Student>) => ({
       ...prev,
       [name]: value,
     }));
@@ -87,20 +92,34 @@ const StudentsPage: React.FC = () => {
     setSelectedStudentId(undefined);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmitStudent = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       if (editingStudent) {
-        // Update existing student
         await updateStudent(editingStudent.id!, formData);
       } else {
-        // Add new student
         await addStudent(formData as Omit<Student, 'id' | 'createdAt' | 'updatedAt'>);
       }
       handleCloseDialog();
     } catch (error) {
       console.error('Error saving student:', error);
+    }
+  };
+
+  const handleSaveLesson = async (
+    lessonData: Omit<Lesson, 'id' | 'createdAt' | 'updatedAt'>,
+    editingId?: number,
+  ) => {
+    try {
+      if (editingId) {
+        await lessonService.update(editingId, lessonData);
+      } else {
+        await lessonService.add(lessonData);
+      }
+      resetLessonForm();
+    } catch (saveError) {
+      console.error('Error saving lesson:', saveError);
     }
   };
 
@@ -173,7 +192,7 @@ const StudentsPage: React.FC = () => {
                   sx={{
                     flex: 1,
                     width: isMobile ? '100%' : 'auto',
-                    pr: isMobile ? 0 : 8, // Make room for action buttons on desktop
+                    pr: isMobile ? 0 : 8,
                   }}
                 >
                   <Typography variant="h6" component="div" sx={{ mb: 0.5 }}>
@@ -233,7 +252,6 @@ const StudentsPage: React.FC = () => {
         </List>
       )}
 
-      {/* Add/Edit Student Dialog */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -241,7 +259,7 @@ const StudentsPage: React.FC = () => {
         fullWidth
         fullScreen={isMobile}
       >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmitStudent}>
           <DialogTitle>
             {editingStudent ? t('students:editStudent') : t('students:addNewStudent')}
           </DialogTitle>
@@ -287,7 +305,6 @@ const StudentsPage: React.FC = () => {
         </form>
       </Dialog>
 
-      {/* Progress Dashboard Dialog */}
       <Dialog
         open={progressDialogOpen}
         onClose={handleCloseProgressDialog}
@@ -302,11 +319,32 @@ const StudentsPage: React.FC = () => {
           )}
         </DialogTitle>
         <DialogContent>
-          {selectedStudentId && <ProgressDashboard studentId={selectedStudentId} />}
+          {progressDialogOpen && selectedStudentId && (
+            <ProgressDashboard studentId={selectedStudentId} />
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseProgressDialog}>{t('actions.close')}</Button>
         </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={isLessonFormOpen}
+        onClose={resetLessonForm}
+        maxWidth="md"
+        fullWidth
+        fullScreen={isMobile}
+      >
+        <DialogTitle>{t('lessons:lessonDetails')}</DialogTitle>
+        <DialogContent>
+          {isLessonFormOpen && (
+            <LessonForm
+              students={students}
+              onSubmit={handleSaveLesson}
+              onCancel={resetLessonForm}
+            />
+          )}
+        </DialogContent>
       </Dialog>
     </Box>
   );

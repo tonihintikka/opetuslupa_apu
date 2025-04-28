@@ -3,13 +3,13 @@ import {
   Box,
   Typography,
   Paper,
-  Chip,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   Grid,
   Divider,
+  Rating,
 } from '@mui/material';
 import {
   CalendarToday as CalendarIcon,
@@ -17,7 +17,6 @@ import {
   Person as PersonIcon,
   School as SchoolIcon,
   DirectionsCar as CarIcon,
-  CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { LessonFormData } from './LessonWizard';
@@ -134,18 +133,22 @@ const WizardSummary: React.FC<WizardSummaryProps> = ({ formData, students, curre
             <Typography variant="subtitle2" color="primary" gutterBottom>
               {t('lessons:wizard.steps.exercises', 'Selected Topics')}
             </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
-              {formData.topics.map(topic => (
-                <Chip
-                  key={topic}
-                  label={t(`lessons:topics.${topic}`)}
-                  size="small"
-                  color="primary"
-                  variant="outlined"
-                  icon={<CheckCircleIcon />}
-                />
-              ))}
-            </Box>
+            <List dense disablePadding sx={{ mt: 1 }}>
+              {formData.topics.map(topicKey => {
+                const rating = formData.topicRatings?.[topicKey] || 0;
+                return (
+                  <ListItem disablePadding key={topicKey} sx={{ py: 0.5 }}>
+                    <ListItemIcon sx={{ minWidth: 36 }}>
+                      {/* Consider an icon here if needed, or remove ListItemIcon if not */}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={t(`lessons:topics.${topicKey}`)}
+                      secondary={<Rating value={rating} readOnly size="small" />}
+                    />
+                  </ListItem>
+                );
+              })}
+            </List>
           </Box>
         )}
 

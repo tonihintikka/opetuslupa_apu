@@ -1,39 +1,15 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { useState, ReactNode } from 'react';
+import { Lesson } from '../../services/db'; // Import Lesson type only
+import LessonFormContext, { LessonFormContextType } from './LessonFormContextTypes';
 
 /**
  * Interface for the Lesson Form Context
  * This context is ONLY for UI coordination, not data persistence
  */
-interface LessonFormContextType {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  preSelectedTopics: string[];
-  setPreSelectedTopics: (topics: string[]) => void;
-  preSelectedSubTopics: string[];
-  setPreSelectedSubTopics: (subTopics: string[]) => void;
-  preSelectedStudentId?: number;
-  setPreSelectedStudentId: (studentId?: number) => void;
-  learningStage?: string;
-  setLearningStage: (stage?: string) => void;
-  draftId?: number;
-  setDraftId: (id?: number) => void;
-  resetForm: () => void;
-  /**
-   * Open the lesson form with pre-selected options (topics, subTopics, studentId, stage, draft)
-   */
-  openWithSelections: (options: {
-    topics: string[];
-    subTopics?: string[];
-    studentId?: number;
-    learningStage?: string;
-    draftId?: number;
-  }) => void;
-}
 
 /**
  * Create the context with undefined as default value
  */
-const LessonFormContext = createContext<LessonFormContextType | undefined>(undefined);
 
 /**
  * Props for the LessonFormProvider component
@@ -53,6 +29,7 @@ export function LessonFormProvider({ children }: LessonFormProviderProps) {
   const [preSelectedStudentId, setPreSelectedStudentId] = useState<number | undefined>();
   const [learningStage, setLearningStage] = useState<string | undefined>();
   const [draftId, setDraftId] = useState<number | undefined>();
+  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
 
   /**
    * Open the lesson form with specified selections and open the dialog
@@ -64,6 +41,7 @@ export function LessonFormProvider({ children }: LessonFormProviderProps) {
     learningStage?: string;
     draftId?: number;
   }) => {
+    setEditingLesson(null);
     setPreSelectedTopics(options.topics);
     setPreSelectedSubTopics(options.subTopics ?? []);
     setPreSelectedStudentId(options.studentId);
@@ -73,7 +51,22 @@ export function LessonFormProvider({ children }: LessonFormProviderProps) {
   };
 
   /**
-   * Reset all form state
+   * Open the lesson form specifically for editing an existing lesson
+   */
+  const openForEditing = (lesson: Lesson) => {
+    setEditingLesson(lesson);
+    // Extract topic IDs from topicRatings array
+    const topicIds = lesson.topicRatings.map(tr => tr.topicId);
+    setPreSelectedTopics(topicIds);
+    setPreSelectedSubTopics(lesson.subTopics || []);
+    setPreSelectedStudentId(lesson.studentId);
+    setLearningStage(lesson.learningStage || undefined);
+    setDraftId(undefined);
+    setIsOpen(true);
+  };
+
+  /**
+   * Reset all form state, including the editing lesson
    */
   const resetForm = () => {
     setIsOpen(false);
@@ -82,6 +75,7 @@ export function LessonFormProvider({ children }: LessonFormProviderProps) {
     setPreSelectedStudentId(undefined);
     setLearningStage(undefined);
     setDraftId(undefined);
+    setEditingLesson(null);
   };
 
   // Create the context value
@@ -98,28 +92,12 @@ export function LessonFormProvider({ children }: LessonFormProviderProps) {
     setLearningStage,
     draftId,
     setDraftId,
+    editingLesson,
+    setEditingLesson,
     resetForm,
     openWithSelections,
+    openForEditing,
   };
 
   return <LessonFormContext.Provider value={value}>{children}</LessonFormContext.Provider>;
 }
-
-/**
- * Custom hook for using the Lesson Form Context
- * Throws an error if used outside of a LessonFormProvider
- */
-export function useLessonForm() {
-  const context = useContext(LessonFormContext);
-
-  if (context === undefined) {
-    throw new Error('useLessonForm must be used within a LessonFormProvider');
-  }
-
-  return context;
-}
-
-/**
- * Export the context as well, in case direct access is needed
- */
-export default LessonFormContext;

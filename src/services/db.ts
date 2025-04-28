@@ -13,15 +13,21 @@ export interface Student {
 // Define the learning stages based on Finnish driving school curriculum
 export type LearningStage = 'kognitiivinen' | 'assosiatiivinen' | 'automaattinen';
 
+// Topic rating interface
+export interface TopicRating {
+  topicId: string;
+  rating: number;
+}
+
 export interface Lesson {
   id?: number;
   studentId: number;
   date: Date;
   startTime: string;
   endTime: string;
-  learningStage?: LearningStage; // New field for learning stage
-  topics: string[];
-  subTopics?: string[]; // New field for sub-topics
+  learningStage?: LearningStage;
+  topicRatings: TopicRating[];
+  subTopics?: string[];
   notes?: string;
   kilometers?: number;
   completed: boolean;
@@ -47,7 +53,7 @@ export interface LessonDraft {
   startTime?: string;
   endTime?: string;
   learningStage?: LearningStage;
-  topics: string[];
+  topicRatings: TopicRating[];
   subTopics?: string[];
   notes?: string;
   kilometers?: number;
@@ -106,6 +112,49 @@ class DrivingLessonDB extends Dexie {
       })
       .upgrade(_tx => {
         console.warn('Upgrading schema to version 4, adding lessonDrafts table');
+      });
+
+    // Version 5: Replace topics with topicRatings in lessons and lessonDrafts
+    this.version(5)
+      .stores({
+        students: '++id, name, email, phone',
+        lessons: '++id, studentId, date, completed, learningStage, *topicRatings.topicId',
+        milestones: '++id, studentId, title, completedAt',
+        lessonDrafts: '++id, studentId, draftCreatedAt, lastModified, *topicRatings.topicId',
+      })
+      .upgrade(tx => {
+        // Migration logic: Convert topics array to topicRatings array
+        tx.table('lessons')
+          .toCollection()
+          .modify(lesson => {
+            if (lesson.topics && Array.isArray(lesson.topics)) {
+              // Convert topics array to topicRatings array with default rating 0
+              lesson.topicRatings = lesson.topics.map((topicId: string) => ({
+                topicId,
+                rating: 0,
+              }));
+              delete lesson.topics;
+            } else {
+              lesson.topicRatings = [];
+            }
+          });
+
+        tx.table('lessonDrafts')
+          .toCollection()
+          .modify(draft => {
+            if (draft.topics && Array.isArray(draft.topics)) {
+              // Convert topics array to topicRatings array with default rating 0
+              draft.topicRatings = draft.topics.map((topicId: string) => ({
+                topicId,
+                rating: 0,
+              }));
+              delete draft.topics;
+            } else {
+              draft.topicRatings = [];
+            }
+          });
+
+        console.warn('Upgrading schema to version 5, replacing topics with topicRatings');
       });
   }
 }
