@@ -240,18 +240,18 @@ const SessionStarter: React.FC<SessionStarterProps> = ({
       </DialogTitle>
 
       <DialogContent dividers>
-        <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
           {t('Student')}: {studentName}
         </Typography>
 
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           {t(
             'This session will focus on topics that need the most practice based on progress data.',
           )}
         </Typography>
 
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" sx={{ mb: 2 }}>
             {t('Suggested Topics')} ({estimatedDuration} {t('min')})
           </Typography>
 

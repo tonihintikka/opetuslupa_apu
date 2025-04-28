@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -10,9 +10,21 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Paper,
+  SelectChangeEvent,
+  Breadcrumbs,
+  Link,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Add as AddIcon, Close as CloseIcon } from '@mui/icons-material';
+import {
+  Add as AddIcon,
+  Close as CloseIcon,
+  NavigateNext as NavigateNextIcon,
+} from '@mui/icons-material';
 import { useLessons, useStudents } from '../../hooks';
 import LessonForm from '../lesson/LessonForm';
 import LessonTimer from '../lesson/LessonTimer';
@@ -20,6 +32,7 @@ import LoadingIndicator from '../common/LoadingIndicator';
 import EmptyState from '../common/EmptyState';
 import { Lesson } from '../../services/db';
 import { useLessonForm } from '../lesson/LessonFormContext';
+import ProgressDashboard from '../lesson/progress/ProgressDashboard';
 
 /**
  * Lessons page component
@@ -28,24 +41,37 @@ const LessonsPage: React.FC = () => {
   const { t } = useTranslation(['common', 'lessons']);
   const { students, loading: loadingStudents } = useStudents();
   const { lessons, loading: loadingLessons, addLesson } = useLessons();
+  const [selectedStudentId, setSelectedStudentId] = useState<number | ''>('');
 
   // Get the lesson form context
   const {
     isOpen: openFormFromContext,
     setIsOpen: setOpenFormFromContext,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     preSelectedTopics,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     preSelectedSubTopics,
     preSelectedStudentId,
+    setPreSelectedStudentId,
     resetForm,
   } = useLessonForm();
 
   // Local state for timer
   const [showTimer, setShowTimer] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timerStartTime, setTimerStartTime] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timerEndTime, setTimerEndTime] = useState<string>('');
 
   // Use context's isOpen for dialog visibility
   const openForm = openFormFromContext;
+
+  // Set the preselected student as the selected student when it changes
+  useEffect(() => {
+    if (preSelectedStudentId) {
+      setSelectedStudentId(preSelectedStudentId);
+    }
+  }, [preSelectedStudentId]);
 
   const handleOpenForm = () => {
     setOpenFormFromContext(true);
@@ -78,38 +104,115 @@ const LessonsPage: React.FC = () => {
     setOpenFormFromContext(true);
   };
 
+  const handleStudentChange = (event: SelectChangeEvent<number | string>) => {
+    const newStudentId = event.target.value as number | '';
+    setSelectedStudentId(newStudentId);
+
+    // Also update the preSelectedStudentId in the form context
+    if (newStudentId !== '') {
+      setPreSelectedStudentId(newStudentId as number);
+    }
+  };
+
+  // Find the selected student object
+  const selectedStudent = students.find(s => s.id === selectedStudentId);
+
   if (loadingLessons || loadingStudents) {
     return <LoadingIndicator />;
   }
 
-  // Find the pre-selected student object if available
-  // const preSelectedStudent = preSelectedStudentId
-  //   ? students.find(s => s.id === preSelectedStudentId)
-  //   : undefined;
-
   return (
     <Container>
       <Box sx={{ py: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-          <Typography variant="h4" gutterBottom>
-            {t('navigation.lessons')}
-          </Typography>
-          <Box>
-            <Button variant="outlined" color="primary" onClick={handleStartTimer} sx={{ mr: 1 }}>
-              {t('lessons:startTimer')}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={handleOpenForm}
+        {/* Page header with breadcrumbs when student is selected */}
+        {selectedStudent ? (
+          <Box sx={{ mb: 4 }}>
+            <Breadcrumbs
+              separator={<NavigateNextIcon fontSize="small" />}
+              aria-label="breadcrumb"
+              sx={{ mb: 1 }}
             >
-              {t('lessons:addLesson')}
-            </Button>
+              <Link
+                underline="hover"
+                color="inherit"
+                onClick={() => setSelectedStudentId('')}
+                sx={{ cursor: 'pointer' }}
+              >
+                {t('navigation.lessons')}
+              </Link>
+              <Typography color="text.primary">{selectedStudent.name}</Typography>
+            </Breadcrumbs>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant="h4">{selectedStudent.name}</Typography>
+              <Box>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleStartTimer}
+                  sx={{ mr: 1 }}
+                >
+                  {t('lessons:startTimer')}
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  onClick={handleOpenForm}
+                >
+                  {t('lessons:addLesson')}
+                </Button>
+              </Box>
+            </Box>
           </Box>
-        </Box>
+        ) : (
+          <Box
+            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}
+          >
+            <Typography variant="h4">{t('navigation.lessons')}</Typography>
+            <Box>
+              <Button variant="outlined" color="primary" onClick={handleStartTimer} sx={{ mr: 1 }}>
+                {t('lessons:startTimer')}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={handleOpenForm}
+              >
+                {t('lessons:addLesson')}
+              </Button>
+            </Box>
+          </Box>
+        )}
 
-        {lessons.length === 0 ? (
+        {/* Student Selection Dropdown (only show when no student is selected) */}
+        {!selectedStudent && (
+          <Paper sx={{ p: 2, mb: 4 }}>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel id="student-select-label">{t('lessons:forms.studentLabel')}</InputLabel>
+              <Select
+                labelId="student-select-label"
+                id="student-select"
+                value={selectedStudentId}
+                label={t('lessons:forms.studentLabel')}
+                onChange={handleStudentChange}
+              >
+                <MenuItem value="">{t('lessons:forms.studentPlaceholder')}</MenuItem>
+                {students.map(student => (
+                  <MenuItem key={student.id} value={student.id}>
+                    {student.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Paper>
+        )}
+
+        {/* Display ProgressDashboard when a student is selected */}
+        {selectedStudentId ? (
+          <ProgressDashboard studentId={selectedStudentId as number} />
+        ) : // Show default lessons list view when no student is selected
+        lessons.length === 0 ? (
           <EmptyState
             title={t('emptyStates.noLessons')}
             message={t('lessons:emptyState.addYourFirst')}
@@ -119,9 +222,7 @@ const LessonsPage: React.FC = () => {
         ) : (
           <Grid container spacing={3}>
             <Grid size={{ xs: 12 }}>
-              <Typography variant="h6" gutterBottom>
-                {t('lessons:recentLessons')}
-              </Typography>
+              <Typography variant="h6">{t('lessons:recentLessons')}</Typography>
               <Divider sx={{ mb: 2 }} />
               <Typography>{t('lessons:lessonsFeature')}</Typography>
               {/* Lesson list will be implemented here in the future */}
@@ -159,15 +260,6 @@ const LessonsPage: React.FC = () => {
               students={students}
               onSubmit={handleSubmitLesson}
               onCancel={handleCloseForm}
-              initialTimes={{
-                startTime: timerStartTime || undefined,
-                endTime: timerEndTime || undefined,
-              }}
-              initialData={{
-                studentId: preSelectedStudentId,
-                topics: preSelectedTopics,
-                subTopics: preSelectedSubTopics,
-              }}
             />
           </DialogContent>
         </Dialog>

@@ -166,7 +166,7 @@ export function SessionStarter({
         )}
 
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" sx={{ mb: 2 }}>
             {t('Student')}: {studentName}
           </Typography>
 
@@ -213,7 +213,7 @@ export function SessionStarter({
         </Box>
 
         <Box sx={{ mb: 2 }}>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant="subtitle1" sx={{ mb: 2 }}>
             {t('Suggested Topics')}
             <Chip
               label={`${estimatedDuration} ${t('min')}`}
