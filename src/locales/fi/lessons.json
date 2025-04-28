@@ -110,7 +110,7 @@
   },
 
   "progress": {
-    "title": "Edistymismatriisi",
+    "title": "Edistyminen",
     "overallProgress": "Kokonaisedistyminen",
     "totalTopics": "Aiheita yhteensä",
     "filterByStage": "Suodata vaiheen mukaan",
@@ -119,7 +119,7 @@
     "stage": "Vaihe",
     "completed": "Suoritettu",
     "recommended": "Suositeltu",
-    "remaining": "Jäljellä",
+    "remaining": "jäljellä",
     "progress": "Edistyminen",
     "lastPracticed": "Viimeksi harjoiteltu",
     "good": "≥ 75% (Hyvä edistyminen)",
@@ -127,7 +127,7 @@
     "needsAttention": "< 50% (Tarvitsee huomiota)",
     "helpText": "Edistymismatriisi näyttää edistymisesi kussakin ajo-opetuksen aiheessa. Suositeltu aika on arvio tarvittavasta harjoittelusta.",
     "noLessonsYet": "Ei vielä ajotunteja",
-    "noLessonsMessage": "Suorita ajotunteja nähdäksesi edistymistilastosi täällä.",
+    "noLessonsMessage": "Suorita ajotunteja nähdäksesi edistymistilastot täällä.",
     "topics": "aihetta",
     "topicsNeedingAttention": "Huomiota vaativat aiheet",
     "startNewSession": "Aloita uusi ajotunti",
@@ -173,5 +173,11 @@
     "finish": "Viimeistele",
     "summaryTitle": "Ajotunnin yhteenveto",
     "createLesson": "Luo ajotunti"
+  },
+
+  "history": {
+    "title": "Ajotuntihistoria",
+    "noLessons": "Ei ajotuntihistoriaa",
+    "edit": "Muokkaa"
   }
 }
