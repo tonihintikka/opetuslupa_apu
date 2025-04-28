@@ -31,7 +31,8 @@
     "filter": "Suodata",
     "reset": "Nollaa",
     "import": "Tuo",
-    "export": "Vie"
+    "export": "Vie",
+    "close": "Sulje"
   },
   "validation": {
     "required": "Pakollinen kenttä",
