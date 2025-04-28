@@ -22,7 +22,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Lesson, LearningStage, Student, TopicRating } from '../../services/db';
 import { lessonTopics, getTopicLabel } from '../../constants/lessonTopics';
-import { useLessonForm } from './LessonFormContext';
+import { useLessonForm } from './useLessonForm';
 
 interface FormErrors {
   studentId?: string;

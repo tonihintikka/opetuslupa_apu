@@ -29,7 +29,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { TopicProgress } from '../../../hooks/useProgressCalculation';
 import { LearningStage } from '../../../services/db';
-import { useLessonForm } from '../LessonFormContext';
+import { useLessonForm } from '../useLessonForm';
 
 interface SessionStarterProps {
   open: boolean;

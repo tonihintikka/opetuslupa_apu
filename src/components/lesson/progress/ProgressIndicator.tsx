@@ -27,7 +27,7 @@ import {
   KeyboardArrowRight as ArrowRightIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useLessonForm } from '../LessonFormContext';
+import { useLessonForm } from '../useLessonForm';
 import { LearningStage } from '../../../services/db';
 import { TopicProgress } from '../../../hooks/useProgressCalculation';
 import { getSubTopicsForTopic } from '../../../constants/lessonSubTopics';

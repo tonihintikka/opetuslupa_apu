@@ -31,7 +31,7 @@ import LessonTimer from '../lesson/LessonTimer';
 import LoadingIndicator from '../common/LoadingIndicator';
 import EmptyState from '../common/EmptyState';
 import { Lesson } from '../../services/db';
-import { useLessonForm } from '../lesson/LessonFormContext';
+import { useLessonForm } from '../lesson/useLessonForm';
 import ProgressDashboard from '../lesson/progress/ProgressDashboard';
 
 /**

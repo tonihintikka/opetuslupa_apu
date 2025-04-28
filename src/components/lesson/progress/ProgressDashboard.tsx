@@ -34,7 +34,7 @@ import ProgressMatrix from './ProgressMatrix';
 import ProgressIndicator from './ProgressIndicator';
 import SessionStarter from '../session/SessionStarter';
 import { format } from 'date-fns';
-import { useLessonForm } from '../LessonFormContext';
+import { useLessonForm } from '../useLessonForm';
 
 interface ProgressDashboardProps {
   studentId?: number;

@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { TopicProgress } from '../../hooks/useProgressCalculation';
-import { useLessonForm } from '../lesson/LessonFormContext';
+import { useLessonForm } from '../lesson/useLessonForm';
 import useDraftLessons from '../../hooks/useDraftLessons';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import WarningIcon from '@mui/icons-material/Warning';

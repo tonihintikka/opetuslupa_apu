@@ -30,7 +30,7 @@ import LoadingIndicator from '../common/LoadingIndicator';
 import { useTranslation } from 'react-i18next';
 import ProgressDashboard from '../lesson/progress/ProgressDashboard';
 import LessonForm from '../lesson/LessonForm';
-import { useLessonForm } from '../lesson/LessonFormContext';
+import { useLessonForm } from '../lesson/useLessonForm';
 import lessonService from '../../services/lessonService';
 
 const StudentsPage: React.FC = () => {
