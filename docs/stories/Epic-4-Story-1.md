@@ -8,7 +8,7 @@ Topic Performance Rating within Lessons
 
 ## Status
 
-To Do
+Completed
 
 ## Context
 
@@ -28,25 +28,25 @@ Story Points: 3 (Includes data model change, UI update, and service update. Does
 
 ## Tasks
 
-1.  - [ ] Update Database Schema (`db.ts`)
-    1.  - [ ] Modify the `Lesson` interface: replace `topics: string[]` with `topicRatings: { topicId: string; rating: number }[]`.
-    2.  - [ ] Update the Dexie table schema definition for `lessons` to reflect the change (`lessons: '++id, studentId, date, &[studentId+date+startTime], learningStage, *topicRatings.topicId, completed'` or similar, ensuring indexing on `topicId` within the array is handled correctly if needed).
-    3.  - [ ] Consider data migration strategy if existing lesson data needs to be preserved/converted (may be deferred if app is not yet in production).
+1.  - [x] Update Database Schema (`db.ts`)
+    1.  - [x] Modify the `Lesson` interface: replace `topics: string[]` with `topicRatings: { topicId: string; rating: number }[]`.
+    2.  - [x] Update the Dexie table schema definition for `lessons` to reflect the change (`lessons: '++id, studentId, date, &[studentId+date+startTime], learningStage, *topicRatings.topicId, completed'` or similar, ensuring indexing on `topicId` within the array is handled correctly if needed).
+    3.  - [x] Consider data migration strategy if existing lesson data needs to be preserved/converted (may be deferred if app is not yet in production).
 
-2.  - [ ] Update Lesson Form UI (`LessonForm.tsx`)
-    1.  - [ ] Keep the existing topic multi-select field.
-    2.  - [ ] Add state to manage the ratings for the currently selected topics (e.g., `useState<Record<string, number>>({})`).
-    3.  - [ ] Below the topic selection, dynamically render the list of selected topics.
-    4.  - [ ] For each selected topic, display its label and an MUI `Rating` component (1-5 stars).
-    5.  - [ ] Ensure the `Rating` component updates the internal ratings state.
-    6.  - [ ] Initialize ratings (e.g., to 0 or a default value) when topics are selected or when editing a lesson.
+2.  - [x] Update Lesson Form UI (`LessonForm.tsx`)
+    1.  - [x] Keep the existing topic multi-select field.
+    2.  - [x] Add state to manage the ratings for the currently selected topics (e.g., `useState<Record<string, number>>({})`).
+    3.  - [x] Below the topic selection, dynamically render the list of selected topics.
+    4.  - [x] For each selected topic, display its label and an MUI `Rating` component (1-5 stars).
+    5.  - [x] Ensure the `Rating` component updates the internal ratings state.
+    6.  - [x] Initialize ratings (e.g., to 0 or a default value) when topics are selected or when editing a lesson.
 
-3.  - [ ] Update Form Submission Logic (`LessonForm.tsx`)
-    1.  - [ ] Modify `handleSubmit` to map the internal ratings state into the `topicRatings: { topicId: string; rating: number }[]` structure.
-    2.  - [ ] Pass this new structure in the `lessonData` object to the `onSubmit` prop.
+3.  - [x] Update Form Submission Logic (`LessonForm.tsx`)
+    1.  - [x] Modify `handleSubmit` to map the internal ratings state into the `topicRatings: { topicId: string; rating: number }[]` structure.
+    2.  - [x] Pass this new structure in the `lessonData` object to the `onSubmit` prop.
 
-4.  - [ ] Update Lesson Service (`lessonService.ts`)
-    1.  - [ ] Verify that the `add` and `update` methods correctly handle the new `topicRatings` field structure. (Dexie should handle this automatically if the interface matches the schema).
+4.  - [x] Update Lesson Service (`lessonService.ts`)
+    1.  - [x] Verify that the `add` and `update` methods correctly handle the new `topicRatings` field structure. (Dexie should handle this automatically if the interface matches the schema).
 
 5.  - [ ] Update Components Using `lesson.topics` (Requires Search)
     1.  - [ ] Search codebase for usages of `lesson.topics` (e.g., `ProgressDashboard.tsx`, potentially `useProgressCalculation.ts`).
