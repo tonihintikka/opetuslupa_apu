@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Chip,
@@ -44,6 +45,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 }) => {
   const { t } = useTranslation(['common', 'lessons']);
   const { openWithSelections } = useLessonForm();
+  const navigate = useNavigate();
 
   // Track expanded topic items to show sub-topics
   const [expandedTopics, setExpandedTopics] = useState<string[]>([]);
@@ -98,11 +100,19 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 
   // Start a new lesson focused on a specific topic or sub-topic
   const handleStartLessonForTopic = (topicId: string, subTopicId?: string) => {
+    // Determine the learning stage of the selected topic
+    const selectedTopic = topicProgress.find(t => t.topicId === topicId);
+    const stage = selectedTopic?.stage;
+
     openWithSelections({
       topics: [topicId],
       subTopics: subTopicId ? [subTopicId] : undefined,
       studentId: studentId,
+      learningStage: stage,
     });
+
+    // Navigate to the lessons page so the form dialog is visible
+    navigate('/lessons');
   };
 
   // Get stage name

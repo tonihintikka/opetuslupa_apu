@@ -1,0 +1,342 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Data Persistence Architectural Patterns
+
+## Critical Rules
+
+- **Use Dexie.js for all database operations**: IndexedDB access should exclusively happen through Dexie.js tables and methods.
+- **Define database schema in `db.ts`**: All database tables and indexes must be defined in the central `db.ts` file.
+- **Create service modules for data access**: Every database entity should have a corresponding service module (e.g., `studentService.ts`) that exposes CRUD methods.
+- **Implement custom hooks for component integration**: Create and use custom hooks (e.g., `useStudents`) that connect components to services, handling loading/error states.
+- **React Context for UI coordination only**: Context should only manage component state and UI coordination - never use it as a primary data store.
+- **Follow offline-first principles**: All data operations must work without an internet connection, with data persisted to IndexedDB.
+- **Use transaction for related operations**: When multiple related operations need to be performed, use Dexie transactions to ensure data integrity.
+- **Keep service methods focused**: Each service method should have a single responsibility, making it easier to test and maintain.
+- **Handle errors gracefully**: All service methods should include proper error handling and propagate errors to the UI layer as needed.
+- **Maintain proper abstractions**: Components should never access the database directly - always go through services and hooks.
+
+## Examples
+
+<example>
+// GOOD: Proper database schema definition in db.ts
+import Dexie from 'dexie';
+
+export interface Student {
+  id?: number;
+  name: string;
+  email?: string;
+  phone?: string;
+  totalMinutes?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Lesson {
+  id?: number;
+  studentId: number;
+  date: Date;
+  startTime?: string;
+  endTime?: string;
+  topics: string[];
+  notes?: string;
+  kilometers?: number;
+}
+
+export interface LessonDraft {
+  id?: number;
+  studentId?: number;
+  date: Date;
+  topics: string[];
+  draftCreatedAt: Date;
+  lastModified: Date;
+}
+
+export interface Milestone {
+  id?: number;
+  studentId: number;
+  date: Date;
+  milestone: string;
+}
+
+export class DrivingDB extends Dexie {
+  students: Dexie.Table<Student, number>;
+  lessons: Dexie.Table<Lesson, number>;
+  lessonDrafts: Dexie.Table<LessonDraft, number>;
+  milestones: Dexie.Table<Milestone, number>;
+
+  constructor() {
+    super('drivingSchoolDB');
+    
+    this.version(1).stores({
+      students: '++id, name, email',
+      lessons: '++id, studentId, date',
+      lessonDrafts: '++id, studentId, draftCreatedAt',
+      milestones: '++id, studentId, date'
+    });
+    
+    this.students = this.table('students');
+    this.lessons = this.table('lessons');
+    this.lessonDrafts = this.table('lessonDrafts');
+    this.milestones = this.table('milestones');
+  }
+}
+
+export const db = new DrivingDB();
+
+// GOOD: Service implementation with proper error handling
+// studentService.ts
+import { db } from './db';
+import { Student } from '../types';
+
+export async function getStudents(): Promise<Student[]> {
+  try {
+    return await db.students.toArray();
+  } catch (error) {
+    console.error('Failed to get students:', error);
+    throw new Error('Failed to fetch students');
+  }
+}
+
+export async function getStudentById(id: number): Promise<Student | undefined> {
+  try {
+    return await db.students.get(id);
+  } catch (error) {
+    console.error(`Failed to get student ${id}:`, error);
+    throw new Error(`Failed to fetch student with ID ${id}`);
+  }
+}
+
+export async function addStudent(student: Omit<Student, 'id'>): Promise<number> {
+  try {
+    return await db.students.add(student);
+  } catch (error) {
+    console.error('Failed to add student:', error);
+    throw new Error('Failed to add student');
+  }
+}
+
+// GOOD: Custom hook for component integration
+// useStudents.ts
+import { useState, useEffect } from 'react';
+import { Student } from '../types';
+import * as studentService from '../services/studentService';
+
+export function useStudents() {
+  const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setLoading(true);
+        const data = await studentService.getStudents();
+        setStudents(data);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Unknown error'));
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchStudents();
+  }, []);
+
+  const addStudent = async (student: Omit<Student, 'id'>) => {
+    try {
+      const id = await studentService.addStudent(student);
+      setStudents(prev => [...prev, { ...student, id }]);
+      return id;
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to add student'));
+      throw err;
+    }
+  };
+
+  return { students, loading, error, addStudent };
+}
+
+// GOOD: Component using the custom hook
+// StudentsPage.tsx
+import React from 'react';
+import { useStudents } from '../hooks/useStudents';
+import { StudentList } from '../components/StudentList';
+import { StudentForm } from '../components/StudentForm';
+import { CircularProgress, Alert } from '@mui/material';
+
+export function StudentsPage() {
+  const { students, loading, error, addStudent } = useStudents();
+  
+  if (loading) return <CircularProgress />;
+  if (error) return <Alert severity="error">{error.message}</Alert>;
+  
+  return (
+    <div>
+      <StudentList students={students} />
+      <StudentForm onSubmit={addStudent} />
+    </div>
+  );
+}
+
+// GOOD: React Context for UI coordination (not data storage)
+// LessonFormContext.tsx
+import React, { createContext, useState, useContext, ReactNode } from 'react';
+
+interface LessonFormContextType {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  preSelectedTopics: string[];
+  setPreSelectedTopics: (topics: string[]) => void;
+  preSelectedStudentId?: number;
+  setPreSelectedStudentId: (studentId?: number) => void;
+  resetForm: () => void;
+}
+
+const LessonFormContext = createContext<LessonFormContextType | undefined>(undefined);
+
+export function LessonFormProvider({ children }: { children: ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [preSelectedTopics, setPreSelectedTopics] = useState<string[]>([]);
+  const [preSelectedStudentId, setPreSelectedStudentId] = useState<number | undefined>();
+  
+  const resetForm = () => {
+    setIsOpen(false);
+    setPreSelectedTopics([]);
+    setPreSelectedStudentId(undefined);
+  };
+  
+  const value = {
+    isOpen,
+    setIsOpen,
+    preSelectedTopics,
+    setPreSelectedTopics,
+    preSelectedStudentId,
+    setPreSelectedStudentId,
+    resetForm
+  };
+  
+  return (
+    <LessonFormContext.Provider value={value}>
+      {children}
+    </LessonFormContext.Provider>
+  );
+}
+
+export function useLessonForm() {
+  const context = useContext(LessonFormContext);
+  if (context === undefined) {
+    throw new Error('useLessonForm must be used within a LessonFormProvider');
+  }
+  return context;
+}
+</example>
+
+<example type="invalid">
+// BAD: Using React Context as a data store
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { Student } from '../types';
+
+interface StudentContextType {
+  students: Student[];
+  addStudent: (student: Omit<Student, 'id'>) => void;
+  updateStudent: (student: Student) => void;
+  deleteStudent: (id: number) => void;
+}
+
+const StudentContext = createContext<StudentContextType | undefined>(undefined);
+
+export function StudentProvider({ children }: { children: ReactNode }) {
+  const [students, setStudents] = useState<Student[]>([]); // In-memory only!
+  const [nextId, setNextId] = useState(1);
+  
+  const addStudent = (student: Omit<Student, 'id'>) => {
+    const newStudent = { ...student, id: nextId };
+    setStudents(prev => [...prev, newStudent]);
+    setNextId(prev => prev + 1);
+  };
+  
+  const updateStudent = (updatedStudent: Student) => {
+    setStudents(prev => 
+      prev.map(student => 
+        student.id === updatedStudent.id ? updatedStudent : student
+      )
+    );
+  };
+  
+  const deleteStudent = (id: number) => {
+    setStudents(prev => prev.filter(student => student.id !== id));
+  };
+  
+  return (
+    <StudentContext.Provider value={{ students, addStudent, updateStudent, deleteStudent }}>
+      {children}
+    </StudentContext.Provider>
+  );
+}
+
+// BAD: Directly accessing database in components
+function BadStudentList() {
+  const [students, setStudents] = useState([]);
+  
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const db = new Dexie('drivingSchoolDB');
+      db.version(1).stores({
+        students: '++id,name,email'
+      });
+      
+      const students = await db.table('students').toArray();
+      setStudents(students);
+    };
+    
+    fetchStudents();
+  }, []);
+  
+  // Rest of component...
+}
+
+// BAD: No separation between data access and UI
+function BadLessonComponent() {
+  const [lesson, setLesson] = useState(null);
+  const [error, setError] = useState(null);
+  const { id } = useParams();
+  
+  useEffect(() => {
+    const db = new Dexie('drivingSchoolDB');
+    db.version(1).stores({
+      lessons: '++id,studentId,date',
+    });
+    
+    db.table('lessons')
+      .get(Number(id))
+      .then(setLesson)
+      .catch(error => {
+        console.error('Failed to get lesson:', error);
+        setError('Failed to load lesson');
+      });
+  }, [id]);
+  
+  // Component rendering logic mixed with data access concerns
+  
+  const handleSave = async (updatedData) => {
+    try {
+      const db = new Dexie('drivingSchoolDB');
+      db.version(1).stores({
+        lessons: '++id,studentId,date',
+      });
+      
+      await db.table('lessons').update(Number(id), updatedData);
+      setLesson(updatedData);
+    } catch (error) {
+      console.error('Failed to update lesson:', error);
+      setError('Failed to save lesson');
+    }
+  };
+  
+  // More UI logic...
+}
+</example>
