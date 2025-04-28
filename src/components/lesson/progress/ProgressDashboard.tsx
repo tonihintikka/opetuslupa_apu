@@ -13,6 +13,11 @@ import {
   Chip,
   IconButton,
   useTheme,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from '@mui/material';
 import {
   PlayArrow as StartIcon,
@@ -27,7 +32,7 @@ import studentService from '../../../services/studentService';
 import { useProgressCalculation } from '../../../hooks/useProgressCalculation';
 import ProgressMatrix from './ProgressMatrix';
 import ProgressIndicator from './ProgressIndicator';
-import SessionStarter from '../../../components/student/SessionStarter';
+import SessionStarter from '../session/SessionStarter';
 import { format } from 'date-fns';
 import { useLessonForm } from '../LessonFormContext';
 
@@ -35,30 +40,46 @@ interface ProgressDashboardProps {
   studentId?: number;
 }
 
-const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
+const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId: initialStudentId }) => {
   const { t } = useTranslation(['common', 'lessons']);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [studentData, setStudentData] = useState<Student | null>(null);
+  const [allStudents, setAllStudents] = useState<Student[]>([]);
+  const [selectedStudentId, setSelectedStudentId] = useState<number | undefined>(initialStudentId);
   const { topicProgress, getOverallProgress } = useProgressCalculation(lessons);
   const [showSessionStarter, setShowSessionStarter] = useState(false);
-  const { setIsOpen: setLessonFormOpen } = useLessonForm();
+  const { openForEditing } = useLessonForm();
 
-  // Fetch lessons on component mount
+  // Fetch all students on component mount
+  useEffect(() => {
+    const fetchAllStudents = async () => {
+      try {
+        const students = await studentService.getAll();
+        setAllStudents(students);
+      } catch (error) {
+        console.error('Error fetching all students:', error);
+      }
+    };
+
+    fetchAllStudents();
+  }, []);
+
+  // Fetch lessons on component mount or when selected student changes
   useEffect(() => {
     const fetchLessons = async () => {
       try {
         setLoading(true);
         let fetchedLessons: Lesson[];
 
-        if (studentId) {
-          fetchedLessons = await lessonService.getByStudentId(studentId);
+        if (selectedStudentId) {
+          fetchedLessons = await lessonService.getByStudentId(selectedStudentId);
 
           // Also fetch student data if studentId is provided
           try {
-            const student = await studentService.getById(studentId);
+            const student = await studentService.getById(selectedStudentId);
             if (student) {
               setStudentData(student);
             }
@@ -78,7 +99,12 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
     };
 
     fetchLessons();
-  }, [studentId]);
+  }, [selectedStudentId]);
+
+  const handleStudentChange = (event: SelectChangeEvent<number>) => {
+    const value = event.target.value;
+    setSelectedStudentId(value as number);
+  };
 
   const handleStartSession = () => {
     // Use the session starter dialog which will handle creating a draft
@@ -114,11 +140,9 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
   };
 
   // Handle opening lesson edit form
-  const handleEditLesson = (_lesson: Lesson) => {
-    // Open the lesson form
-    setLessonFormOpen(true);
-    // Note: We don't have a setEditingLesson in the context yet,
-    // this would be handled by a future enhancement
+  const handleEditLesson = (lesson: Lesson) => {
+    // Open the lesson form using the context function, passing the lesson data
+    openForEditing(lesson);
   };
 
   // Sort lessons by date (newest first)
@@ -132,7 +156,7 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
 
     return (
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" sx={{ mb: 2 }}>
           {t('lessons:history.title', 'Lesson History')}
         </Typography>
         <Divider sx={{ mb: 2 }} />
@@ -171,14 +195,14 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
                   }
                   secondary={
                     <Box>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                      <Typography variant="body2" sx={{ mb: 0.5, color: 'text.secondary' }}>
                         {lesson.learningStage && t(`lessons:stages.${lesson.learningStage}`)}
                       </Typography>
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {lesson.topics.map(topic => (
+                        {lesson.topicRatings.map(tr => (
                           <Chip
-                            key={topic}
-                            label={t(`lessons:topics.${topic}`, topic)}
+                            key={tr.topicId}
+                            label={t(`lessons:topics.${tr.topicId}`, tr.topicId)}
                             size="small"
                             variant="outlined"
                           />
@@ -191,6 +215,7 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
                       )}
                     </Box>
                   }
+                  secondaryTypographyProps={{ component: 'div' }}
                 />
               </ListItem>
               <Divider variant="inset" component="li" />
@@ -210,16 +235,102 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        position: 'relative',
+        overflow: 'auto',
+        height: '100%',
+        maxHeight: {
+          xs: 'calc(100vh - var(--app-bar-height) - var(--bottom-nav-height) - 32px)', // Account for AppBar, BottomNav, and padding
+          md: 'calc(100vh - var(--app-bar-height) - 48px)', // Account for AppBar and padding on desktop
+        },
+        display: 'flex',
+        flexDirection: 'column',
+        pb: 4,
+        pt: 3, // Increase top padding to allow space for dropdown
+        px: 1, // Add horizontal padding
+      }}
+    >
+      {/* Student Selection Dropdown */}
+      <Box
+        sx={{
+          mb: 3,
+          position: 'relative',
+          zIndex: 2,
+          bgcolor: 'background.paper',
+          pt: 2,
+          pb: 2,
+          borderRadius: 1,
+          boxShadow: 1,
+        }}
+      >
+        <FormControl fullWidth size="medium" sx={{ mb: 2 }}>
+          {' '}
+          {/* Change to medium size */}
+          <InputLabel id="student-select-label">{t('common:student', 'Student')}</InputLabel>
+          <Select
+            labelId="student-select-label"
+            id="student-select"
+            value={selectedStudentId || ''}
+            label={t('common:student', 'Student')}
+            onChange={handleStudentChange}
+            displayEmpty
+            sx={{
+              '& .MuiSelect-select': {
+                padding: '14px 16px', // Increase padding even more
+                fontSize: '1.1rem', // Slightly larger font
+              },
+              '& .MuiMenuItem-root': {
+                padding: '12px 16px',
+              },
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  maxHeight: '50vh',
+                  mt: 1, // Add margin to move dropdown down slightly
+                  '& .MuiMenuItem-root': {
+                    padding: '10px 16px',
+                    '&:hover': {
+                      backgroundColor: 'action.hover',
+                    },
+                  },
+                },
+              },
+            }}
+          >
+            <MenuItem value="" sx={{ padding: '12px 16px' }}>
+              {t('common:allStudents', 'All Students')}
+            </MenuItem>
+            {allStudents.map(student => (
+              <MenuItem key={student.id} value={student.id} sx={{ padding: '12px 16px' }}>
+                {student.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {studentData && (
+          <>
+            <Typography variant="h4" sx={{ mb: 1, px: 1 }}>
+              {' '}
+              {/* Add horizontal padding */}
+              {studentData.name}
+            </Typography>
+            <Divider />
+          </>
+        )}
+      </Box>
+
       {/* Start Session Button - Shown at the top for both mobile and desktop */}
-      {studentId && (
+      {selectedStudentId && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
           <Button
             variant="contained"
             color="primary"
             startIcon={<StartIcon />}
             onClick={handleStartSession}
-            sx={{ borderRadius: 2 }}
+            sx={{ borderRadius: 2, py: 1 }} // Add more vertical padding
           >
             {t('lessons:progress.startNewSession', 'Start New Session')}
           </Button>
@@ -228,10 +339,10 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
 
       {lessons.length === 0 ? (
         <Paper sx={{ p: 3, textAlign: 'center' }}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" sx={{ mb: 2 }}>
             {t('lessons:progress.noLessonsYet', 'No lessons recorded yet')}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {t(
               'lessons:progress.noLessonsMessage',
               'Complete some driving lessons to see your progress statistics here.',
@@ -244,10 +355,11 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
             <ProgressIndicator
               topicProgress={topicProgress}
               overallProgress={getOverallProgress()}
-              studentId={studentId}
+              studentId={selectedStudentId}
+              studentName={studentData?.name}
             />
           ) : (
-            <ProgressMatrix lessons={lessons} studentId={studentId} />
+            <ProgressMatrix lessons={lessons} studentId={selectedStudentId} />
           )}
         </Box>
       )}
@@ -256,13 +368,13 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
       {renderLessonHistory()}
 
       {/* Session Starter Dialog */}
-      {studentId && studentData && (
+      {selectedStudentId && studentData && (
         <SessionStarter
           open={showSessionStarter}
           onClose={handleCloseSessionStarter}
-          studentId={studentId}
+          studentId={selectedStudentId}
           studentName={studentData.name}
-          topicProgress={topicProgress}
+          suggestedTopics={topicProgress}
         />
       )}
     </Box>

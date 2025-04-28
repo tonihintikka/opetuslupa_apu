@@ -35,7 +35,36 @@
     "nightDriving": "Pimeäajo",
     "winterDriving": "Talviajo",
     "defensiveDriving": "Ennakoiva ajo",
-    "ecodriving": "Taloudellinen ajo"
+    "ecodriving": "Taloudellinen ajo",
+    "ajoasento": "Ajoasento",
+    "liikkeellelahto": "Liikkeellelähtö",
+    "ohjaus": "Ohjaus",
+    "peruutus": "Peruutus",
+    "makilahto": "Mäkilähtö",
+    "taajamaajo": "Taajama-ajo",
+    "risteysajo": "Risteysajo",
+    "vaihteet": "Vaihteiden vaihto",
+    "liikennevalot": "Liikennevalot",
+    "liikenneympyrat": "Liikenneympyrät",
+    "kaistanvaihto": "Kaistanvaihdot ja liittymät",
+    "maantieajo": "Maantieajo",
+    "moottoritieajo": "Moottoritieajo",
+    "pysakointi": "Pysäköinti (tasku, vino, ruutu)",
+    "ajopimealla": "Ajaminen pimeällä",
+    "ajosateella": "Ajaminen sateella",
+    "riskientunnistus": "Riskientunnistus",
+    "valojenhallinta": "Pimeällä ajaminen ja valojen hallinta",
+    "liukaskeli": "Liukkaalla kelillä ajaminen (teoria/simulaatio)",
+    "hatajarrutus": "Hätäjarrutus",
+    "vaistamistilanne": "Väistämistilanteet",
+    "ajokoe_simulaatio": "Ajokokeen simulaatio",
+    "itsenainen_ajo": "Itsenäinen ajaminen",
+    "City driving": "Kaupunkiajo",
+    "Traffic lights": "Liikennevalot",
+    "Basic controls": "Auton perushallinta",
+    "Starting and stopping": "Liikkeellelähtö ja pysähtyminen",
+    "Highway driving": "Moottoritieajo",
+    "Overtaking": "Ohittaminen"
   },
 
   "subTopics": {
@@ -70,7 +99,10 @@
     "learningStageLabel": "Oppimisvaihe",
     "startTimeLabel": "Aloitusaika",
     "endTimeLabel": "Lopetusaika",
-    "kilometersLabel": "Kilometrit"
+    "kilometersLabel": "Kilometrit",
+    "markAsCompleted": "Merkitse suoritetuksi",
+    "topicRatingsLabel": "Aiheiden suoritusarvioinnit",
+    "topicRatingsHelp": "Arvioi oppilaan suoritus jokaiselle aiheelle asteikolla 1-5 tähteä."
   },
 
   "timeline": {

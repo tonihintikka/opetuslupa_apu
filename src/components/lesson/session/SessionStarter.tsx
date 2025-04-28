@@ -239,7 +239,15 @@ const SessionStarter: React.FC<SessionStarterProps> = ({
         {t('Start New Learning Session')}: {studentName}
       </DialogTitle>
 
-      <DialogContent dividers>
+      <DialogContent
+        dividers
+        sx={{
+          padding: 3,
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 1 }}>
           {t('Student')}: {studentName}
         </Typography>
@@ -328,7 +336,7 @@ const SessionStarter: React.FC<SessionStarterProps> = ({
         <Divider sx={{ mb: 2 }} />
 
         {/* Topics list */}
-        <List>
+        <List sx={{ flex: 1, overflow: 'auto' }}>
           {filteredTopics.map(topic => {
             const isSelected = selectedTopicIds.includes(topic.topicId);
             return (

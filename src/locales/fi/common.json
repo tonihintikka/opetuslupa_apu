@@ -77,7 +77,8 @@
     "cancel": "Peruuta",
     "delete": "Poista",
     "edit": "Muokkaa",
-    "add": "Lisää"
+    "add": "Lisää",
+    "update": "Päivitä"
   },
   "errors": {
     "boundary": {
@@ -126,6 +127,8 @@
   "Start Session": "Aloita ajotunti",
   "Start New Learning Session": "Aloita uusi oppimistuokio",
   "Student": "Oppilas",
+  "student": "Oppilas",
+  "allStudents": "Kaikki oppilaat",
   "This session will focus on topics that need the most practice based on progress data.": "Tämä oppimistuokio keskittyy aiheisiin, jotka tarvitsevat eniten harjoittelua edistymistietojen perusteella.",
   "Estimated Duration": "Arvioitu kesto",
   "Selected Topics": "Valitut aiheet",

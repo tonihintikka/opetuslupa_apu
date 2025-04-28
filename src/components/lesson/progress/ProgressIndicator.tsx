@@ -36,12 +36,15 @@ interface ProgressIndicatorProps {
   topicProgress: TopicProgress[];
   overallProgress: number;
   studentId?: number; // Add studentId to be able to start a lesson for the student
+  studentName?: string; // Add studentName for display
 }
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   topicProgress,
   overallProgress,
   studentId,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  studentName,
 }) => {
   const { t } = useTranslation(['common', 'lessons']);
   const { openWithSelections } = useLessonForm();
@@ -49,6 +52,8 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 
   // Track expanded topic items to show sub-topics
   const [expandedTopics, setExpandedTopics] = useState<string[]>([]);
+  // Track expanded accordions
+  const [expandedAccordions, setExpandedAccordions] = useState<string[]>([]);
 
   // Group topics by stage
   const groupedTopics = React.useMemo(() => {
@@ -97,6 +102,14 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
       prev.includes(topicId) ? prev.filter(id => id !== topicId) : [...prev, topicId],
     );
   };
+
+  // Handle accordion change
+  const handleAccordionChange =
+    (stage: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpandedAccordions(prev =>
+        isExpanded ? [...prev, stage] : prev.filter(s => s !== stage),
+      );
+    };
 
   // Start a new lesson focused on a specific topic or sub-topic
   const handleStartLessonForTopic = (topicId: string, subTopicId?: string) => {
@@ -155,11 +168,11 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   };
 
   return (
-    <Box>
+    <Box sx={{ overflow: 'auto' }}>
       {/* Overall progress card */}
       <Card sx={{ mb: 2 }}>
         <CardContent>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" sx={{ mb: 2 }}>
             {t('lessons:progress.overallProgress', 'Overall Progress')}
           </Typography>
 
@@ -183,7 +196,13 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 
       {/* Stage accordions */}
       {stageProgress.map(stage => (
-        <Accordion key={stage.stage} sx={{ mb: 1 }}>
+        <Accordion
+          key={stage.stage}
+          sx={{ mb: 1 }}
+          expanded={expandedAccordions.includes(stage.stage)}
+          onChange={handleAccordionChange(stage.stage)}
+          TransitionProps={{ unmountOnExit: false }}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Box sx={{ display: 'flex', width: '100%', alignItems: 'center' }}>
               <Box sx={{ flex: 1 }}>
@@ -203,7 +222,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
             </Box>
           </AccordionSummary>
 
-          <AccordionDetails>
+          <AccordionDetails sx={{ maxHeight: '60vh', overflow: 'auto' }}>
             <Box>
               <Typography variant="body2" sx={{ mb: 1 }}>
                 {formatMinutes(stage.totalCompleted)} / {formatMinutes(stage.totalRecommended)}
