@@ -20,15 +20,11 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-  Tooltip,
-  IconButton,
 } from '@mui/material';
 import {
-  Info as InfoIcon,
   PriorityHigh as HighPriorityIcon,
   Flag as MediumPriorityIcon,
   FiberManualRecord as LowPriorityIcon,
-  Timer as TimerIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { TopicProgress } from '../../../hooks/useProgressCalculation';
@@ -240,23 +236,23 @@ const SessionStarter: React.FC<SessionStarterProps> = ({
       }}
     >
       <DialogTitle>
-        {t('lessons:progress.sessionPreview', 'Session Preview')}: {studentName}
+        {t('Start New Learning Session')}: {studentName}
       </DialogTitle>
 
       <DialogContent dividers>
+        <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+          {t('Student')}: {studentName}
+        </Typography>
+
+        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+          {t(
+            'This session will focus on topics that need the most practice based on progress data.',
+          )}
+        </Typography>
+
         <Box sx={{ mb: 3 }}>
           <Typography variant="h6" gutterBottom>
-            {t('lessons:progress.suggestedTopics', 'Suggested Topics')}
-            <Tooltip
-              title={t(
-                'lessons:progress.suggestedTopicsHelp',
-                'These topics need the most practice based on your current progress',
-              )}
-            >
-              <IconButton size="small" sx={{ ml: 1 }}>
-                <InfoIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
+            {t('Suggested Topics')} ({estimatedDuration} {t('min')})
           </Typography>
 
           {/* Session configuration */}
@@ -268,45 +264,36 @@ const SessionStarter: React.FC<SessionStarterProps> = ({
               mb: 2,
             }}
           >
-            <FormControl sx={{ minWidth: 120, flex: 1 }}>
-              <InputLabel id="session-duration-label">
-                {t('lessons:progress.estimatedDuration', 'Estimated Duration')}
-              </InputLabel>
+            <FormControl fullWidth margin="normal" size="small">
+              <InputLabel id="duration-select-label">{t('Duration')}</InputLabel>
               <Select
-                labelId="session-duration-label"
+                labelId="duration-select-label"
+                id="duration"
                 value={selectedDuration}
-                label={t('lessons:progress.estimatedDuration', 'Estimated Duration')}
+                label={t('Duration')}
                 onChange={handleDurationChange}
-                startAdornment={<TimerIcon fontSize="small" sx={{ mr: 1 }} />}
               >
                 {SESSION_DURATIONS.map(duration => (
                   <MenuItem key={duration} value={duration}>
-                    {formatTime(duration)}
+                    {duration} {t('minutes')}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
-            <FormControl sx={{ minWidth: 120, flex: 1 }}>
-              <InputLabel id="session-stage-label">
-                {t('lessons:progress.stage', 'Stage')}
-              </InputLabel>
+            <FormControl fullWidth margin="normal" size="small">
+              <InputLabel id="stage-select-label">{t('Learning Stage')}</InputLabel>
               <Select
-                labelId="session-stage-label"
+                labelId="stage-select-label"
+                id="stage"
                 value={selectedStage}
-                label={t('lessons:progress.stage', 'Stage')}
+                label={t('Learning Stage')}
                 onChange={handleStageChange}
               >
-                <MenuItem value="all">{t('common:all', 'All')}</MenuItem>
-                <MenuItem value="kognitiivinen">
-                  {t('lessons:stages.kognitiivinen', 'Cognitive')}
-                </MenuItem>
-                <MenuItem value="assosiatiivinen">
-                  {t('lessons:stages.assosiatiivinen', 'Associative')}
-                </MenuItem>
-                <MenuItem value="automaattinen">
-                  {t('lessons:stages.automaattinen', 'Automatic')}
-                </MenuItem>
+                <MenuItem value="all">{t('All Stages')}</MenuItem>
+                <MenuItem value="kognitiivinen">{t('Kognitiivinen')}</MenuItem>
+                <MenuItem value="assosiatiivinen">{t('Assosiatiivinen')}</MenuItem>
+                <MenuItem value="automaattinen">{t('Automaattinen')}</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -314,11 +301,10 @@ const SessionStarter: React.FC<SessionStarterProps> = ({
           {/* Selected topics summary */}
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 2 }}>
             <Typography variant="body2" sx={{ mr: 2 }}>
-              {t('lessons:progress.estimatedDuration', 'Estimated Duration')}:{' '}
-              {formatTime(estimatedDuration)}
+              {t('Estimated Duration')}: {formatTime(estimatedDuration)}
             </Typography>
             <Typography variant="body2">
-              {t('lessons:topics.selectTopics', 'Selected Topics')}: {selectedTopicIds.length}
+              {t('Selected Topics')}: {selectedTopicIds.length}
             </Typography>
           </Box>
 
@@ -326,21 +312,15 @@ const SessionStarter: React.FC<SessionStarterProps> = ({
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <HighPriorityIcon fontSize="small" color="error" sx={{ mr: 0.5 }} />
-              <Typography variant="caption">
-                {t('lessons:progress.highPriority', 'High Priority')}
-              </Typography>
+              <Typography variant="caption">{t('High Priority')}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <MediumPriorityIcon fontSize="small" color="warning" sx={{ mr: 0.5 }} />
-              <Typography variant="caption">
-                {t('lessons:progress.mediumPriority', 'Medium Priority')}
-              </Typography>
+              <Typography variant="caption">{t('Medium Priority')}</Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <LowPriorityIcon fontSize="small" color="success" sx={{ mr: 0.5 }} />
-              <Typography variant="caption">
-                {t('lessons:progress.lowPriority', 'Low Priority')}
-              </Typography>
+              <Typography variant="caption">{t('Low Priority')}</Typography>
             </Box>
           </Box>
         </Box>
@@ -421,14 +401,16 @@ const SessionStarter: React.FC<SessionStarterProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose}>{t('common:cancel', 'Cancel')}</Button>
+        <Button onClick={onClose} color="inherit">
+          {t('Cancel')}
+        </Button>
         <Button
           variant="contained"
           color="primary"
           onClick={handleStartSession}
           disabled={selectedTopicIds.length === 0}
         >
-          {t('lessons:progress.startSession', 'Start Session')}
+          {t('Start Session')}
         </Button>
       </DialogActions>
     </Dialog>

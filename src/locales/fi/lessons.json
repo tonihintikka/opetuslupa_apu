@@ -66,7 +66,11 @@
     "topicsLabel": "Aiheet",
     "topicsPlaceholder": "Valitse käsitellyt aiheet",
     "notesLabel": "Muistiinpanot",
-    "notesPlaceholder": "Lisää muistiinpanoja ajotunnista"
+    "notesPlaceholder": "Lisää muistiinpanoja ajotunnista",
+    "learningStageLabel": "Oppimisvaihe",
+    "startTimeLabel": "Aloitusaika",
+    "endTimeLabel": "Lopetusaika",
+    "kilometersLabel": "Kilometrit"
   },
 
   "timeline": {
@@ -87,7 +91,7 @@
 
   "emptyState": {
     "noLessons": "Ei ajotunteja",
-    "addYourFirst": "Lisää ensimmäinen ajotunti aloittaaksesi",
+    "addYourFirst": "Täällä näet kaikki kirjatut ajotunnit. Aloita napsauttamalla sivun yläosassa olevaa 'Lisää ajotunti' -painiketta.",
     "noSearchResults": "Ei hakutuloksia",
     "tryDifferent": "Kokeile eri hakuehtoja"
   },

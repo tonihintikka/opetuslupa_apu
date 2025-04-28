@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   TextField,
-  Typography,
   Select,
   MenuItem,
   FormControl,
@@ -12,6 +11,8 @@ import {
   OutlinedInput,
   SelectChangeEvent,
   Grid,
+  FormHelperText,
+  Alert,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Lesson, LearningStage, Student } from '../../services/db';
@@ -35,6 +36,13 @@ interface LessonFormProps {
   onCancel: () => void;
   initialTimes?: InitialTimes;
   initialData?: InitialData;
+}
+
+interface FormErrors {
+  studentId?: string;
+  learningStage?: string;
+  topics?: string;
+  general?: string;
 }
 
 const LessonForm: React.FC<LessonFormProps> = ({
@@ -67,6 +75,8 @@ const LessonForm: React.FC<LessonFormProps> = ({
   );
   const [notes, setNotes] = useState<string>(lesson?.notes || '');
   const [kilometers, setKilometers] = useState<string>(lesson?.kilometers?.toString() || '');
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   // Update form when initialTimes or initialData changes
   useEffect(() => {
@@ -90,12 +100,73 @@ const LessonForm: React.FC<LessonFormProps> = ({
       target: { value },
     } = event;
     setSelectedTopics(typeof value === 'string' ? value.split(',') : value);
+    setTouched({ ...touched, topics: true });
+    validateField('topics', typeof value === 'string' ? value.split(',') : value);
+  };
+
+  const markAsTouched = (field: string) => {
+    setTouched({ ...touched, [field]: true });
+  };
+
+  const validateField = (field: string, value: any): boolean => {
+    let isValid = true;
+    const newErrors = { ...errors };
+
+    switch (field) {
+      case 'studentId':
+        if (!value) {
+          newErrors.studentId = t('validation.required');
+          isValid = false;
+        } else {
+          delete newErrors.studentId;
+        }
+        break;
+      case 'learningStage':
+        if (!value) {
+          newErrors.learningStage = t('validation.required');
+          isValid = false;
+        } else {
+          delete newErrors.learningStage;
+        }
+        break;
+      case 'topics':
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+          newErrors.topics = t('validation.required');
+          isValid = false;
+        } else {
+          delete newErrors.topics;
+        }
+        break;
+      default:
+        break;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const validateForm = (): boolean => {
+    // Mark all fields as touched
+    const allTouched = {
+      studentId: true,
+      learningStage: true,
+      topics: true,
+    };
+    setTouched({ ...touched, ...allTouched });
+
+    // Validate all required fields
+    const studentIdValid = validateField('studentId', studentId);
+    const learningStageValid = validateField('learningStage', learningStage);
+    const topicsValid = validateField('topics', selectedTopics);
+
+    return studentIdValid && learningStageValid && topicsValid;
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!studentId || !learningStage || selectedTopics.length === 0) {
-      // Basic validation - enhance as needed
+
+    if (!validateForm()) {
+      setErrors(prev => ({ ...prev, general: t('validation.checkFields') }));
       return;
     }
 
@@ -104,7 +175,7 @@ const LessonForm: React.FC<LessonFormProps> = ({
       date: new Date(date),
       startTime,
       endTime,
-      learningStage,
+      learningStage: learningStage as LearningStage,
       topics: selectedTopics,
       notes,
       kilometers: kilometers ? Number(kilometers) : undefined,
@@ -115,19 +186,31 @@ const LessonForm: React.FC<LessonFormProps> = ({
 
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-      <Typography variant="h6" gutterBottom>
-        {lesson ? t('lessons:editLesson') : t('lessons:addLesson')}
-      </Typography>
+      {errors.general && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errors.general}
+        </Alert>
+      )}
+
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <FormControl fullWidth required margin="normal">
+          <FormControl
+            fullWidth
+            required
+            margin="normal"
+            error={touched.studentId && !!errors.studentId}
+          >
             <InputLabel id="student-select-label">{t('lessons:forms.studentLabel')}</InputLabel>
             <Select
               labelId="student-select-label"
               id="studentId"
               value={studentId}
               label={t('lessons:forms.studentLabel')}
-              onChange={e => setStudentId(e.target.value as number)}
+              onChange={e => {
+                setStudentId(e.target.value as number);
+                validateField('studentId', e.target.value);
+              }}
+              onBlur={() => markAsTouched('studentId')}
             >
               {students.map(s => (
                 <MenuItem key={s.id} value={s.id}>
@@ -135,30 +218,39 @@ const LessonForm: React.FC<LessonFormProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {touched.studentId && errors.studentId && (
+              <FormHelperText error>{errors.studentId}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <FormControl fullWidth required margin="normal">
+          <FormControl
+            fullWidth
+            required
+            margin="normal"
+            error={touched.learningStage && !!errors.learningStage}
+          >
             <InputLabel id="learning-stage-select-label">
-              {t('lessons:forms.learningStageLabel', 'Learning Stage')}
+              {t('lessons:forms.learningStageLabel')}
             </InputLabel>
             <Select
               labelId="learning-stage-select-label"
               id="learningStage"
               value={learningStage}
-              label={t('lessons:forms.learningStageLabel', 'Learning Stage')}
-              onChange={e => setLearningStage(e.target.value as LearningStage)}
+              label={t('lessons:forms.learningStageLabel')}
+              onChange={e => {
+                setLearningStage(e.target.value as LearningStage);
+                validateField('learningStage', e.target.value);
+              }}
+              onBlur={() => markAsTouched('learningStage')}
             >
-              <MenuItem value="kognitiivinen">
-                {t('lessons:stages.cognitive', 'Kognitiivinen')}
-              </MenuItem>
-              <MenuItem value="assosiatiivinen">
-                {t('lessons:stages.associative', 'Assosiatiivinen')}
-              </MenuItem>
-              <MenuItem value="automaattinen">
-                {t('lessons:stages.automatic', 'Automaattinen')}
-              </MenuItem>
+              <MenuItem value="kognitiivinen">{t('lessons:stages.cognitive')}</MenuItem>
+              <MenuItem value="assosiatiivinen">{t('lessons:stages.associative')}</MenuItem>
+              <MenuItem value="automaattinen">{t('lessons:stages.automatic')}</MenuItem>
             </Select>
+            {touched.learningStage && errors.learningStage && (
+              <FormHelperText error>{errors.learningStage}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid size={{ xs: 12, sm: 4 }}>
@@ -181,7 +273,7 @@ const LessonForm: React.FC<LessonFormProps> = ({
             required
             fullWidth
             id="startTime"
-            label={t('lessons:forms.startTimeLabel', 'Start Time')}
+            label={t('lessons:forms.startTimeLabel')}
             name="startTime"
             type="time"
             value={startTime}
@@ -196,7 +288,7 @@ const LessonForm: React.FC<LessonFormProps> = ({
             required
             fullWidth
             id="endTime"
-            label={t('lessons:forms.endTimeLabel', 'End Time')}
+            label={t('lessons:forms.endTimeLabel')}
             name="endTime"
             type="time"
             value={endTime}
@@ -260,15 +352,17 @@ const LessonForm: React.FC<LessonFormProps> = ({
             onChange={e => setNotes(e.target.value)}
           />
         </Grid>
+        <Grid size={{ xs: 12, sm: 12 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3, gap: 2 }}>
+            <Button onClick={onCancel} color="inherit">
+              {t('common:buttons.cancel')}
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              {t('common:buttons.save')}
+            </Button>
+          </Box>
+        </Grid>
       </Grid>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3, gap: 1 }}>
-        <Button onClick={onCancel} color="inherit">
-          {t('actions.cancel')}
-        </Button>
-        <Button type="submit" variant="contained">
-          {lesson ? t('actions.save') : t('actions.add')}
-        </Button>
-      </Box>
     </Box>
   );
 };

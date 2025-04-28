@@ -112,8 +112,8 @@ const LessonsPage: React.FC = () => {
         {lessons.length === 0 ? (
           <EmptyState
             title={t('emptyStates.noLessons')}
-            message={t('lessons:emptyState.description')}
-            actionText={t('lessons:addLesson')}
+            message={t('lessons:emptyState.addYourFirst')}
+            actionText={t('common:buttons.add')}
             onAction={handleOpenForm}
           />
         ) : (

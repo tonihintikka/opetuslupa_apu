@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Typography, SxProps, Theme, Button } from '@mui/material';
+import { Typography, SxProps, Theme, Button, Paper } from '@mui/material';
 import InboxIcon from '@mui/icons-material/Inbox';
+import AddIcon from '@mui/icons-material/Add';
 
 interface EmptyStateProps {
   title?: string;
@@ -23,7 +24,8 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   onAction,
 }) => {
   return (
-    <Box
+    <Paper
+      elevation={1}
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -32,29 +34,46 @@ const EmptyState: React.FC<EmptyStateProps> = ({
         p: 4,
         textAlign: 'center',
         backgroundColor: 'background.paper',
-        borderRadius: 1,
+        borderRadius: 2,
+        width: '100%',
+        mb: 2,
         ...sx,
       }}
     >
-      {icon || <InboxIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />}
+      {icon || <InboxIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />}
       <Typography variant="h6" gutterBottom>
         {title}
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: actionText ? 3 : 0 }}>
+      <Typography
+        variant="body1"
+        color="text.secondary"
+        sx={{
+          mb: actionText ? 3 : 0,
+          maxWidth: '90%',
+          lineHeight: 1.5,
+        }}
+      >
         {message}
       </Typography>
-      
+
       {actionText && onAction && (
-        <Button 
-          variant="contained" 
-          color="primary" 
+        <Button
+          variant="contained"
+          color="primary"
           onClick={onAction}
-          sx={{ mt: 2 }}
+          startIcon={<AddIcon />}
+          sx={{
+            mt: 2,
+            px: 3,
+            py: 1,
+            borderRadius: 6,
+            boxShadow: 2,
+          }}
         >
           {actionText}
         </Button>
       )}
-    </Box>
+    </Paper>
   );
 };
 

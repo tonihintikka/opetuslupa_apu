@@ -38,7 +38,8 @@
     "email": "Virheellinen sähköpostiosoite",
     "minLength": "Vähintään {{count}} merkkiä",
     "maxLength": "Enintään {{count}} merkkiä",
-    "invalidFormat": "Virheellinen muoto"
+    "invalidFormat": "Virheellinen muoto",
+    "checkFields": "Tarkista pakolliset kentät"
   },
   "dateTime": {
     "today": "Tänään",
@@ -107,5 +108,27 @@
       "description": "Tämä toiminto poistaa kaikki tiedot. Toimintoa ei voi perua.",
       "button": "Tyhjennä kaikki tiedot"
     }
-  }
+  },
+  "Duration": "Kesto",
+  "minutes": "minuuttia",
+  "Learning Stage": "Oppimisvaihe",
+  "All Stages": "Kaikki vaiheet",
+  "Kognitiivinen": "Kognitiivinen",
+  "Assosiatiivinen": "Assosiatiivinen",
+  "Automaattinen": "Automaattinen",
+  "Suggested Topics": "Suositellut aiheet",
+  "min": "min",
+  "Ajoasento ja peilit": "Ajoasento ja peilit",
+  "complete": "suoritettu",
+  "Need": "Tarvitaan",
+  "Cancel": "Peruuta",
+  "Start Session": "Aloita ajotunti",
+  "Start New Learning Session": "Aloita uusi oppimistuokio",
+  "Student": "Oppilas",
+  "This session will focus on topics that need the most practice based on progress data.": "Tämä oppimistuokio keskittyy aiheisiin, jotka tarvitsevat eniten harjoittelua edistymistietojen perusteella.",
+  "Estimated Duration": "Arvioitu kesto",
+  "Selected Topics": "Valitut aiheet",
+  "High Priority": "Korkea prioriteetti",
+  "Medium Priority": "Keskitason prioriteetti",
+  "Low Priority": "Matala prioriteetti"
 }
