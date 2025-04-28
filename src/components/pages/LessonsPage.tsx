@@ -122,8 +122,8 @@ const LessonsPage: React.FC = () => {
   }
 
   return (
-    <Container>
-      <Box sx={{ py: 4 }}>
+    <Container disableGutters maxWidth={false}>
+      <Box sx={{ py: 4, overflowX: 'hidden', width: '100%' }}>
         {/* Page header with breadcrumbs when student is selected */}
         {selectedStudent ? (
           <Box sx={{ mb: 4 }}>

@@ -238,7 +238,8 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId: initia
     <Box
       sx={{
         position: 'relative',
-        overflow: 'auto',
+        overflowY: 'auto',
+        overflowX: 'hidden',
         height: '100%',
         maxHeight: {
           xs: 'calc(100vh - var(--app-bar-height) - var(--bottom-nav-height) - 32px)', // Account for AppBar, BottomNav, and padding
@@ -248,7 +249,6 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId: initia
         flexDirection: 'column',
         pb: 4,
         pt: 3, // Increase top padding to allow space for dropdown
-        px: 1, // Add horizontal padding
       }}
     >
       {/* Student Selection Dropdown */}
