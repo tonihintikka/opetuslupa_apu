@@ -5,6 +5,7 @@ import i18n from './i18n';
 import theme from './theme';
 import Router from './router';
 import { ErrorBoundary } from './components/layout';
+import { LessonFormProvider } from './components/lesson/LessonFormContext';
 import './App.css';
 
 function App() {
@@ -13,7 +14,9 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <ErrorBoundary>
-          <Router />
+          <LessonFormProvider>
+            <Router />
+          </LessonFormProvider>
         </ErrorBoundary>
       </ThemeProvider>
     </I18nextProvider>

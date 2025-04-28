@@ -18,11 +18,17 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  ShowChart as ShowChartIcon,
+} from '@mui/icons-material';
 import { useStudents } from '../../hooks';
 import { Student } from '../../services';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { useTranslation } from 'react-i18next';
+import ProgressDashboard from '../lesson/progress/ProgressDashboard';
 
 const StudentsPage: React.FC = () => {
   const { t } = useTranslation(['common', 'students']);
@@ -36,6 +42,8 @@ const StudentsPage: React.FC = () => {
     email: '',
     phone: '',
   });
+  const [progressDialogOpen, setProgressDialogOpen] = useState<boolean>(false);
+  const [selectedStudentId, setSelectedStudentId] = useState<number | undefined>(undefined);
 
   const handleOpenDialog = (student?: Student) => {
     if (student) {
@@ -67,6 +75,16 @@ const StudentsPage: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleOpenProgressDialog = (studentId: number) => {
+    setSelectedStudentId(studentId);
+    setProgressDialogOpen(true);
+  };
+
+  const handleCloseProgressDialog = () => {
+    setProgressDialogOpen(false);
+    setSelectedStudentId(undefined);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -183,9 +201,19 @@ const StudentsPage: React.FC = () => {
                   }}
                 >
                   <IconButton
+                    aria-label="view progress"
+                    onClick={() => handleOpenProgressDialog(student.id!)}
+                    size={isMobile ? 'small' : 'medium'}
+                    color="primary"
+                    title={t('students:progress')}
+                  >
+                    <ShowChartIcon />
+                  </IconButton>
+                  <IconButton
                     aria-label="edit"
                     onClick={() => handleOpenDialog(student)}
                     size={isMobile ? 'small' : 'medium'}
+                    sx={{ ml: 1 }}
                   >
                     <EditIcon />
                   </IconButton>
@@ -250,13 +278,35 @@ const StudentsPage: React.FC = () => {
               onChange={handleInputChange}
             />
           </DialogContent>
-          <DialogActions sx={{ px: 3, pb: 2 }}>
-            <Button onClick={handleCloseDialog}>{t('common:buttons.cancel')}</Button>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>{t('actions.cancel')}</Button>
             <Button type="submit" variant="contained" color="primary">
-              {t('common:buttons.save')}
+              {t('actions.save')}
             </Button>
           </DialogActions>
         </form>
+      </Dialog>
+
+      {/* Progress Dashboard Dialog */}
+      <Dialog
+        open={progressDialogOpen}
+        onClose={handleCloseProgressDialog}
+        maxWidth="lg"
+        fullWidth
+        fullScreen={isMobile}
+      >
+        <DialogTitle>
+          {t('students:progress')}
+          {selectedStudentId && students.find(s => s.id === selectedStudentId) && (
+            <>: {students.find(s => s.id === selectedStudentId)?.name}</>
+          )}
+        </DialogTitle>
+        <DialogContent>
+          {selectedStudentId && <ProgressDashboard studentId={selectedStudentId} />}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseProgressDialog}>{t('actions.close')}</Button>
+        </DialogActions>
       </Dialog>
     </Box>
   );

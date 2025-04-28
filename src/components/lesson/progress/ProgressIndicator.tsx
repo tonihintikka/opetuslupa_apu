@@ -26,7 +26,7 @@ import {
   KeyboardArrowRight as ArrowRightIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLessonForm } from '../LessonFormContext';
 import { LearningStage } from '../../../services/db';
 import { TopicProgress } from '../../../hooks/useProgressCalculation';
 import { getSubTopicsForTopic } from '../../../constants/lessonSubTopics';
@@ -43,7 +43,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   studentId,
 }) => {
   const { t } = useTranslation(['common', 'lessons']);
-  const navigate = useNavigate();
+  const { openWithSelections } = useLessonForm();
 
   // Track expanded topic items to show sub-topics
   const [expandedTopics, setExpandedTopics] = useState<string[]>([]);
@@ -98,12 +98,10 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 
   // Start a new lesson focused on a specific topic or sub-topic
   const handleStartLessonForTopic = (topicId: string, subTopicId?: string) => {
-    navigate('/lessons/new', {
-      state: {
-        preSelectedTopics: [topicId],
-        preSelectedSubTopics: subTopicId ? [subTopicId] : [],
-        preSelectedStudentId: studentId,
-      },
+    openWithSelections({
+      topics: [topicId],
+      subTopics: subTopicId ? [subTopicId] : undefined,
+      studentId: studentId,
     });
   };
 

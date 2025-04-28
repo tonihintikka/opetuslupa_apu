@@ -39,11 +39,28 @@ export interface Milestone {
   updatedAt: Date;
 }
 
+// Interface for lesson drafts
+export interface LessonDraft {
+  id?: number;
+  studentId?: number;
+  date: Date;
+  startTime?: string;
+  endTime?: string;
+  learningStage?: LearningStage;
+  topics: string[];
+  subTopics?: string[];
+  notes?: string;
+  kilometers?: number;
+  draftCreatedAt: Date;
+  lastModified: Date;
+}
+
 // Define the database class
 class DrivingLessonDB extends Dexie {
   students!: Table<Student>;
   lessons!: Table<Lesson>;
   milestones!: Table<Milestone>;
+  lessonDrafts!: Table<LessonDraft>;
 
   constructor() {
     super('DrivingLessonDB');
@@ -77,6 +94,18 @@ class DrivingLessonDB extends Dexie {
       .upgrade(_tx => {
         // Migration logic for optional field
         console.warn('Upgrading schema to version 3, adding subTopics to lessons');
+      });
+
+    // Version 4: Add lessonDrafts table
+    this.version(4)
+      .stores({
+        students: '++id, name, email, phone',
+        lessons: '++id, studentId, date, completed, learningStage',
+        milestones: '++id, studentId, title, completedAt',
+        lessonDrafts: '++id, studentId, draftCreatedAt, lastModified',
+      })
+      .upgrade(_tx => {
+        console.warn('Upgrading schema to version 4, adding lessonDrafts table');
       });
   }
 }

@@ -22,12 +22,19 @@ interface InitialTimes {
   endTime?: string;
 }
 
+interface InitialData {
+  studentId?: number;
+  topics?: string[];
+  subTopics?: string[];
+}
+
 interface LessonFormProps {
   students: Student[];
   lesson?: Lesson;
   onSubmit: (lessonData: Omit<Lesson, 'id' | 'createdAt' | 'updatedAt'>) => void;
   onCancel: () => void;
   initialTimes?: InitialTimes;
+  initialData?: InitialData;
 }
 
 const LessonForm: React.FC<LessonFormProps> = ({
@@ -36,10 +43,13 @@ const LessonForm: React.FC<LessonFormProps> = ({
   onSubmit,
   onCancel,
   initialTimes,
+  initialData,
 }) => {
   const { t } = useTranslation(['common', 'lessons']);
 
-  const [studentId, setStudentId] = useState<number | ''>(lesson?.studentId || '');
+  const [studentId, setStudentId] = useState<number | ''>(
+    lesson?.studentId || initialData?.studentId || '',
+  );
   const [date, setDate] = useState<string>(
     lesson?.date.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
   );
@@ -52,17 +62,28 @@ const LessonForm: React.FC<LessonFormProps> = ({
   const [learningStage, setLearningStage] = useState<LearningStage | ''>(
     lesson?.learningStage || '',
   );
-  const [selectedTopics, setSelectedTopics] = useState<string[]>(lesson?.topics || []);
+  const [selectedTopics, setSelectedTopics] = useState<string[]>(
+    lesson?.topics || initialData?.topics || [],
+  );
   const [notes, setNotes] = useState<string>(lesson?.notes || '');
   const [kilometers, setKilometers] = useState<string>(lesson?.kilometers?.toString() || '');
 
-  // Update form when initialTimes changes
+  // Update form when initialTimes or initialData changes
   useEffect(() => {
     if (initialTimes) {
       if (initialTimes.startTime) setStartTime(initialTimes.startTime);
       if (initialTimes.endTime) setEndTime(initialTimes.endTime);
     }
   }, [initialTimes]);
+
+  // Effect for initialData updates
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.studentId) setStudentId(initialData.studentId);
+      if (initialData.topics) setSelectedTopics(initialData.topics);
+      // Handle subTopics if needed in the future
+    }
+  }, [initialData]);
 
   const handleTopicChange = (event: SelectChangeEvent<typeof selectedTopics>) => {
     const {

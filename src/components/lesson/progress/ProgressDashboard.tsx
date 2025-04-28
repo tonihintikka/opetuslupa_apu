@@ -10,14 +10,13 @@ import {
 } from '@mui/material';
 import { PlayArrow as StartIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { Lesson, Student } from '../../../services/db';
 import lessonService from '../../../services/lessonService';
 import studentService from '../../../services/studentService';
 import { useProgressCalculation } from '../../../hooks/useProgressCalculation';
 import ProgressMatrix from './ProgressMatrix';
 import ProgressIndicator from './ProgressIndicator';
-import SessionStarter from '../session/SessionStarter';
+import SessionStarter from '../../../components/student/SessionStarter';
 
 interface ProgressDashboardProps {
   studentId?: number;
@@ -25,13 +24,11 @@ interface ProgressDashboardProps {
 
 const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
   const { t } = useTranslation(['common', 'lessons']);
-  const navigate = useNavigate();
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [studentData, setStudentData] = useState<Student | null>(null);
-  const { topicProgress, getOverallProgress, getLeastPracticedTopics } =
-    useProgressCalculation(lessons);
+  const { topicProgress, getOverallProgress } = useProgressCalculation(lessons);
   const [showSessionStarter, setShowSessionStarter] = useState(false);
 
   // Fetch lessons on component mount
@@ -69,23 +66,13 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
   }, [studentId]);
 
   const handleStartSession = () => {
-    // Get topics that need attention for the session starter
-    getLeastPracticedTopics(10); // Use the result but don't store it
+    // Use the session starter dialog which will handle creating a draft
+    // and opening the lesson form
     setShowSessionStarter(true);
   };
 
   const handleCloseSessionStarter = () => {
     setShowSessionStarter(false);
-  };
-
-  const handleStartNewLesson = (selectedTopicIds: string[]) => {
-    // Navigate to lesson wizard with pre-selected topics and student
-    navigate('/lessons/new', {
-      state: {
-        preSelectedTopics: selectedTopicIds,
-        preSelectedStudentId: studentId,
-      },
-    });
   };
 
   if (loading) {
@@ -144,10 +131,9 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId }) => {
         <SessionStarter
           open={showSessionStarter}
           onClose={handleCloseSessionStarter}
-          onStartSession={handleStartNewLesson}
-          suggestedTopics={topicProgress}
           studentId={studentId}
           studentName={studentData.name}
+          topicProgress={topicProgress}
         />
       )}
     </Box>

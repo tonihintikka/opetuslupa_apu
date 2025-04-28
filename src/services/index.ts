@@ -1,8 +1,16 @@
 // Export services from this file
-export { default as db } from './db';
-export * from './db';
-export { default as studentService } from './studentService';
-export { default as lessonService } from './lessonService';
-export { default as milestoneService } from './milestoneService';
-export { default as initializeDatabase } from './dbInit';
-export { default as dataManagementService } from './dataManagementService';
+import db from './db';
+import lessonService from './lessonService';
+import studentService from './studentService';
+import milestoneService from './milestoneService';
+import draftLessonService from './draftLessonService';
+import dataManagementService from './dataManagementService';
+
+export {
+  db,
+  lessonService,
+  studentService,
+  milestoneService,
+  draftLessonService,
+  dataManagementService,
+};

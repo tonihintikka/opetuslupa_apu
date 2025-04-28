@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useMilestones, useStudents } from '../../hooks';
 import MilestoneFormDialog from '../milestones/MilestoneFormDialog';
-import { Milestone } from '../../services';
+import { Milestone } from '../../services/db';
 import EmptyState from '../common/EmptyState';
 import LoadingIndicator from '../common/LoadingIndicator';
 
@@ -111,7 +111,7 @@ const MilestonesPage: React.FC = () => {
         ) : (
           <Grid container spacing={3}>
             {milestones.map(milestone => (
-              <Grid size={12} key={milestone.id}>
+              <Grid size={{ xs: 12 }} key={milestone.id}>
                 <Paper
                   elevation={2}
                   sx={{

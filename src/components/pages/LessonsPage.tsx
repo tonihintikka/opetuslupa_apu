@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Container, 
-  Button, 
-  Grid, 
+import {
+  Box,
+  Typography,
+  Container,
+  Button,
+  Grid,
   Divider,
   Dialog,
   DialogContent,
   DialogTitle,
-  IconButton
+  IconButton,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Add as AddIcon, Close as CloseIcon } from '@mui/icons-material';
@@ -18,7 +18,8 @@ import LessonForm from '../lesson/LessonForm';
 import LessonTimer from '../lesson/LessonTimer';
 import LoadingIndicator from '../common/LoadingIndicator';
 import EmptyState from '../common/EmptyState';
-import { Lesson } from '../../services';
+import { Lesson } from '../../services/db';
+import { useLessonForm } from '../lesson/LessonFormContext';
 
 /**
  * Lessons page component
@@ -27,18 +28,32 @@ const LessonsPage: React.FC = () => {
   const { t } = useTranslation(['common', 'lessons']);
   const { students, loading: loadingStudents } = useStudents();
   const { lessons, loading: loadingLessons, addLesson } = useLessons();
-  
-  const [openForm, setOpenForm] = useState(false);
+
+  // Get the lesson form context
+  const {
+    isOpen: openFormFromContext,
+    setIsOpen: setOpenFormFromContext,
+    preSelectedTopics,
+    preSelectedSubTopics,
+    preSelectedStudentId,
+    resetForm,
+  } = useLessonForm();
+
+  // Local state for timer
   const [showTimer, setShowTimer] = useState(false);
   const [timerStartTime, setTimerStartTime] = useState<string>('');
   const [timerEndTime, setTimerEndTime] = useState<string>('');
-  
+
+  // Use context's isOpen for dialog visibility
+  const openForm = openFormFromContext;
+
   const handleOpenForm = () => {
-    setOpenForm(true);
+    setOpenFormFromContext(true);
   };
 
   const handleCloseForm = () => {
-    setOpenForm(false);
+    setOpenFormFromContext(false);
+    resetForm(); // Reset form state when closing
   };
 
   const handleStartTimer = () => {
@@ -48,23 +63,29 @@ const LessonsPage: React.FC = () => {
   const handleSubmitLesson = async (lessonData: Omit<Lesson, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
       await addLesson(lessonData);
-      setOpenForm(false);
+      setOpenFormFromContext(false);
+      resetForm(); // Reset form state after successful submission
     } catch (error) {
       console.error('Failed to add lesson', error);
     }
   };
 
-  const handleTimeUpdate = (startTime: string, endTime: string, durationSeconds: number) => {
+  const handleTimeUpdate = (startTime: string, endTime: string, _durationSeconds: number) => {
     setTimerStartTime(startTime);
     setTimerEndTime(endTime);
-    
+
     // Automatically open the form after stopping the timer
-    setOpenForm(true);
+    setOpenFormFromContext(true);
   };
 
   if (loadingLessons || loadingStudents) {
     return <LoadingIndicator />;
   }
+
+  // Find the pre-selected student object if available
+  // const preSelectedStudent = preSelectedStudentId
+  //   ? students.find(s => s.id === preSelectedStudentId)
+  //   : undefined;
 
   return (
     <Container>
@@ -74,16 +95,11 @@ const LessonsPage: React.FC = () => {
             {t('navigation.lessons')}
           </Typography>
           <Box>
-            <Button
-              variant="outlined" 
-              color="primary"
-              onClick={handleStartTimer}
-              sx={{ mr: 1 }}
-            >
+            <Button variant="outlined" color="primary" onClick={handleStartTimer} sx={{ mr: 1 }}>
               {t('lessons:startTimer')}
             </Button>
             <Button
-              variant="contained" 
+              variant="contained"
               color="primary"
               startIcon={<AddIcon />}
               onClick={handleOpenForm}
@@ -102,26 +118,19 @@ const LessonsPage: React.FC = () => {
           />
         ) : (
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Typography variant="h6" gutterBottom>
                 {t('lessons:recentLessons')}
               </Typography>
               <Divider sx={{ mb: 2 }} />
-              <Typography>
-                {t('lessons:lessonsFeature')}
-              </Typography>
+              <Typography>{t('lessons:lessonsFeature')}</Typography>
               {/* Lesson list will be implemented here in the future */}
             </Grid>
           </Grid>
         )}
 
         {/* Timer Dialog */}
-        <Dialog 
-          open={showTimer} 
-          onClose={() => setShowTimer(false)}
-          fullWidth
-          maxWidth="sm"
-        >
+        <Dialog open={showTimer} onClose={() => setShowTimer(false)} fullWidth maxWidth="sm">
           <DialogTitle>
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="h6">{t('lessons:timer.title')}</Typography>
@@ -131,19 +140,12 @@ const LessonsPage: React.FC = () => {
             </Box>
           </DialogTitle>
           <DialogContent>
-            <LessonTimer 
-              onTimeUpdate={handleTimeUpdate} 
-            />
+            <LessonTimer onTimeUpdate={handleTimeUpdate} />
           </DialogContent>
         </Dialog>
 
         {/* Lesson Form Dialog */}
-        <Dialog 
-          open={openForm} 
-          onClose={handleCloseForm}
-          fullWidth
-          maxWidth="md"
-        >
+        <Dialog open={openForm} onClose={handleCloseForm} fullWidth maxWidth="md">
           <DialogTitle>
             <Box display="flex" justifyContent="space-between" alignItems="center">
               <Typography variant="h6">{t('lessons:addLesson')}</Typography>
@@ -153,13 +155,18 @@ const LessonsPage: React.FC = () => {
             </Box>
           </DialogTitle>
           <DialogContent>
-            <LessonForm 
+            <LessonForm
               students={students}
               onSubmit={handleSubmitLesson}
               onCancel={handleCloseForm}
               initialTimes={{
                 startTime: timerStartTime || undefined,
-                endTime: timerEndTime || undefined
+                endTime: timerEndTime || undefined,
+              }}
+              initialData={{
+                studentId: preSelectedStudentId,
+                topics: preSelectedTopics,
+                subTopics: preSelectedSubTopics,
               }}
             />
           </DialogContent>
