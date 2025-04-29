@@ -225,6 +225,7 @@
     "title": "Opetusvinkit",
     "description": "Löydä opetusvinkkejä eri ajamisaiheista auttaaksesi oppilaitasi oppimaan tehokkaasti.",
     "searchPlaceholder": "Etsi vinkkejä...",
+    "noResults": "Hakusanalla ei löytynyt opetusvinkkejä. Kokeile eri hakusanoja.",
     "sections": {
       "basicHandling": {
         "title": "Ajoneuvon perushallinta",

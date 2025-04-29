@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -8,6 +8,7 @@ import {
   Divider,
   useTheme,
   useMediaQuery,
+  Alert,
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
@@ -106,6 +107,26 @@ const TeachingTips: React.FC = () => {
     setSearchTerm(event.target.value);
   };
 
+  // Filter sections based on search term
+  const filteredSections = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return tipSections;
+    }
+
+    const normalizedSearch = searchTerm.toLowerCase().trim();
+
+    return tipSections.filter(section => {
+      // Check if title or overview match
+      const titleMatches = t(section.titleKey).toLowerCase().includes(normalizedSearch);
+      const overviewMatches = t(section.overviewKey).toLowerCase().includes(normalizedSearch);
+
+      // Check if any tips match
+      const tipsMatch = section.tips.some(tip => t(tip).toLowerCase().includes(normalizedSearch));
+
+      return titleMatches || overviewMatches || tipsMatch;
+    });
+  }, [searchTerm, t, tipSections]);
+
   return (
     <Paper sx={{ p: 3, height: '100%' }}>
       <Box sx={{ mb: 3 }}>
@@ -146,17 +167,25 @@ const TeachingTips: React.FC = () => {
           pr: 1,
         }}
       >
-        {tipSections.map(section => (
-          <Box key={section.id} sx={{ mb: 2 }}>
-            <TipAccordion
-              id={section.id}
-              // Use the translation key if available, otherwise fallback to placeholder
-              titleKey={section.titleKey}
-              overviewKey={section.overviewKey}
-              tips={section.tips}
-            />
-          </Box>
-        ))}
+        {filteredSections.length > 0 ? (
+          filteredSections.map(section => (
+            <Box key={section.id} sx={{ mb: 2 }}>
+              <TipAccordion
+                id={section.id}
+                titleKey={section.titleKey}
+                overviewKey={section.overviewKey}
+                tips={section.tips}
+              />
+            </Box>
+          ))
+        ) : (
+          <Alert severity="info">
+            {t(
+              'lessons:tips.noResults',
+              'No teaching tips match your search. Try different keywords.',
+            )}
+          </Alert>
+        )}
       </Box>
     </Paper>
   );
