@@ -61,12 +61,19 @@ export interface LessonDraft {
   lastModified: Date;
 }
 
+// Interface for settings
+export interface Setting {
+  key: string;
+  value: unknown;
+}
+
 // Define the database class
 class DrivingLessonDB extends Dexie {
   students!: Table<Student>;
   lessons!: Table<Lesson>;
   milestones!: Table<Milestone>;
   lessonDrafts!: Table<LessonDraft>;
+  settings!: Table<Setting>;
 
   constructor() {
     super('DrivingLessonDB');
@@ -155,6 +162,19 @@ class DrivingLessonDB extends Dexie {
           });
 
         console.warn('Upgrading schema to version 5, replacing topics with topicRatings');
+      });
+    
+    // Version 6: Add settings table
+    this.version(6)
+      .stores({
+        students: '++id, name, email, phone',
+        lessons: '++id, studentId, date, completed, learningStage, *topicRatings.topicId',
+        milestones: '++id, studentId, title, completedAt',
+        lessonDrafts: '++id, studentId, draftCreatedAt, lastModified, *topicRatings.topicId',
+        settings: 'key',
+      })
+      .upgrade(_tx => {
+        console.warn('Upgrading schema to version 6, adding settings table');
       });
   }
 }

@@ -86,7 +86,8 @@
     "delete": "Poista",
     "edit": "Muokkaa",
     "add": "Lisää",
-    "update": "Päivitä"
+    "update": "Päivitä",
+    "confirm": "Vahvista"
   },
   "errors": {
     "boundary": {
@@ -109,14 +110,20 @@
       "button": "Tuo tiedot"
     },
     "backup": {
-      "title": "Varmuuskopio",
-      "description": "Luo varmuuskopio tiedoistasi myöhempää käyttöä varten.",
-      "button": "Luo varmuuskopio"
+      "title": "Luo varmuuskopio",
+      "description": "Luo täydellinen varmuuskopio kaikista tiedoista ja asetuksista myöhempää käyttöä varten.",
+      "button": "Luo varmuuskopio",
+      "restoreTitle": "Palauta varmuuskopio",
+      "restoreDescription": "Palauta aiemmin luotu varmuuskopio, mukaan lukien kaikki tiedot ja asetukset.",
+      "restoreButton": "Palauta varmuuskopio",
+      "restoreWarning": "Tämä korvaa kaikki nykyiset tiedot ja asetukset varmuuskopiosta löytyvillä. Tätä toimintoa ei voi kumota.",
+      "reloadPrompt": "Asetukset on palautettu. Haluatko ladata sovelluksen uudelleen ottaaksesi kaikki muutokset käyttöön?"
     },
     "dangerZone": {
       "title": "Vaaravyöhyke",
       "description": "Tämä toiminto poistaa kaikki tiedot. Toimintoa ei voi perua.",
-      "button": "Tyhjennä kaikki tiedot"
+      "button": "Tyhjennä kaikki tiedot",
+      "successMessage": "Kaikki tiedot on tyhjennetty onnistuneesti."
     }
   },
   "Duration": "Kesto",

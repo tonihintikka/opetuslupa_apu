@@ -8,7 +8,7 @@
 
 ## Status
 
-Draft
+Completed
 
 ## Context
 
@@ -29,52 +29,80 @@ Story Points: 8 (Increased complexity due to settings persistence, separate flow
 
 ## Tasks
 
-1.  - [ ] **Persist Application Settings**
-    1.  - [ ] **Use Dexie:** Create a new `settings` table in `db.ts` to store settings (e.g., key-value pairs).
-    2.  - [ ] Modify `SettingsPage.tsx` (and potentially theme/language providers/hooks) to save setting changes to the chosen storage.
-    3.  - [ ] Ensure settings are loaded from storage when the application starts.
-2.  - [ ] **Implement Export Data (Students & Lessons Only)**
-    1.  - [ ] Create a service function (e.g., `dataService.exportStudentData()`) for students/lessons.
-    2.  - [ ] Format into JSON (e.g., `{ type: "studentData", version: 1, students: [...], lessons: [...] }`).
-    3.  - [ ] Implement button handler in `DataManagementPage.tsx` to call service and trigger download.
-    4.  - [ ] Add UI feedback.
-3.  - [ ] **Implement Import Data (Students & Lessons Only)**
-    1.  - [ ] Add file input triggered by "Tuo tiedot".
-    2.  - [ ] Implement file reading/parsing.
-    3.  - [ ] Add confirmation dialog (Replace student/lesson data?).
-    4.  - [ ] Create service function (e.g., `dataService.importStudentData(jsonData)`) to:
-        1.  - [ ] Validate JSON `type` and `version`.
-        2.  - [ ] Clear existing `students` and `lessons` tables.
-        3.  - [ ] Bulk-insert validated data.
-    5.  - [ ] Handle errors and provide UI feedback.
-4.  - [ ] **Implement Create Backup (Data + Settings)**
-    1.  - [ ] Create a service function (e.g., `backupService.createBackup()`) to:
-        1.  - [ ] Fetch all student/lesson data from Dexie.
-        2.  - [ ] Fetch all settings from their storage location.
-    2.  - [ ] Format into JSON (e.g., `{ type: "fullBackup", version: 1, settings: {...}, students: [...], lessons: [...] }`).
-    3.  - [ ] Implement button handler for "Luo varmuuskopio" to call service and trigger download.
-    4.  - [ ] Add UI feedback.
-5.  - [ ] **Implement Restore Backup (Data + Settings)**
-    1.  - [ ] Add file input triggered by "Palauta varmuuskopio".
-    2.  - [ ] Implement file reading/parsing.
-    3.  - [ ] Add confirmation dialog (Replace ALL data and settings?).
-    4.  - [ ] Create service function (e.g., `backupService.restoreBackup(jsonData)`) to:
-        1.  - [ ] Validate JSON `type` and `version`.
-        2.  - [ ] Clear existing `students` and `lessons` tables.
-        3.  - [ ] Clear existing settings storage.
-        4.  - [ ] Bulk-insert validated student/lesson data.
-        5.  - [ ] Save validated settings to storage.
-    5.  - [ ] Handle errors and provide UI feedback. *Force reload/refresh might be needed.* 
-6.  - [ ] **Implement Delete All Data**
-    1.  - [ ] Add confirmation dialog (irreversible, delete ALL data?).
-    2.  - [ ] Create service function (e.g., `dataService.deleteAllData()`) to clear `students` and `lessons` tables. *(Should this also clear settings? TBD)*
-    3.  - [ ] Implement button handler for "Tyhjennä kaikki tiedot".
-    4.  - [ ] Add UI feedback.
-7.  - [ ] **Refine UI and Error Handling**
-    1.  - [ ] Ensure buttons are disabled during operations.
-    2.  - [ ] Provide loading indicators.
-    3.  - [ ] Display informative error messages.
-    4.  - [ ] Update translations for new buttons, dialogs, and messages.
+1.  - [x] **Persist Application Settings**
+    1.  - [x] **Use Dexie:** Create a new `settings` table in `db.ts` to store settings (e.g., key-value pairs).
+    2.  - [x] Modify `SettingsPage.tsx` (and potentially theme/language providers/hooks) to save setting changes to the chosen storage.
+    3.  - [x] Ensure settings are loaded from storage when the application starts.
+2.  - [x] **Implement Export Data (Students & Lessons Only)**
+    1.  - [x] Create a service function (e.g., `dataService.exportStudentData()`) for students/lessons.
+    2.  - [x] Format into JSON (e.g., `{ type: "studentData", version: 1, students: [...], lessons: [...] }`).
+    3.  - [x] Implement button handler in `DataManagementPage.tsx` to call service and trigger download.
+    4.  - [x] Add UI feedback.
+3.  - [x] **Implement Import Data (Students & Lessons Only)**
+    1.  - [x] Add file input triggered by "Tuo tiedot".
+    2.  - [x] Implement file reading/parsing.
+    3.  - [x] Add confirmation dialog (Replace student/lesson data?).
+    4.  - [x] Create service function (e.g., `dataService.importStudentData(jsonData)`) to:
+        1.  - [x] Validate JSON `type` and `version`.
+        2.  - [x] Clear existing `students` and `lessons` tables.
+        3.  - [x] Bulk-insert validated data.
+    5.  - [x] Handle errors and provide UI feedback.
+4.  - [x] **Implement Create Backup (Data + Settings)**
+    1.  - [x] Create a service function (e.g., `backupService.createFullBackup()`) to:
+        1.  - [x] Fetch all student/lesson data from Dexie.
+        2.  - [x] Fetch all settings from their storage location.
+    2.  - [x] Format into JSON (e.g., `{ type: "fullBackup", version: 1, settings: {...}, students: [...], lessons: [...] }`).
+    3.  - [x] Implement button handler for "Luo varmuuskopio" to call service and trigger download.
+    4.  - [x] Add UI feedback.
+5.  - [x] **Implement Restore Backup (Data + Settings)**
+    1.  - [x] Add file input triggered by "Palauta varmuuskopio".
+    2.  - [x] Implement file reading/parsing.
+    3.  - [x] Add confirmation dialog (Replace ALL data and settings?).
+    4.  - [x] Create service function (e.g., `backupService.restoreBackup(jsonData)`) to:
+        1.  - [x] Validate JSON `type` and `version`.
+        2.  - [x] Clear existing `students` and `lessons` tables.
+        3.  - [x] Clear existing settings storage.
+        4.  - [x] Bulk-insert validated student/lesson data.
+        5.  - [x] Save validated settings to storage.
+    5.  - [x] Handle errors and provide UI feedback. *Force reload/refresh was implemented with a prompt after settings restoration.* 
+6.  - [x] **Implement Delete All Data**
+    1.  - [x] Add confirmation dialog (irreversible, delete ALL data?).
+    2.  - [x] Create service function (e.g., `dataService.clearAllData()`) to clear `students` and `lessons` tables. *(By default it preserves settings, but can optionally clear them too)*
+    3.  - [x] Implement button handler for "Tyhjennä kaikki tiedot".
+    4.  - [x] Add UI feedback.
+7.  - [x] **Refine UI and Error Handling**
+    1.  - [x] Ensure buttons are disabled during operations.
+    2.  - [x] Provide loading indicators.
+    3.  - [x] Display informative error messages.
+    4.  - [x] Update translations for new buttons, dialogs, and messages.
+
+## Implementation Notes
+
+1. **Settings Storage**:
+   - Created a new `settings` table in the Dexie database (version 6)
+   - Added a `settingsService` to handle saving and retrieving settings
+   - Settings service includes a fallback to localStorage if the table doesn't exist yet
+
+2. **Data/Backup Structure**:
+   - Implemented distinct data types for exports vs backups
+   - `studentData` format for export/import contains only students, lessons, milestones
+   - `fullBackup` format includes all the above plus settings
+
+3. **UX Considerations**:
+   - Added confirmation dialogs for destructive actions
+   - Implemented loading indicators during data operations
+   - Added Snackbar notifications for operation feedback
+   - Prompt to reload the application after restoring settings
+
+4. **Resilience**:
+   - Added error handling throughout the service functions
+   - Validation of data structure before processing
+   - Automatic backup creation before data deletion
+
+5. **Potential Improvements for Future**:
+   - Consider adding a progress indicator for large backups
+   - Add support for selective import/backup restoration
+   - Implement export/import of specific students
 
 ## Constraints
 
@@ -177,4 +205,4 @@ sequenceDiagram
 - Prioritize implementing settings persistence first.
 - Decide if "Delete All Data" should also wipe settings.
 - Use distinct filenames for data export vs. full backup (e.g., `ajokamu_data_...` vs `ajokamu_backup_...`).
-- Restoring settings might require an application reload to take effect properly. 
+- Restoring settings might require an application reload to take effect properly. This was implemented using a confirmation dialog after restoring settings with an option to reload. 

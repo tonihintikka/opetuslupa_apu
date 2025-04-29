@@ -5,6 +5,7 @@ import studentService from './studentService';
 import milestoneService from './milestoneService';
 import draftLessonService from './draftLessonService';
 import dataManagementService from './dataManagementService';
+import settingsService from './settingsService';
 import initializeDatabase from './dbInit';
 
 export {
@@ -14,5 +15,6 @@ export {
   milestoneService,
   draftLessonService,
   dataManagementService,
+  settingsService,
   initializeDatabase,
 };

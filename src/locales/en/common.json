@@ -75,7 +75,8 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
-    "add": "Add"
+    "add": "Add",
+    "confirm": "Confirm"
   },
   "errors": {
     "boundary": {
@@ -98,14 +99,20 @@
       "button": "Import Data"
     },
     "backup": {
-      "title": "Backup",
-      "description": "Create a backup of your data for later use.",
-      "button": "Create Backup"
+      "title": "Create Backup",
+      "description": "Create a complete backup of all data and settings for later use.",
+      "button": "Create Backup",
+      "restoreTitle": "Restore Backup",
+      "restoreDescription": "Restore a previously created backup, including all data and settings.",
+      "restoreButton": "Restore Backup",
+      "restoreWarning": "This will replace all current data and settings with the ones from the backup. This action cannot be undone.",
+      "reloadPrompt": "Settings have been restored. Would you like to reload the application to apply all changes?"
     },
     "dangerZone": {
       "title": "Danger Zone",
       "description": "This action deletes all data. The action cannot be undone.",
-      "button": "Clear All Data"
+      "button": "Clear All Data",
+      "successMessage": "All data has been cleared successfully."
     }
   }
 }

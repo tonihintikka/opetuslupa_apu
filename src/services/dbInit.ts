@@ -2,11 +2,15 @@ import db from './db';
 import studentService from './studentService';
 import lessonService from './lessonService';
 import milestoneService from './milestoneService';
+import settingsService from './settingsService';
 
 /**
  * Initialize the database with sample data
  */
 export const initializeDatabase = async (): Promise<void> => {
+  // Initialize settings first
+  await settingsService.init();
+
   // Check if the database is empty
   const studentCount = await db.students.count();
 

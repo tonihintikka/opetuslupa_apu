@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -21,6 +21,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../';
+import { settingsService } from '../../services';
 
 /**
  * Settings page component
@@ -29,21 +30,49 @@ import { LanguageSwitcher } from '../';
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation(['settings']);
 
-  // These would typically be connected to actual state management
+  // State for settings
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = React.useState(false);
   const [autoSaveEnabled, setAutoSaveEnabled] = React.useState(true);
 
-  const handleNotificationChange = () => {
-    setNotificationsEnabled(!notificationsEnabled);
+  // Load settings from storage when component mounts
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        // Load settings from the service
+        const notificationsSetting = await settingsService.getSetting('notificationsEnabled');
+        const darkModeSetting = await settingsService.getSetting('darkMode');
+        const autoSaveSetting = await settingsService.getSetting('autoSave');
+        
+        // Update state with loaded values
+        setNotificationsEnabled(notificationsSetting);
+        setDarkModeEnabled(darkModeSetting);
+        setAutoSaveEnabled(autoSaveSetting);
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  const handleNotificationChange = async () => {
+    const newValue = !notificationsEnabled;
+    setNotificationsEnabled(newValue);
+    await settingsService.saveSetting('notificationsEnabled', newValue);
   };
 
-  const handleDarkModeChange = () => {
-    setDarkModeEnabled(!darkModeEnabled);
+  const handleDarkModeChange = async () => {
+    const newValue = !darkModeEnabled;
+    setDarkModeEnabled(newValue);
+    await settingsService.saveSetting('darkMode', newValue);
+    // Here you might also need to update the app theme
   };
 
-  const handleAutoSaveChange = () => {
-    setAutoSaveEnabled(!autoSaveEnabled);
+  const handleAutoSaveChange = async () => {
+    const newValue = !autoSaveEnabled;
+    setAutoSaveEnabled(newValue);
+    await settingsService.saveSetting('autoSave', newValue);
   };
 
   return (
@@ -89,7 +118,6 @@ const SettingsPage: React.FC = () => {
                   edge="end"
                   checked={darkModeEnabled}
                   onChange={handleDarkModeChange}
-                  disabled={true}
                   inputProps={{
                     'aria-labelledby': 'dark-mode-switch',
                   }}
