@@ -36,6 +36,7 @@ import { Lesson } from '../../services/db';
 import { useLessonForm } from '../lesson/useLessonForm';
 import ProgressDashboard from '../lesson/progress/ProgressDashboard';
 import TeachingTips from '../lesson/tips/TeachingTips';
+import { useLocation } from 'react-router-dom';
 
 /**
  * Lessons page component
@@ -46,6 +47,7 @@ const LessonsPage: React.FC = () => {
   const { lessons, loading: loadingLessons, addLesson } = useLessons();
   const [selectedStudentId, setSelectedStudentId] = useState<number | ''>('');
   const [activeTab, setActiveTab] = useState(0); // New state for active tab
+  const location = useLocation();
 
   // Get the lesson form context
   const {
@@ -69,6 +71,19 @@ const LessonsPage: React.FC = () => {
 
   // Use context's isOpen for dialog visibility
   const openForm = openFormFromContext;
+
+  // Handle redirect from MilestonesPage
+  useEffect(() => {
+    const state = location.state as { redirectToStudentId?: number; activeTab?: number } | null;
+    if (state?.redirectToStudentId) {
+      setSelectedStudentId(state.redirectToStudentId);
+      if (state.activeTab !== undefined) {
+        setActiveTab(state.activeTab);
+      }
+      // Clear location state to prevent redirect on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Set the preselected student as the selected student when it changes
   useEffect(() => {
