@@ -211,5 +211,69 @@
     "title": "Ajotuntihistoria",
     "noLessons": "Ei ajotuntihistoriaa",
     "edit": "Muokkaa"
+  },
+
+  "tabs": {
+    "overview": "Yleiskatsaus",
+    "topics": "Aiheet",
+    "tips": "Vinkit",
+    "topicsContent": "Aiheet",
+    "topicsDescription": "Yksityiskohtainen näkymä oppilaan edistymisestä aihealueittain näytetään tässä."
+  },
+
+  "tips": {
+    "title": "Opetusvinkit",
+    "description": "Löydä opetusvinkkejä eri ajamisaiheista auttaaksesi oppilaitasi oppimaan tehokkaasti.",
+    "searchPlaceholder": "Etsi vinkkejä...",
+    "sections": {
+      "basicHandling": {
+        "title": "Ajoneuvon perushallinta",
+        "overview": "Ajoneuvon perushallinta on kaiken turvallisen ajamisen perusta.",
+        "tip1": "Aloita harjoittelu turvallisessa, avoimessa tilassa kuten tyhjällä parkkipaikalla.",
+        "tip2": "Varmista, että oppilas ymmärtää perushallintalaiteet (kytkin, kaasu, jarrut) ennen liikkeelle lähtöä.",
+        "tip3": "Korosta ohjausliikkeiden, kaasun ja jarrun käytön sujuvuutta.",
+        "tip4": "Harjoituta perusteita toistuvasti, kunnes oppilas tuntee olonsa mukavaksi.",
+        "tip5": "Anna selkeät, vaiheittaiset ohjeet peruutukseen ja mäkilähtöihin."
+      },
+      "trafficSituations": {
+        "title": "Liikennetilanteet",
+        "overview": "Liikennetilanteiden hallinta on keskeistä turvalliselle ajamiselle.",
+        "tip1": "Korosta jatkuvaa tarkkailua ja ennakointia (katse, peilit, kuolleet kulmat).",
+        "tip2": "Opeta oikeat käytännöt risteyksissä, liikenneympyröissä ja liikennevaloissa.",
+        "tip3": "Harjoittele kaistanvaihtoja eri liikennetiheyksissä.",
+        "tip4": "Painota riittävän turvavälin ylläpitämistä kaikissa tilanteissa."
+      },
+      "highwayDriving": {
+        "title": "Maantie- ja moottoritieajo",
+        "overview": "Maantie- ja moottoritieajo vaatii erityistaitoja.",
+        "tip1": "Opeta ennakoivaa tarkkailua: jatkuva peilien käyttö, katvealueiden tarkistus.",
+        "tip2": "Harjoittele liittymistä ja poistumista sopivilla nopeuksilla.",
+        "tip3": "Korosta oikeaa kaistakuria (pysy oikealla paitsi ohitettaessa)."
+      },
+      "parking": {
+        "title": "Pysäköinti",
+        "overview": "Pysäköinti vaatii tarkkuutta ja tilanteiden hallintaa.",
+        "tip1": "Jaa jokainen pysäköintitapa (taskupysäköinti, vinopysäköinti, ruutupysäköinti) selkeisiin vaiheisiin.",
+        "tip2": "Käytä kiintopisteitä ohjauksessa (peilien kohdistus, tietyt pisteet autossa/pysäköintitilassa).",
+        "tip3": "Korosta hidasta, hallittua nopeutta pysäköitäessä.",
+        "tip4": "Painota kaikkien suuntien tarkastamista (peilit, kuolleet kulmat, kääntyminen katsomaan)."
+      },
+      "specialConditions": {
+        "title": "Erityisolosuhteet",
+        "overview": "Erityisolosuhteet vaativat ajotekniikan mukauttamista.",
+        "tip1": "Opeta valojen oikea käyttö (ajovalot, kaukovalot, sumuvalot).",
+        "tip2": "Selitä näkyvyyden vähenemisen tuomat haasteet ja miten niitä kompensoidaan (hitaampi nopeus, kasvatettu etäisyys).",
+        "tip3": "Keskustele vesiliirron (sateella) ja pidon menetyksen (jää/lumi) riskeistä.",
+        "tip4": "Korosta maltillisia ohjausliikkeitä liukkaalla."
+      },
+      "riskManagement": {
+        "title": "Riskienhallinta",
+        "overview": "Riskien tunnistaminen ja hallinta on turvallisen ajamisen kulmakivi.",
+        "tip1": "Opeta järjestelmällistä vaarojen tunnistamista (katseen kohdistus, tyypilliset riskialueet).",
+        "tip2": "Keskustele riskien arvioinnista (todennäköisyys vs. vakavuus).",
+        "tip3": "Edistä ennakoivan ajon periaatteita (ennakointi, tilanhallinnan säilyttäminen).",
+        "tip4": "Harjoittele hätäjarrutusta turvallisessa ympäristössä."
+      }
+    }
   }
 }

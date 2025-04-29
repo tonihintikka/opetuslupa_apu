@@ -100,5 +100,69 @@
     "dateRequired": "Date is required",
     "topicsRequired": "At least one topic is required",
     "stageRequired": "Learning stage is required"
+  },
+
+  "tabs": {
+    "overview": "Overview",
+    "topics": "Topics",
+    "tips": "Tips",
+    "topicsContent": "Topics",
+    "topicsDescription": "Detailed view of student progress by topic will be displayed here."
+  },
+
+  "tips": {
+    "title": "Teaching Tips",
+    "description": "Find teaching advice for various driving topics to help your students learn effectively.",
+    "searchPlaceholder": "Search for tips...",
+    "sections": {
+      "basicHandling": {
+        "title": "Basic Vehicle Handling",
+        "overview": "Mastering fundamental control of the vehicle is the foundation of all safe driving.",
+        "tip1": "Start in safe, open areas like an empty parking lot.",
+        "tip2": "Ensure understanding of basic controls (clutch, accelerator, brakes) before moving.",
+        "tip3": "Emphasize smooth, controlled movements (steering, acceleration, braking).",
+        "tip4": "Practice basic maneuvers repeatedly until comfortable.",
+        "tip5": "Provide clear, step-by-step instructions for maneuvers like reversing and hill starts."
+      },
+      "trafficSituations": {
+        "title": "Traffic Situations",
+        "overview": "Navigating traffic situations safely is crucial for responsible driving.",
+        "tip1": "Emphasize constant observation and anticipation (scanning, mirror checks, blind spots).",
+        "tip2": "Teach proper procedures for intersections, roundabouts, and traffic lights.",
+        "tip3": "Practice lane changes in various traffic densities.",
+        "tip4": "Focus on maintaining safe following distances in all situations."
+      },
+      "highwayDriving": {
+        "title": "Highway Driving",
+        "overview": "Highway driving requires specific skills and awareness.",
+        "tip1": "Teach proactive awareness: constant scanning (mirrors, blind spots), anticipating flow.",
+        "tip2": "Practice merging and exiting at appropriate speeds.",
+        "tip3": "Reinforce proper lane discipline (stay right unless overtaking)."
+      },
+      "parking": {
+        "title": "Parking",
+        "overview": "Parking requires precision and spatial awareness.",
+        "tip1": "Break down each parking type (parallel, bay, angled) into clear, sequential steps.",
+        "tip2": "Use reference points for guidance (aligning mirrors, specific points on the car/space).",
+        "tip3": "Emphasize slow, controlled speed during maneuvers.",
+        "tip4": "Stress the importance of all-around checks (mirrors, blind spots, physically looking)."
+      },
+      "specialConditions": {
+        "title": "Special Conditions",
+        "overview": "Special conditions require adapting driving techniques.",
+        "tip1": "Teach proper use of lights (headlights, high beams, fog lights).",
+        "tip2": "Explain reduced visibility challenges and how to compensate (slower speed, increased distance).",
+        "tip3": "Discuss hydroplaning (rain) and loss of traction (ice/snow) risks.",
+        "tip4": "Emphasize gentle inputs in slippery conditions."
+      },
+      "riskManagement": {
+        "title": "Risk Management",
+        "overview": "Identifying and managing risks is the cornerstone of safe driving.",
+        "tip1": "Teach systematic hazard identification (scanning patterns, common risk areas).",
+        "tip2": "Discuss risk assessment (likelihood vs. severity).",
+        "tip3": "Promote defensive driving principles (anticipation, space management).",
+        "tip4": "Practice emergency braking techniques in a safe environment."
+      }
+    }
   }
 }
