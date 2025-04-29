@@ -13,7 +13,7 @@ import {
   DialogActions,
 } from '@mui/material';
 import {
-  PlayArrow as StartIcon,
+  PlayArrow as PlayIcon,
   Pause as PauseIcon,
   Stop as StopIcon,
   Edit as EditIcon,
@@ -21,117 +21,80 @@ import {
 import { useTranslation } from 'react-i18next';
 
 interface LessonTimerProps {
-  initialTime?: number; // Initial time in seconds (for editing existing lesson)
-  onTimeUpdate: (startTime: string, endTime: string, durationSeconds: number) => void;
+  onChange?: (durationInMinutes: number) => void;
+  initialDuration?: number; // in minutes
 }
 
-const LessonTimer: React.FC<LessonTimerProps> = ({
-  initialTime = 0,
-  onTimeUpdate,
-}) => {
-  const { t } = useTranslation(['common', 'lessons']);
-  const [seconds, setSeconds] = useState<number>(initialTime);
-  const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [startedAt, setStartedAt] = useState<Date | null>(null);
-  const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
-  const [editHours, setEditHours] = useState<number>(0);
-  const [editMinutes, setEditMinutes] = useState<number>(0);
+export default function LessonTimer({ onChange, initialDuration = 0 }: LessonTimerProps) {
+  const { t } = useTranslation('lessons');
+  const [isRunning, setIsRunning] = useState(false);
+  const [seconds, setSeconds] = useState(initialDuration * 60);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editHours, setEditHours] = useState(Math.floor(seconds / 3600));
+  const [editMinutes, setEditMinutes] = useState(Math.floor((seconds % 3600) / 60));
 
-  const timerRef = useRef<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Format seconds as HH:MM:SS
+  // Format seconds to hh:mm:ss
   const formatTime = (totalSeconds: number): string => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const remainingSeconds = totalSeconds % 60;
-    
+    const secs = totalSeconds % 60;
+
     return [
       hours.toString().padStart(2, '0'),
       minutes.toString().padStart(2, '0'),
-      remainingSeconds.toString().padStart(2, '0')
+      secs.toString().padStart(2, '0'),
     ].join(':');
   };
 
-  // Format time for lesson data (HH:MM)
-  const formatTimeForData = (date: Date): string => {
-    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-  };
-
-  // Start timer
-  const handleStart = (): void => {
+  // Handle timer control
+  const startTimer = () => {
     if (!isRunning) {
       setIsRunning(true);
-      setIsPaused(false);
-      
-      const now = new Date();
-      if (!startedAt) {
-        setStartedAt(now);
-      }
-      
-      timerRef.current = window.setInterval(() => {
+      timerRef.current = setInterval(() => {
         setSeconds(prev => prev + 1);
       }, 1000);
     }
   };
 
-  // Pause timer
-  const handlePause = (): void => {
-    if (isRunning && !isPaused) {
-      clearInterval(timerRef.current!);
-      timerRef.current = null;
-      setIsPaused(true);
-    } else if (isPaused) {
-      handleStart(); // Resume
-    }
-  };
-
-  // Stop timer
-  const handleStop = (): void => {
-    if (isRunning || isPaused) {
-      clearInterval(timerRef.current!);
+  const pauseTimer = () => {
+    if (isRunning && timerRef.current) {
+      clearInterval(timerRef.current);
       timerRef.current = null;
       setIsRunning(false);
-      setIsPaused(false);
-      
-      // Calculate start and end times
-      if (startedAt) {
-        const endTime = new Date();
-        onTimeUpdate(
-          formatTimeForData(startedAt),
-          formatTimeForData(endTime),
-          seconds
-        );
-      }
     }
   };
 
-  // Open edit dialog
-  const handleEdit = (): void => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    setEditHours(hours);
-    setEditMinutes(minutes);
-    setEditDialogOpen(true);
+  const stopTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setIsRunning(false);
+
+    // Round to nearest minute for the form
+    const durationInMinutes = Math.round(seconds / 60);
+    if (onChange) {
+      onChange(durationInMinutes);
+    }
   };
 
-  // Save edited time
-  const handleSaveEdit = (): void => {
-    const newSeconds = (editHours * 3600) + (editMinutes * 60);
+  const openEditDialog = () => {
+    setEditHours(Math.floor(seconds / 3600));
+    setEditMinutes(Math.floor((seconds % 3600) / 60));
+    setEditDialogOpen(true);
+    pauseTimer();
+  };
+
+  const handleSaveTime = () => {
+    const newSeconds = editHours * 3600 + editMinutes * 60;
     setSeconds(newSeconds);
     setEditDialogOpen(false);
-    
-    // Update lesson times if the timer has been started before
-    if (startedAt) {
-      const now = new Date();
-      const calculatedStartTime = new Date(now.getTime() - (newSeconds * 1000));
-      setStartedAt(calculatedStartTime);
-      
-      onTimeUpdate(
-        formatTimeForData(calculatedStartTime),
-        formatTimeForData(now),
-        newSeconds
-      );
+
+    // Notify parent of change
+    if (onChange) {
+      onChange(editHours * 60 + editMinutes);
     }
   };
 
@@ -144,116 +107,123 @@ const LessonTimer: React.FC<LessonTimerProps> = ({
     };
   }, []);
 
+  // Update parent component whenever timer stops
+  useEffect(() => {
+    if (!isRunning && seconds > 0) {
+      const durationInMinutes = Math.round(seconds / 60);
+      if (onChange) {
+        onChange(durationInMinutes);
+      }
+    }
+  }, [isRunning, seconds, onChange]);
+
   return (
-    <Paper 
-      elevation={2} 
-      sx={{ 
-        p: 2, 
+    <Paper
+      elevation={3}
+      sx={{
+        p: 2,
+        mt: 2,
+        mb: 2,
         borderRadius: 2,
-        bgcolor: isRunning && !isPaused ? 'success.lighter' : 'background.paper',
-        transition: 'background-color 0.3s ease',
+        bgcolor: theme =>
+          theme.palette.mode === 'dark' ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.9)',
       }}
     >
       <Stack spacing={2}>
-        <Typography variant="h6" gutterBottom>
-          {t('lessons:timer.title')}
-        </Typography>
-        
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center',
-          position: 'relative'
-        }}>
-          <Typography variant="h3" component="div" sx={{ fontFamily: 'monospace', letterSpacing: 1 }}>
-            {formatTime(seconds)}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h6" component="div">
+            {t('timer.title')}
           </Typography>
-          <IconButton 
+          <IconButton
+            onClick={openEditDialog}
+            color="primary"
             size="small"
-            onClick={handleEdit}
-            sx={{ position: 'absolute', right: -30 }}
-            title={t('lessons:timer.editTime')}
+            aria-label={t('timer.editTime')}
           >
-            <EditIcon fontSize="small" />
+            <EditIcon />
           </IconButton>
         </Box>
-        
-        <Stack direction="row" spacing={2} justifyContent="center">
+
+        <Typography
+          variant="h3"
+          component="div"
+          align="center"
+          sx={{
+            fontFamily: 'monospace',
+            letterSpacing: 1,
+            fontWeight: 'medium',
+          }}
+        >
+          {formatTime(seconds)}
+        </Typography>
+
+        <Stack direction="row" spacing={1} justifyContent="center">
           {!isRunning ? (
-            <Button 
-              variant="contained" 
-              color="success" 
-              startIcon={<StartIcon />}
-              onClick={handleStart}
-              fullWidth
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<PlayIcon />}
+              onClick={startTimer}
+              disabled={isRunning}
             >
-              {t('lessons:timer.start')}
+              {seconds > 0 ? t('timer.resume') : t('timer.start')}
             </Button>
           ) : (
-            <>
-              <Button 
-                variant={isPaused ? "outlined" : "contained"} 
-                color={isPaused ? "primary" : "warning"}
-                startIcon={isPaused ? <StartIcon /> : <PauseIcon />}
-                onClick={handlePause}
-                fullWidth
-              >
-                {isPaused ? t('lessons:timer.resume') : t('lessons:timer.pause')}
-              </Button>
-              <Button 
-                variant="contained" 
-                color="error" 
-                startIcon={<StopIcon />}
-                onClick={handleStop}
-                fullWidth
-              >
-                {t('lessons:timer.stop')}
-              </Button>
-            </>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<PauseIcon />}
+              onClick={pauseTimer}
+              disabled={!isRunning}
+            >
+              {t('timer.pause')}
+            </Button>
           )}
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            startIcon={<StopIcon />}
+            onClick={stopTimer}
+            disabled={seconds === 0}
+          >
+            {t('timer.stop')}
+          </Button>
         </Stack>
-        
-        {(isRunning || seconds > 0) && (
-          <Typography variant="caption" align="center">
-            {startedAt 
-              ? `${t('lessons:timer.started')}: ${startedAt.toLocaleTimeString()}` 
-              : t('lessons:timer.notStarted')}
-          </Typography>
-        )}
       </Stack>
-      
-      {/* Edit Dialog */}
+
+      {/* Time Edit Dialog */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>{t('lessons:timer.editTime')}</DialogTitle>
+        <DialogTitle>{t('timer.editTime')}</DialogTitle>
         <DialogContent>
           <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
             <TextField
-              label={t('lessons:timer.hours')}
+              label={t('timer.hours')}
               type="number"
+              InputProps={{ inputProps: { min: 0, max: 10 } }}
               value={editHours}
-              onChange={(e) => setEditHours(Math.max(0, parseInt(e.target.value) || 0))}
-              InputProps={{ inputProps: { min: 0, max: 24 } }}
+              onChange={e => setEditHours(parseInt(e.target.value) || 0)}
+              fullWidth
             />
             <TextField
-              label={t('lessons:timer.minutes')}
+              label={t('timer.minutes')}
               type="number"
-              value={editMinutes}
-              onChange={(e) => setEditMinutes(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
               InputProps={{ inputProps: { min: 0, max: 59 } }}
+              value={editMinutes}
+              onChange={e => setEditMinutes(parseInt(e.target.value) || 0)}
+              fullWidth
             />
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)}>
-            {t('actions.cancel')}
+          <Button onClick={() => setEditDialogOpen(false)} color="inherit">
+            {t('timer.cancel')}
           </Button>
-          <Button onClick={handleSaveEdit} variant="contained">
-            {t('actions.save')}
+          <Button onClick={handleSaveTime} color="primary" variant="contained">
+            {t('timer.save')}
           </Button>
         </DialogActions>
       </Dialog>
     </Paper>
   );
-};
-
-export default LessonTimer; 
+}

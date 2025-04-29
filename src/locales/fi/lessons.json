@@ -130,15 +130,25 @@
 
   "timer": {
     "title": "Ajotunnin ajastin",
-    "start": "Aloita",
-    "pause": "Tauko",
+    "start": "Käynnistä",
+    "pause": "Pysäytä",
     "resume": "Jatka",
     "stop": "Lopeta",
     "reset": "Nollaa",
     "startTime": "Aloitusaika",
     "endTime": "Lopetusaika",
     "duration": "Kesto",
-    "elapsedTime": "Kulunut aika"
+    "elapsedTime": "Kulunut aika",
+    "started": "Aloitettu",
+    "notStarted": "Ei vielä aloitettu",
+    "editTime": "Muokkaa aikaa",
+    "hours": "Tunnit",
+    "minutes": "Minuutit",
+    "seconds": "Sekunnit",
+    "showTimer": "Näytä ajastin",
+    "hideTimer": "Piilota ajastin",
+    "save": "Tallenna",
+    "cancel": "Peruuta"
   },
 
   "progress": {
@@ -247,33 +257,7 @@
       "highwayDriving": {
         "title": "Maantie- ja moottoritieajo",
         "overview": "Maantie- ja moottoritieajo vaatii erityistaitoja.",
-        "tip1": "Opeta ennakoivaa tarkkailua: jatkuva peilien käyttö, katvealueiden tarkistus.",
-        "tip2": "Harjoittele liittymistä ja poistumista sopivilla nopeuksilla.",
-        "tip3": "Korosta oikeaa kaistakuria (pysy oikealla paitsi ohitettaessa)."
-      },
-      "parking": {
-        "title": "Pysäköinti",
-        "overview": "Pysäköinti vaatii tarkkuutta ja tilanteiden hallintaa.",
-        "tip1": "Jaa jokainen pysäköintitapa (taskupysäköinti, vinopysäköinti, ruutupysäköinti) selkeisiin vaiheisiin.",
-        "tip2": "Käytä kiintopisteitä ohjauksessa (peilien kohdistus, tietyt pisteet autossa/pysäköintitilassa).",
-        "tip3": "Korosta hidasta, hallittua nopeutta pysäköitäessä.",
-        "tip4": "Painota kaikkien suuntien tarkastamista (peilit, kuolleet kulmat, kääntyminen katsomaan)."
-      },
-      "specialConditions": {
-        "title": "Erityisolosuhteet",
-        "overview": "Erityisolosuhteet vaativat ajotekniikan mukauttamista.",
-        "tip1": "Opeta valojen oikea käyttö (ajovalot, kaukovalot, sumuvalot).",
-        "tip2": "Selitä näkyvyyden vähenemisen tuomat haasteet ja miten niitä kompensoidaan (hitaampi nopeus, kasvatettu etäisyys).",
-        "tip3": "Keskustele vesiliirron (sateella) ja pidon menetyksen (jää/lumi) riskeistä.",
-        "tip4": "Korosta maltillisia ohjausliikkeitä liukkaalla."
-      },
-      "riskManagement": {
-        "title": "Riskienhallinta",
-        "overview": "Riskien tunnistaminen ja hallinta on turvallisen ajamisen kulmakivi.",
-        "tip1": "Opeta järjestelmällistä vaarojen tunnistamista (katseen kohdistus, tyypilliset riskialueet).",
-        "tip2": "Keskustele riskien arvioinnista (todennäköisyys vs. vakavuus).",
-        "tip3": "Edistä ennakoivan ajon periaatteita (ennakointi, tilanhallinnan säilyttäminen).",
-        "tip4": "Harjoittele hätäjarrutusta turvallisessa ympäristössä."
+        "tip1": "Opeta ennakoivaa tarkkailua: jatkuva peilien käyttö, katvealueiden tarkistus."
       }
     }
   }

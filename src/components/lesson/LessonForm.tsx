@@ -18,11 +18,14 @@ import {
   Rating,
   Typography,
   Paper,
+  Collapse,
 } from '@mui/material';
+import { TimerOutlined as TimerIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { Lesson, LearningStage, Student, TopicRating } from '../../services/db';
 import { lessonTopics, getTopicLabel } from '../../constants/lessonTopics';
 import { useLessonForm } from './useLessonForm';
+import LessonTimer from './timer/LessonTimer';
 
 interface FormErrors {
   studentId?: string;
@@ -40,7 +43,14 @@ const LessonForm: React.FC<{
   onCancel: () => void;
 }> = ({ students, onSubmit, onCancel }) => {
   const { t } = useTranslation(['common', 'lessons']);
-  const { editingLesson, preSelectedStudentId, preSelectedTopics, resetForm } = useLessonForm();
+  const formContext = useLessonForm();
+  const {
+    editingLesson,
+    preSelectedStudentId,
+    preSelectedTopics,
+    resetForm,
+    learningStage: contextLearningStage,
+  } = formContext;
 
   const [studentId, setStudentId] = useState<number | ''>('');
   const [date, setDate] = useState<string>('');
@@ -54,6 +64,9 @@ const LessonForm: React.FC<{
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  // New state for timer
+  const [showTimer, setShowTimer] = useState<boolean>(false);
 
   useEffect(() => {
     if (editingLesson) {
@@ -84,7 +97,13 @@ const LessonForm: React.FC<{
       setDate(new Date().toISOString().split('T')[0]);
       setStartTime('09:00');
       setEndTime('10:00');
-      setLearningStage('');
+      // Use contextLearningStage if available and valid, otherwise default
+      const isValidStage =
+        contextLearningStage &&
+        (contextLearningStage === 'kognitiivinen' ||
+          contextLearningStage === 'assosiatiivinen' ||
+          contextLearningStage === 'automaattinen');
+      setLearningStage(isValidStage ? contextLearningStage : '');
 
       // Initialize selected topics from preSelectedTopics (if any)
       const topicIds = preSelectedTopics || [];
@@ -99,11 +118,12 @@ const LessonForm: React.FC<{
 
       setNotes('');
       setKilometers('');
-      setIsCompleted(false);
+      // Set isCompleted to true by default for new lessons
+      setIsCompleted(true);
       setErrors({});
       setTouched({});
     }
-  }, [editingLesson, preSelectedStudentId, preSelectedTopics]);
+  }, [editingLesson, preSelectedStudentId, preSelectedTopics, contextLearningStage]);
 
   const handleTopicChange = (event: SelectChangeEvent<typeof selectedTopics>) => {
     const {
@@ -132,6 +152,51 @@ const LessonForm: React.FC<{
     });
 
     setTopicRatingsMap(newRatingsMap);
+
+    // Auto-select learning stage based on selected topics
+    if (newSelectedTopics.length > 0) {
+      const recommendedStage = determineOptimalLearningStage(newSelectedTopics);
+      setLearningStage(recommendedStage);
+      // Also auto-mark as completed when topics are selected
+      setIsCompleted(true);
+    }
+  };
+
+  // Function to determine the optimal learning stage based on selected topics
+  const determineOptimalLearningStage = (topicIds: string[]): LearningStage => {
+    // Count occurrences of each stage
+    const stageCounts: Record<LearningStage, number> = {
+      kognitiivinen: 0,
+      assosiatiivinen: 0,
+      automaattinen: 0,
+    };
+
+    // Map topics to their stages and count occurrences
+    topicIds.forEach(topicId => {
+      const topic = lessonTopics.find(t => t.key === topicId);
+      if (topic) {
+        stageCounts[topic.stage]++;
+      }
+    });
+
+    // Find the stage with the highest count
+    let maxCount = 0;
+    let dominantStage: LearningStage = 'kognitiivinen'; // Default to basic stage
+
+    Object.entries(stageCounts).forEach(([stage, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        dominantStage = stage as LearningStage;
+      }
+    });
+
+    return dominantStage;
+  };
+
+  // Handle timer time updates
+  const handleTimeUpdate = (newStartTime: string, newEndTime: string, _durationSeconds: number) => {
+    setStartTime(newStartTime);
+    setEndTime(newEndTime);
   };
 
   const handleRatingChange = (topicId: string, newValue: number | null) => {
@@ -250,6 +315,28 @@ const LessonForm: React.FC<{
         </Alert>
       )}
 
+      {/* Timer toggle button */}
+      <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          variant={showTimer ? 'contained' : 'outlined'}
+          color="primary"
+          startIcon={<TimerIcon />}
+          onClick={() => setShowTimer(!showTimer)}
+          size="small"
+        >
+          {showTimer
+            ? t('lessons:timer.hideTimer', 'Piilota ajastin')
+            : t('lessons:timer.showTimer', 'Näytä ajastin')}
+        </Button>
+      </Box>
+
+      {/* Collapsible timer component */}
+      <Collapse in={showTimer}>
+        <Box sx={{ mb: 3 }}>
+          <LessonTimer onTimeUpdate={handleTimeUpdate} />
+        </Box>
+      </Collapse>
+
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <FormControl
@@ -281,6 +368,7 @@ const LessonForm: React.FC<{
             )}
           </FormControl>
         </Grid>
+
         <Grid size={{ xs: 12, sm: 6 }}>
           <FormControl
             fullWidth
@@ -302,15 +390,16 @@ const LessonForm: React.FC<{
               }}
               onBlur={() => markAsTouched('learningStage')}
             >
-              <MenuItem value="kognitiivinen">{t('lessons:stages.cognitive')}</MenuItem>
-              <MenuItem value="assosiatiivinen">{t('lessons:stages.associative')}</MenuItem>
-              <MenuItem value="automaattinen">{t('lessons:stages.automatic')}</MenuItem>
+              <MenuItem value="kognitiivinen">{t('lessons:stages.kognitiivinen')}</MenuItem>
+              <MenuItem value="assosiatiivinen">{t('lessons:stages.assosiatiivinen')}</MenuItem>
+              <MenuItem value="automaattinen">{t('lessons:stages.automaattinen')}</MenuItem>
             </Select>
             {touched.learningStage && errors.learningStage && (
               <FormHelperText error>{errors.learningStage}</FormHelperText>
             )}
           </FormControl>
         </Grid>
+
         <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             margin="normal"
@@ -325,10 +414,9 @@ const LessonForm: React.FC<{
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
-        <Grid size={{ xs: 6, sm: 4 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             margin="normal"
-            required
             fullWidth
             id="startTime"
             label={t('lessons:forms.startTimeLabel')}
@@ -337,13 +425,11 @@ const LessonForm: React.FC<{
             value={startTime}
             onChange={e => setStartTime(e.target.value)}
             InputLabelProps={{ shrink: true }}
-            inputProps={{ step: 300 }}
           />
         </Grid>
-        <Grid size={{ xs: 6, sm: 4 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             margin="normal"
-            required
             fullWidth
             id="endTime"
             label={t('lessons:forms.endTimeLabel')}
@@ -352,9 +438,9 @@ const LessonForm: React.FC<{
             value={endTime}
             onChange={e => setEndTime(e.target.value)}
             InputLabelProps={{ shrink: true }}
-            inputProps={{ step: 300 }}
           />
         </Grid>
+
         <Grid size={{ xs: 12 }}>
           <FormControl fullWidth required margin="normal" error={touched.topics && !!errors.topics}>
             <InputLabel id="topics-select-label">{t('lessons:forms.topicsLabel')}</InputLabel>

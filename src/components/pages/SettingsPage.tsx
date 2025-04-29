@@ -89,6 +89,7 @@ const SettingsPage: React.FC = () => {
                   edge="end"
                   checked={darkModeEnabled}
                   onChange={handleDarkModeChange}
+                  disabled={true}
                   inputProps={{
                     'aria-labelledby': 'dark-mode-switch',
                   }}
