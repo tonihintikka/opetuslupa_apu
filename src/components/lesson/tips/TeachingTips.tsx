@@ -30,76 +30,78 @@ const TeachingTips: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Initial tip data structure based on our epic/story research
-  // This would eventually come from a service or be integrated with translations
-  const tipSections: TeachingTipSection[] = [
-    {
-      id: 'basicVehicleHandling',
-      titleKey: 'lessons:tips.sections.basicHandling.title',
-      overviewKey: 'lessons:tips.sections.basicHandling.overview',
-      tips: [
-        'lessons:tips.sections.basicHandling.tip1',
-        'lessons:tips.sections.basicHandling.tip2',
-        'lessons:tips.sections.basicHandling.tip3',
-        'lessons:tips.sections.basicHandling.tip4',
-        'lessons:tips.sections.basicHandling.tip5',
-      ],
-    },
-    {
-      id: 'trafficSituations',
-      titleKey: 'lessons:tips.sections.trafficSituations.title',
-      overviewKey: 'lessons:tips.sections.trafficSituations.overview',
-      tips: [
-        'lessons:tips.sections.trafficSituations.tip1',
-        'lessons:tips.sections.trafficSituations.tip2',
-        'lessons:tips.sections.trafficSituations.tip3',
-        'lessons:tips.sections.trafficSituations.tip4',
-      ],
-    },
-    {
-      id: 'highwayDriving',
-      titleKey: 'lessons:tips.sections.highwayDriving.title',
-      overviewKey: 'lessons:tips.sections.highwayDriving.overview',
-      tips: [
-        'lessons:tips.sections.highwayDriving.tip1',
-        'lessons:tips.sections.highwayDriving.tip2',
-        'lessons:tips.sections.highwayDriving.tip3',
-      ],
-    },
-    {
-      id: 'parking',
-      titleKey: 'lessons:tips.sections.parking.title',
-      overviewKey: 'lessons:tips.sections.parking.overview',
-      tips: [
-        'lessons:tips.sections.parking.tip1',
-        'lessons:tips.sections.parking.tip2',
-        'lessons:tips.sections.parking.tip3',
-        'lessons:tips.sections.parking.tip4',
-      ],
-    },
-    {
-      id: 'specialConditions',
-      titleKey: 'lessons:tips.sections.specialConditions.title',
-      overviewKey: 'lessons:tips.sections.specialConditions.overview',
-      tips: [
-        'lessons:tips.sections.specialConditions.tip1',
-        'lessons:tips.sections.specialConditions.tip2',
-        'lessons:tips.sections.specialConditions.tip3',
-        'lessons:tips.sections.specialConditions.tip4',
-      ],
-    },
-    {
-      id: 'riskManagement',
-      titleKey: 'lessons:tips.sections.riskManagement.title',
-      overviewKey: 'lessons:tips.sections.riskManagement.overview',
-      tips: [
-        'lessons:tips.sections.riskManagement.tip1',
-        'lessons:tips.sections.riskManagement.tip2',
-        'lessons:tips.sections.riskManagement.tip3',
-        'lessons:tips.sections.riskManagement.tip4',
-      ],
-    },
-  ];
+  // Memoize the static tip sections data to prevent unnecessary dependency changes
+  const tipSections: TeachingTipSection[] = useMemo(
+    () => [
+      {
+        id: 'basicVehicleHandling',
+        titleKey: 'lessons:tips.sections.basicHandling.title',
+        overviewKey: 'lessons:tips.sections.basicHandling.overview',
+        tips: [
+          'lessons:tips.sections.basicHandling.tip1',
+          'lessons:tips.sections.basicHandling.tip2',
+          'lessons:tips.sections.basicHandling.tip3',
+          'lessons:tips.sections.basicHandling.tip4',
+          'lessons:tips.sections.basicHandling.tip5',
+        ],
+      },
+      {
+        id: 'trafficSituations',
+        titleKey: 'lessons:tips.sections.trafficSituations.title',
+        overviewKey: 'lessons:tips.sections.trafficSituations.overview',
+        tips: [
+          'lessons:tips.sections.trafficSituations.tip1',
+          'lessons:tips.sections.trafficSituations.tip2',
+          'lessons:tips.sections.trafficSituations.tip3',
+          'lessons:tips.sections.trafficSituations.tip4',
+        ],
+      },
+      {
+        id: 'highwayDriving',
+        titleKey: 'lessons:tips.sections.highwayDriving.title',
+        overviewKey: 'lessons:tips.sections.highwayDriving.overview',
+        tips: [
+          'lessons:tips.sections.highwayDriving.tip1',
+          'lessons:tips.sections.highwayDriving.tip2',
+          'lessons:tips.sections.highwayDriving.tip3',
+        ],
+      },
+      {
+        id: 'parking',
+        titleKey: 'lessons:tips.sections.parking.title',
+        overviewKey: 'lessons:tips.sections.parking.overview',
+        tips: [
+          'lessons:tips.sections.parking.tip1',
+          'lessons:tips.sections.parking.tip2',
+          'lessons:tips.sections.parking.tip3',
+          'lessons:tips.sections.parking.tip4',
+        ],
+      },
+      {
+        id: 'specialConditions',
+        titleKey: 'lessons:tips.sections.specialConditions.title',
+        overviewKey: 'lessons:tips.sections.specialConditions.overview',
+        tips: [
+          'lessons:tips.sections.specialConditions.tip1',
+          'lessons:tips.sections.specialConditions.tip2',
+          'lessons:tips.sections.specialConditions.tip3',
+          'lessons:tips.sections.specialConditions.tip4',
+        ],
+      },
+      {
+        id: 'riskManagement',
+        titleKey: 'lessons:tips.sections.riskManagement.title',
+        overviewKey: 'lessons:tips.sections.riskManagement.overview',
+        tips: [
+          'lessons:tips.sections.riskManagement.tip1',
+          'lessons:tips.sections.riskManagement.tip2',
+          'lessons:tips.sections.riskManagement.tip3',
+          'lessons:tips.sections.riskManagement.tip4',
+        ],
+      },
+    ],
+    [],
+  );
 
   // For the MVP, we're just displaying placeholder content
   // Search functionality will be implemented in a future story
