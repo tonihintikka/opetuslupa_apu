@@ -17,6 +17,7 @@ import {
   DialogActions,
   Snackbar,
   CircularProgress,
+  useTheme,
 } from '@mui/material';
 import {
   FileUpload as ImportIcon,
@@ -34,15 +35,18 @@ import { dataManagementService } from '../../services';
  */
 const DataManagementPage: React.FC = () => {
   const { t } = useTranslation(['common']);
+  const theme = useTheme();
   const importFileInputRef = useRef<HTMLInputElement>(null);
   const backupFileInputRef = useRef<HTMLInputElement>(null);
-  
+
   // State for dialogs
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [confirmDialogAction, setConfirmDialogAction] = useState<() => Promise<void>>(() => Promise.resolve());
+  const [confirmDialogAction, setConfirmDialogAction] = useState<() => Promise<void>>(() =>
+    Promise.resolve(),
+  );
   const [confirmDialogMessage, setConfirmDialogMessage] = useState('');
   const [confirmDialogTitle, setConfirmDialogTitle] = useState('');
-  
+
   // State for snackbar
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -53,7 +57,7 @@ const DataManagementPage: React.FC = () => {
     message: '',
     severity: 'info',
   });
-  
+
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
@@ -70,7 +74,7 @@ const DataManagementPage: React.FC = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       setSnackbar({
         open: true,
         message: t('notifications.exported'),
@@ -101,7 +105,7 @@ const DataManagementPage: React.FC = () => {
     if (!files || files.length === 0) return;
 
     const file = files[0];
-    
+
     // Show confirmation dialog
     setConfirmDialogTitle(t('dataImport.confirmImport'));
     setConfirmDialogMessage(t('dataImport.importQuestion'));
@@ -109,9 +113,9 @@ const DataManagementPage: React.FC = () => {
       try {
         setIsLoading(true);
         setConfirmDialogOpen(false);
-        
+
         const result = await dataManagementService.importStudentData(file);
-        
+
         setSnackbar({
           open: true,
           message: result.message,
@@ -148,7 +152,7 @@ const DataManagementPage: React.FC = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       setSnackbar({
         open: true,
         message: t('notifications.exported'),
@@ -179,7 +183,7 @@ const DataManagementPage: React.FC = () => {
     if (!files || files.length === 0) return;
 
     const file = files[0];
-    
+
     // Show confirmation dialog with warning about overwriting all data and settings
     setConfirmDialogTitle(t('dataManagement.backup.restoreTitle'));
     setConfirmDialogMessage(t('dataManagement.backup.restoreWarning'));
@@ -187,15 +191,15 @@ const DataManagementPage: React.FC = () => {
       try {
         setIsLoading(true);
         setConfirmDialogOpen(false);
-        
+
         const result = await dataManagementService.restoreFullBackup(file);
-        
+
         setSnackbar({
           open: true,
           message: result.message,
           severity: result.success ? 'success' : 'error',
         });
-        
+
         // If settings were restored, suggest reload
         if (result.success && result.settingsRestored) {
           setTimeout(() => {
@@ -231,10 +235,10 @@ const DataManagementPage: React.FC = () => {
       try {
         setIsLoading(true);
         setConfirmDialogOpen(false);
-        
+
         // Clear data but don't clear settings
         await dataManagementService.clearAllData(false);
-        
+
         setSnackbar({
           open: true,
           message: t('dataManagement.dangerZone.successMessage'),
@@ -263,8 +267,22 @@ const DataManagementPage: React.FC = () => {
   };
 
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom>
+    <Box
+      sx={{
+        position: 'relative',
+        height: '100%',
+        maxHeight: {
+          xs: 'calc(100vh - var(--app-bar-height) - var(--bottom-nav-height))',
+          sm: 'calc(100vh - var(--app-bar-height))',
+        },
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        pt: 6,
+        pb: { xs: 8, sm: 4 },
+        px: 2,
+      }}
+    >
+      <Typography variant="h4" component="h1" sx={{ mt: 2 }}>
         {t('dataManagement.title')}
       </Typography>
 
@@ -284,9 +302,9 @@ const DataManagementPage: React.FC = () => {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button 
-              variant="contained" 
-              startIcon={<ExportIcon />} 
+            <Button
+              variant="contained"
+              startIcon={<ExportIcon />}
               onClick={handleExportData}
               disabled={isLoading}
             >
@@ -336,9 +354,9 @@ const DataManagementPage: React.FC = () => {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button 
-              variant="outlined" 
-              startIcon={<BackupIcon />} 
+            <Button
+              variant="outlined"
+              startIcon={<BackupIcon />}
               onClick={handleCreateBackup}
               disabled={isLoading}
             >
@@ -365,14 +383,18 @@ const DataManagementPage: React.FC = () => {
             />
           </CardContent>
           <CardActions>
-            <Button 
-              variant="outlined" 
+            <Button
+              variant="outlined"
               color="secondary"
-              startIcon={<RestoreIcon />} 
+              startIcon={<RestoreIcon />}
               onClick={handleRestoreBackup}
               disabled={isLoading}
             >
-              {isLoading ? <CircularProgress size={24} /> : t('dataManagement.backup.restoreButton')}
+              {isLoading ? (
+                <CircularProgress size={24} />
+              ) : (
+                t('dataManagement.backup.restoreButton')
+              )}
             </Button>
           </CardActions>
         </Card>
@@ -381,7 +403,13 @@ const DataManagementPage: React.FC = () => {
       <Divider sx={{ my: 4 }} />
 
       {/* Danger Zone */}
-      <Paper sx={{ p: 2, backgroundColor: theme => theme.palette.error.light }}>
+      <Paper
+        sx={{
+          p: 2,
+          mb: 4,
+          backgroundColor: theme.palette.error.light,
+        }}
+      >
         <Typography variant="h6" sx={{ color: 'error.contrastText' }}>
           {t('dataManagement.dangerZone.title')}
         </Typography>
@@ -400,15 +428,10 @@ const DataManagementPage: React.FC = () => {
       </Paper>
 
       {/* Confirmation Dialog */}
-      <Dialog
-        open={confirmDialogOpen}
-        onClose={() => setConfirmDialogOpen(false)}
-      >
+      <Dialog open={confirmDialogOpen} onClose={() => setConfirmDialogOpen(false)}>
         <DialogTitle>{confirmDialogTitle}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {confirmDialogMessage}
-          </DialogContentText>
+          <DialogContentText>{confirmDialogMessage}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setConfirmDialogOpen(false)} color="primary">
