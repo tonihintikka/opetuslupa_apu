@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="256" cy="256" r="248" fill="#1976D2"/>
+  <circle cx="256" cy="256" r="232" fill="white"/>
+  <circle cx="256" cy="256" r="216" fill="#1976D2"/>
+  
+  <!-- Student silhouette -->
+  <circle cx="256" cy="156" r="80" fill="white"/>
+  <path d="M256 256C180 256 140 320 140 380V400H372V380C372 320 332 256 256 256Z" fill="white"/>
+  
+  <!-- Plus sign for "Add" -->
+  <rect x="234" y="330" width="44" height="120" rx="10" fill="#1976D2"/>
+  <rect x="196" y="368" width="120" height="44" rx="10" fill="#1976D2"/>
+</svg>

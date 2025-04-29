@@ -1,52 +1,79 @@
 #!/bin/bash
 
+# Change to project root directory
+cd "$(dirname "$0")/.." || { echo "Failed to change to project root directory"; exit 1; }
+echo "Working directory: $(pwd)"
+
+# Check if we're using ImageMagick v7 or v6
+if command -v magick &> /dev/null; then
+  CONVERT_CMD="magick"
+else
+  CONVERT_CMD="convert"
+fi
+
+echo "Using $CONVERT_CMD command for ImageMagick..."
+
+# Verify SVG files exist
+if [ ! -f "public/ajokamu-icon.svg" ]; then
+  echo "Error: public/ajokamu-icon.svg not found!"
+  echo "Current directory: $(pwd)"
+  echo "Files in public directory:"
+  ls -la public/
+  exit 1
+fi
+
+if [ ! -f "public/maskable-icon.svg" ]; then
+  echo "Error: public/maskable-icon.svg not found!"
+  exit 1
+fi
+
 # Make sure the icons directory exists
 mkdir -p public/icons
 
 # Favicon - 16x16 and 32x32 icons
-convert -background none public/ajokamu-icon.svg -resize 16x16 public/icons/favicon-16x16.png
-convert -background none public/ajokamu-icon.svg -resize 32x32 public/icons/favicon-32x32.png
-convert -background none public/ajokamu-icon.svg -resize 48x48 public/icons/favicon-48x48.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 16x16 public/icons/favicon-16x16.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 32x32 public/icons/favicon-32x32.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 48x48 public/icons/favicon-48x48.png
 
 # Combined favicon.ico (16x16, 32x32, 48x48)
-convert public/icons/favicon-16x16.png public/icons/favicon-32x32.png public/icons/favicon-48x48.png public/favicon.ico
+$CONVERT_CMD public/icons/favicon-16x16.png public/icons/favicon-32x32.png public/icons/favicon-48x48.png public/favicon.ico
 
 # Apple Touch Icons
-convert -background none public/ajokamu-icon.svg -resize 57x57 public/icons/apple-touch-icon-57x57.png
-convert -background none public/ajokamu-icon.svg -resize 60x60 public/icons/apple-touch-icon-60x60.png
-convert -background none public/ajokamu-icon.svg -resize 72x72 public/icons/apple-touch-icon-72x72.png
-convert -background none public/ajokamu-icon.svg -resize 76x76 public/icons/apple-touch-icon-76x76.png
-convert -background none public/ajokamu-icon.svg -resize 114x114 public/icons/apple-touch-icon-114x114.png
-convert -background none public/ajokamu-icon.svg -resize 120x120 public/icons/apple-touch-icon-120x120.png
-convert -background none public/ajokamu-icon.svg -resize 144x144 public/icons/apple-touch-icon-144x144.png
-convert -background none public/ajokamu-icon.svg -resize 152x152 public/icons/apple-touch-icon-152x152.png
-convert -background none public/ajokamu-icon.svg -resize 180x180 public/icons/apple-touch-icon-180x180.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 57x57 public/icons/apple-touch-icon-57x57.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 60x60 public/icons/apple-touch-icon-60x60.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 72x72 public/icons/apple-touch-icon-72x72.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 76x76 public/icons/apple-touch-icon-76x76.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 114x114 public/icons/apple-touch-icon-114x114.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 120x120 public/icons/apple-touch-icon-120x120.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 144x144 public/icons/apple-touch-icon-144x144.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 152x152 public/icons/apple-touch-icon-152x152.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 180x180 public/icons/apple-touch-icon-180x180.png
 
 # Create the default apple-touch-icon.png (180x180)
 cp public/icons/apple-touch-icon-180x180.png public/apple-touch-icon.png
 
 # Android Homescreen Icons
-convert -background none public/ajokamu-icon.svg -resize 36x36 public/icons/android-chrome-36x36.png
-convert -background none public/ajokamu-icon.svg -resize 48x48 public/icons/android-chrome-48x48.png
-convert -background none public/ajokamu-icon.svg -resize 72x72 public/icons/android-chrome-72x72.png
-convert -background none public/ajokamu-icon.svg -resize 96x96 public/icons/android-chrome-96x96.png
-convert -background none public/ajokamu-icon.svg -resize 144x144 public/icons/android-chrome-144x144.png
-convert -background none public/ajokamu-icon.svg -resize 192x192 public/icons/android-chrome-192x192.png
-convert -background none public/ajokamu-icon.svg -resize 256x256 public/icons/android-chrome-256x256.png
-convert -background none public/ajokamu-icon.svg -resize 384x384 public/icons/android-chrome-384x384.png
-convert -background none public/ajokamu-icon.svg -resize 512x512 public/icons/android-chrome-512x512.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 36x36 public/icons/android-chrome-36x36.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 48x48 public/icons/android-chrome-48x48.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 72x72 public/icons/android-chrome-72x72.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 96x96 public/icons/android-chrome-96x96.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 144x144 public/icons/android-chrome-144x144.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 192x192 public/icons/android-chrome-192x192.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 256x256 public/icons/android-chrome-256x256.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 384x384 public/icons/android-chrome-384x384.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 512x512 public/icons/android-chrome-512x512.png
 
 # Create standard sizes for PWA
-convert -background none public/ajokamu-icon.svg -resize 192x192 public/icons/icon-192x192.png
-convert -background none public/ajokamu-icon.svg -resize 512x512 public/icons/icon-512x512.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 192x192 public/icons/icon-192x192.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 512x512 public/icons/icon-512x512.png
 
 # Create maskable icons for Android (with proper safe zone)
-convert -background none public/maskable-icon.svg -resize 192x192 public/icons/maskable-192x192.png
-convert -background none public/maskable-icon.svg -resize 512x512 public/icons/maskable-512x512.png
+$CONVERT_CMD -background none public/maskable-icon.svg -resize 192x192 public/icons/maskable-192x192.png
+$CONVERT_CMD -background none public/maskable-icon.svg -resize 512x512 public/icons/maskable-512x512.png
 
 # Create shortcut icons
 mkdir -p public/icons/shortcuts
-convert -background none public/ajokamu-icon.svg -resize 96x96 public/icons/shortcut-lesson.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 96x96 public/icons/shortcut-lesson.png
 
 # Create custom shortcut icon for adding student
 cat > public/icons/student-icon.svg << EOF
@@ -66,14 +93,14 @@ cat > public/icons/student-icon.svg << EOF
 </svg>
 EOF
 
-convert -background none public/icons/student-icon.svg -resize 96x96 public/icons/shortcut-student.png
+$CONVERT_CMD -background none public/icons/student-icon.svg -resize 96x96 public/icons/shortcut-student.png
 
 # Microsoft Windows Tile Icons
-convert -background none public/ajokamu-icon.svg -resize 70x70 public/icons/mstile-70x70.png
-convert -background none public/ajokamu-icon.svg -resize 144x144 public/icons/mstile-144x144.png
-convert -background none public/ajokamu-icon.svg -resize 150x150 public/icons/mstile-150x150.png
-convert -background none public/ajokamu-icon.svg -resize 310x150 public/icons/mstile-310x150.png
-convert -background none public/ajokamu-icon.svg -resize 310x310 public/icons/mstile-310x310.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 70x70 public/icons/mstile-70x70.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 144x144 public/icons/mstile-144x144.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 150x150 public/icons/mstile-150x150.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 310x150 public/icons/mstile-310x150.png
+$CONVERT_CMD -background none public/ajokamu-icon.svg -resize 310x310 public/icons/mstile-310x310.png
 
 # Create Safari Pinned Tab SVG (monochrome silhouette)
 cat > public/safari-pinned-tab.svg << EOF
