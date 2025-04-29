@@ -30,7 +30,8 @@ const BottomNavigation: React.FC = () => {
   const currentPath = '/' + (location.pathname.split('/')[1] || '');
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    navigate(newValue);
+    // Always navigate with no state to ensure fresh rendering
+    navigate(newValue, { replace: true, state: null });
   };
 
   return (

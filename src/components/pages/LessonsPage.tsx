@@ -72,6 +72,15 @@ const LessonsPage: React.FC = () => {
   // Use context's isOpen for dialog visibility
   const openForm = openFormFromContext;
 
+  // Reset the active tab when navigating to the page directly (not through state)
+  useEffect(() => {
+    // If there's no redirectToStudentId in the state, and we're directly navigating to /lessons
+    // This means we're coming from another main navigation item (like bottom nav or sidebar)
+    if (!location.state && location.pathname === '/lessons') {
+      setActiveTab(0);
+    }
+  }, [location.pathname, location]);
+
   // Handle redirect from MilestonesPage
   useEffect(() => {
     const state = location.state as { redirectToStudentId?: number; activeTab?: number } | null;
@@ -239,21 +248,32 @@ const LessonsPage: React.FC = () => {
         {/* Display Tabs and content when a student is selected */}
         {selectedStudentId ? (
           <Box sx={{ width: '100%' }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-              <Tabs value={activeTab} onChange={handleTabChange} aria-label="student progress tabs">
-                <Tab
-                  label={t('lessons:tabs.overview', 'Overview')}
-                  id="tab-0"
-                  aria-controls="tabpanel-0"
-                />
-                <Tab
-                  label={t('lessons:tabs.topics', 'Topics')}
-                  id="tab-1"
-                  aria-controls="tabpanel-1"
-                />
-                <Tab label={t('lessons:tabs.tips', 'Tips')} id="tab-2" aria-controls="tabpanel-2" />
-              </Tabs>
-            </Box>
+            {/* Only show tabs when not in the Teaching Tips view */}
+            {activeTab !== 2 && (
+              <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+                <Tabs
+                  value={activeTab}
+                  onChange={handleTabChange}
+                  aria-label="student progress tabs"
+                >
+                  <Tab
+                    label={t('lessons:tabs.overview', 'Overview')}
+                    id="tab-0"
+                    aria-controls="tabpanel-0"
+                  />
+                  <Tab
+                    label={t('lessons:tabs.topics', 'Topics')}
+                    id="tab-1"
+                    aria-controls="tabpanel-1"
+                  />
+                  <Tab
+                    label={t('lessons:tabs.tips', 'Tips')}
+                    id="tab-2"
+                    aria-controls="tabpanel-2"
+                  />
+                </Tabs>
+              </Box>
+            )}
 
             {/* Tab content panels */}
             <Box role="tabpanel" hidden={activeTab !== 0} id="tabpanel-0" aria-labelledby="tab-0">

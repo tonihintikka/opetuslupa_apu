@@ -18,7 +18,7 @@ import {
   Backup as BackupIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -33,6 +33,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ handleDrawerToggle }) => {
   const { t } = useTranslation(['common']);
   const location = useLocation();
+  const navigate = useNavigate();
   const theme = useTheme();
 
   const navItems = [
@@ -42,6 +43,12 @@ const Sidebar: React.FC<SidebarProps> = ({ handleDrawerToggle }) => {
     { path: '/settings', label: t('navigation.settings'), icon: <SettingsIcon /> },
     { path: '/export-import', label: t('navigation.exportImport'), icon: <BackupIcon /> },
   ];
+
+  const handleNavigation = (path: string) => {
+    // Always navigate with no state to ensure fresh rendering
+    navigate(path, { replace: true, state: null });
+    handleDrawerToggle();
+  };
 
   return (
     <Box sx={{ width: 240 }}>
@@ -55,9 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ handleDrawerToggle }) => {
         {navItems.map(item => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton
-              component={NavLink}
-              to={item.path}
-              onClick={handleDrawerToggle}
+              onClick={() => handleNavigation(item.path)}
               selected={location.pathname === item.path}
               sx={{
                 py: 1.5,
