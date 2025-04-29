@@ -8,7 +8,7 @@
   "navigation": {
     "students": "Oppilaat",
     "lessons": "Ajotunnit",
-    "milestones": "Tavoitteet",
+    "milestones": "Vinkit",
     "settings": "Asetukset",
     "exportImport": "Vienti/Tuonti"
   },
@@ -18,6 +18,14 @@
     "privacyPolicy": "Tietosuojaseloste",
     "termsOfService": "Käyttöehdot",
     "help": "Ohje"
+  },
+  "help": {
+    "title": "Ohje",
+    "gettingStarted": "Aloittaminen",
+    "faq": "Usein kysytyt kysymykset",
+    "features": "Ominaisuudet",
+    "contact": "Tarvitsetko lisäapua? Ota yhteyttä kehittäjään:",
+    "emailAddress": "info@ajokamu.fi"
   },
   "actions": {
     "add": "Lisää",

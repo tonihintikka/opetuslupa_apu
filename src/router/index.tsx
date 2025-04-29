@@ -7,6 +7,9 @@ import {
   MilestonesPage,
   SettingsPage,
   DataManagementPage,
+  PrivacyPolicy,
+  TermsOfService,
+  HelpPage,
 } from '../components/pages';
 
 /**
@@ -24,6 +27,9 @@ const Router: React.FC = () => {
           <Route path="milestones" element={<MilestonesPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="export-import" element={<DataManagementPage />} />
+          <Route path="help" element={<HelpPage />} />
+          <Route path="privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="terms-of-service" element={<TermsOfService />} />
         </Route>
       </Routes>
     </BrowserRouter>

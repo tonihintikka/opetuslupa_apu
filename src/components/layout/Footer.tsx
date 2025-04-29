@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Link, Container, Divider, useMediaQuery, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
 
 /**
  * Footer component for the application
@@ -57,13 +58,13 @@ const Footer: React.FC = () => {
               alignItems: 'center',
             }}
           >
-            <Link href="#" color="inherit" underline="hover">
+            <Link component={RouterLink} to="/privacy-policy" color="inherit" underline="hover">
               {t('footer.privacyPolicy')}
             </Link>
-            <Link href="#" color="inherit" underline="hover">
+            <Link component={RouterLink} to="/terms-of-service" color="inherit" underline="hover">
               {t('footer.termsOfService')}
             </Link>
-            <Link href="#" color="inherit" underline="hover">
+            <Link component={RouterLink} to="/help" color="inherit" underline="hover">
               {t('footer.help')}
             </Link>
           </Box>
