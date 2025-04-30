@@ -51,7 +51,7 @@ const Navigation: React.FC = () => {
 
       <Button
         component={NavLink}
-        to="/vinkit"
+        to="/tips"
         startIcon={<MilestoneIcon />}
         color="inherit"
         sx={{

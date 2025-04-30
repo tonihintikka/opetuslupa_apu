@@ -73,7 +73,7 @@ const BottomNavigation: React.FC = () => {
         />
         <BottomNavigationAction
           label={t('navigation.milestones')}
-          value="/vinkit"
+          value="/tips"
           icon={<MilestoneIcon />}
           data-testid="milestones-button"
         />

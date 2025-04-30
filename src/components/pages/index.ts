@@ -7,4 +7,4 @@ export { default as DataManagementPage } from './DataManagementPage';
 export { default as PrivacyPolicy } from './PrivacyPolicy';
 export { default as TermsOfService } from './TermsOfService';
 export { default as HelpPage } from './HelpPage';
-export { default as VinkitPage } from './VinkitPage';
+export { default as TipsPage } from './TipsPage';

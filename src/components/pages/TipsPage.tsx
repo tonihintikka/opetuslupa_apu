@@ -3,10 +3,10 @@ import { Box, useTheme } from '@mui/material';
 import TeachingTips from '../lesson/tips/TeachingTips';
 
 /**
- * Standalone page for teaching tips (Vinkit)
+ * Standalone page for teaching tips (Tips)
  * This separates the tips functionality from the student-specific views
  */
-const VinkitPage: React.FC = () => {
+const TipsPage: React.FC = () => {
   const theme = useTheme();
 
   return (
@@ -35,4 +35,4 @@ const VinkitPage: React.FC = () => {
   );
 };
 
-export default VinkitPage;
+export default TipsPage;
