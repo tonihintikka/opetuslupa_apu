@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   BottomNavigation as MuiBottomNavigation,
   BottomNavigationAction,
@@ -13,6 +13,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useLessonForm } from '../lesson/useLessonForm';
 
 /**
  * BottomNavigation component for mobile devices
@@ -25,14 +26,34 @@ const BottomNavigation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { resetForm, setPreSelectedStudentId } = useLessonForm();
 
   // Extract the first path segment to determine the active tab
   const currentPath = '/' + (location.pathname.split('/')[1] || '');
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    // Always navigate with no state to ensure fresh rendering
-    navigate(newValue, { replace: true, state: null });
-  };
+  // Use useCallback to prevent recreation of the function on each render
+  const handleChange = useCallback(
+    (event: React.SyntheticEvent, newValue: string) => {
+      // When going to lessons page, reset any selected student
+      if (newValue === '/lessons') {
+        // Reset form state
+        resetForm();
+
+        // Explicitly reset selected student
+        setPreSelectedStudentId(undefined);
+
+        // Navigate with a simpler state object
+        navigate('/lessons', {
+          replace: true,
+          state: { forceReset: true },
+        });
+      } else {
+        // For other pages, navigate normally
+        navigate(newValue, { replace: true });
+      }
+    },
+    [navigate, resetForm, setPreSelectedStudentId],
+  );
 
   return (
     <Paper

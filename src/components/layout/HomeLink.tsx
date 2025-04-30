@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -16,18 +16,26 @@ const HomeLink: React.FC<HomeLinkProps> = ({ isMobile }) => {
   const navigate = useNavigate();
   const { resetForm, setPreSelectedStudentId } = useLessonForm();
 
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
+  // Use useCallback to prevent recreation of the function on each render
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
 
-    // Reset the form state
-    resetForm();
+      // Reset the form state
+      resetForm();
 
-    // Explicitly reset the selected student
-    setPreSelectedStudentId(undefined);
+      // Explicitly reset the selected student
+      setPreSelectedStudentId(undefined);
 
-    // Navigate to lessons page
-    navigate('/lessons');
-  };
+      // Force a complete reset by navigating with replace instead of push
+      // with a simpler state object
+      navigate('/lessons', {
+        replace: true,
+        state: { forceReset: true },
+      });
+    },
+    [navigate, resetForm, setPreSelectedStudentId],
+  );
 
   return (
     <Typography

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -77,10 +77,34 @@ const LessonsPage: React.FC = () => {
     }
   }, [location.pathname, location]);
 
-  // Handle redirect from MilestonesPage
+  // Memoize the reset function to avoid recreating it on every render
+  const resetStudentSelection = useCallback(() => {
+    setSelectedStudentId('');
+    setActiveTab(0);
+    setPreSelectedStudentId(undefined);
+    resetForm();
+  }, [resetForm, setPreSelectedStudentId]);
+
+  // Handle state changes safely
   useEffect(() => {
-    const state = location.state as { redirectToStudentId?: number; activeTab?: number } | null;
-    if (state?.redirectToStudentId) {
+    if (!location.state) return;
+
+    const state = location.state as {
+      redirectToStudentId?: number;
+      activeTab?: number;
+      forceReset?: boolean;
+    };
+
+    // Handle force reset from navigation components
+    if (state.forceReset) {
+      resetStudentSelection();
+      // Clear state after processing
+      window.history.replaceState({}, document.title);
+      return;
+    }
+
+    // Handle normal redirect
+    if (state.redirectToStudentId) {
       setSelectedStudentId(state.redirectToStudentId);
       if (state.activeTab !== undefined) {
         setActiveTab(state.activeTab);
@@ -88,7 +112,7 @@ const LessonsPage: React.FC = () => {
       // Clear location state to prevent redirect on refresh
       window.history.replaceState({}, document.title);
     }
-  }, [location.state]);
+  }, [location.state, resetStudentSelection]);
 
   // Set the preselected student as the selected student when it changes
   useEffect(() => {
