@@ -14,6 +14,14 @@
   "dataManagement": "Data Management",
   "aboutApp": "About the App",
 
+  "links": {
+    "title": "Links & Info",
+    "appInfo": "Application Info",
+    "privacyDescription": "View our privacy policy and data practices",
+    "termsDescription": "Read our terms of service agreement",
+    "helpDescription": "Get help with using the application"
+  },
+
   "appearance": {
     "title": "Appearance",
     "theme": "Theme",

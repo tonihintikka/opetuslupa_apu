@@ -6,7 +6,7 @@ import { Link as RouterLink } from 'react-router-dom';
 /**
  * Footer component for the application
  * Displays app version, copyright info, and useful links
- * Adapts for mobile with bottom navigation
+ * Only shown on desktop; hidden on mobile to save space
  */
 const Footer: React.FC = () => {
   const { t } = useTranslation(['common']);
@@ -17,6 +17,11 @@ const Footer: React.FC = () => {
   // This would typically come from environment variables in a real app
   const appVersion = 'v0.1.0';
 
+  // Hide footer completely on mobile
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <Box
       component="footer"
@@ -26,8 +31,6 @@ const Footer: React.FC = () => {
         mt: 'auto',
         backgroundColor: theme =>
           theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
-        // Add bottom margin on mobile to account for BottomNavigation using CSS variable
-        mb: isMobile ? 'var(--bottom-nav-height)' : 0,
       }}
     >
       <Container maxWidth="lg">
@@ -38,23 +41,23 @@ const Footer: React.FC = () => {
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: 2,
-            flexDirection: isMobile ? 'column' : 'row',
-            alignItems: isMobile ? 'center' : 'flex-start',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
           }}
         >
           <Box>
-            <Typography variant="body2" color="text.secondary" align={isMobile ? 'center' : 'left'}>
+            <Typography variant="body2" color="text.secondary" align="left">
               &copy; {currentYear} {t('footer.copyright')}
             </Typography>
-            <Typography variant="body2" color="text.secondary" align={isMobile ? 'center' : 'left'}>
+            <Typography variant="body2" color="text.secondary" align="left">
               {t('footer.version')}: {appVersion}
             </Typography>
           </Box>
           <Box
             sx={{
               display: 'flex',
-              gap: { xs: 2, md: 3 },
-              flexDirection: isMobile ? 'column' : 'row',
+              gap: 3,
+              flexDirection: 'row',
               alignItems: 'center',
             }}
           >

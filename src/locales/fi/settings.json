@@ -14,6 +14,14 @@
   "dataManagement": "Tietojen hallinta",
   "aboutApp": "Tietoja sovelluksesta",
 
+  "links": {
+    "title": "Linkit ja tiedot",
+    "appInfo": "Sovelluksen tiedot",
+    "privacyDescription": "Katso tietosuojakäytäntömme ja tietokäytäntömme",
+    "termsDescription": "Lue käyttöehtosopimuksemme",
+    "helpDescription": "Saa apua sovelluksen käyttöön"
+  },
+
   "appearance": {
     "title": "Ulkoasu",
     "theme": "Teema",

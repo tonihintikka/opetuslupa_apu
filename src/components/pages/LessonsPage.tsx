@@ -8,11 +8,8 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Paper,
   Breadcrumbs,
   Link,
-  Tabs,
-  Tab,
   Card,
   CardContent,
   CardActions,
@@ -38,7 +35,6 @@ import LoadingIndicator from '../common/LoadingIndicator';
 import { Lesson } from '../../services/db';
 import { useLessonForm } from '../lesson/useLessonForm';
 import ProgressDashboard from '../lesson/progress/ProgressDashboard';
-import TeachingTips from '../lesson/tips/TeachingTips';
 import { useLocation } from 'react-router-dom';
 
 /**
@@ -51,7 +47,6 @@ const LessonsPage: React.FC = () => {
   const { students, loading: loadingStudents } = useStudents();
   const { loading: loadingLessons, addLesson } = useLessons();
   const [selectedStudentId, setSelectedStudentId] = useState<number | ''>('');
-  const [activeTab, setActiveTab] = useState(0);
   const location = useLocation();
 
   // Use refs to track state changes and prevent loops
@@ -76,7 +71,7 @@ const LessonsPage: React.FC = () => {
   // Reset the active tab when navigating to the page directly
   useEffect(() => {
     if (!location.state && location.pathname === '/lessons') {
-      setActiveTab(0);
+      // setActiveTab(0); // Remove unused state update
     }
   }, [location.pathname, location.state]);
 
@@ -90,7 +85,7 @@ const LessonsPage: React.FC = () => {
     // Only reset if we actually have a selection
     if (selectedStudentIdRef.current !== '') {
       setSelectedStudentId('');
-      setActiveTab(0);
+      // setActiveTab(0); // Remove unused state update
 
       // Only update context if it has a value to avoid unnecessary renders
       if (preSelectedStudentId !== undefined) {
@@ -130,9 +125,9 @@ const LessonsPage: React.FC = () => {
       setSelectedStudentId(state.redirectToStudentId);
 
       // Only update tab if explicitly provided in state
-      if (state.activeTab !== undefined) {
-        setActiveTab(state.activeTab);
-      }
+      // if (state.activeTab !== undefined) {
+      //   setActiveTab(state.activeTab);
+      // }
 
       // Clear location state
       window.history.replaceState({}, document.title);
@@ -178,7 +173,7 @@ const LessonsPage: React.FC = () => {
   const handleStudentSelect = useCallback(
     (studentId: number) => {
       setSelectedStudentId(studentId);
-      setActiveTab(0); // Reset to first tab when changing student
+      // setActiveTab(0); // Reset to first tab when changing student - Remove unused state update
 
       // Only update context if the ID is different
       if (studentId !== preSelectedStudentId) {
@@ -187,11 +182,6 @@ const LessonsPage: React.FC = () => {
     },
     [preSelectedStudentId, setPreSelectedStudentId],
   );
-
-  // Handle tab change
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-  };
 
   // Find the selected student object
   const selectedStudent = students.find(s => s.id === selectedStudentId);
@@ -206,7 +196,7 @@ const LessonsPage: React.FC = () => {
       return (
         <Box sx={{ width: '100%' }}>
           {/* Breadcrumb navigation */}
-          <Box sx={{ mb: 4 }}>
+          <Box sx={{ mb: 2, mt: 0 }}>
             <Breadcrumbs
               separator={<NavigateNextIcon fontSize="small" />}
               aria-label="breadcrumb"
@@ -217,7 +207,7 @@ const LessonsPage: React.FC = () => {
                 color="inherit"
                 onClick={() => {
                   setSelectedStudentId('');
-                  setActiveTab(0);
+                  // setActiveTab(0); // Remove unused state update
                   // Reset context explicitly
                   setPreSelectedStudentId(undefined);
                 }}
@@ -229,7 +219,7 @@ const LessonsPage: React.FC = () => {
               <Typography color="text.primary">{selectedStudent.name}</Typography>
             </Breadcrumbs>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography variant="h4">{selectedStudent.name}</Typography>
+              <Box sx={{ width: 1 }}></Box>
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Button
                   variant="outlined"
@@ -251,30 +241,15 @@ const LessonsPage: React.FC = () => {
             </Box>
           </Box>
 
-          {/* Only show tabs when not in the Teaching Tips view */}
-          {activeTab !== 2 && (
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-              <Tabs value={activeTab} onChange={handleTabChange} aria-label="student progress tabs">
-                <Tab
-                  label={t('lessons:tabs.overview', 'Overview')}
-                  id="tab-0"
-                  aria-controls="tabpanel-0"
-                />
-                <Tab
-                  label={t('lessons:tabs.topics', 'Topics')}
-                  id="tab-1"
-                  aria-controls="tabpanel-1"
-                />
-                <Tab label={t('lessons:tabs.tips', 'Tips')} id="tab-2" aria-controls="tabpanel-2" />
-              </Tabs>
-            </Box>
-          )}
+          {/* Conditionally show tabs - HIDDEN PER USER REQUEST */}
+          {null}
 
-          {/* Tab content panels */}
-          <Box role="tabpanel" hidden={activeTab !== 0} id="tabpanel-0" aria-labelledby="tab-0">
-            {activeTab === 0 && <ProgressDashboard studentId={selectedStudentId as number} />}
+          {/* Tab content panels - Always show the overview content */}
+          <Box role="tabpanel" id="tabpanel-0" aria-labelledby="tab-0">
+            <ProgressDashboard studentId={selectedStudentId as number} />
           </Box>
 
+          {/* Hide topics panel completely 
           <Box role="tabpanel" hidden={activeTab !== 1} id="tabpanel-1" aria-labelledby="tab-1">
             {activeTab === 1 && (
               <Paper sx={{ p: 3 }}>
@@ -290,10 +265,7 @@ const LessonsPage: React.FC = () => {
               </Paper>
             )}
           </Box>
-
-          <Box role="tabpanel" hidden={activeTab !== 2} id="tabpanel-2" aria-labelledby="tab-2">
-            {activeTab === 2 && <TeachingTips />}
-          </Box>
+          */}
         </Box>
       );
     }
@@ -302,8 +274,8 @@ const LessonsPage: React.FC = () => {
     return (
       <>
         {/* App Description Section */}
-        <Box sx={{ mb: 2, textAlign: 'center', pt: { xs: 3, md: 0 } }}>
-          <Typography variant="h4" component="h1" gutterBottom sx={{ mt: { xs: 3, md: 0 } }}>
+        <Box sx={{ mb: 2, textAlign: 'center', pt: { xs: 0, md: 0 } }}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ mt: { xs: 0, md: 0 } }}>
             {t('lessons:frontPage.appTitle')}
           </Typography>
           <Typography variant="body1" sx={{ mb: 2, maxWidth: '800px', mx: 'auto' }}>
@@ -412,8 +384,8 @@ const LessonsPage: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         pb: { xs: 'var(--bottom-nav-height)', md: 2 },
-        pt: { xs: 6, md: 2 }, // Increased from 5 to 6 for mobile
-        mt: { xs: 6, md: 0 }, // Increased from 4 to 6 for mobile
+        pt: { xs: 0, md: 2 }, // Reduced from 8 to 0 for mobile and 4 to 2 for desktop
+        mt: { xs: 0, md: 0 }, // Removed margins entirely
         px: 2,
         mx: 'auto',
         maxWidth: theme.breakpoints.values.lg,

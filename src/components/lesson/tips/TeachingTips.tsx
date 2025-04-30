@@ -1,15 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Box,
-  Typography,
-  Paper,
-  TextField,
-  InputAdornment,
-  Divider,
-  useTheme,
-  useMediaQuery,
-  Alert,
-} from '@mui/material';
+import { Box, Typography, Paper, TextField, InputAdornment, Divider, Alert } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import TipAccordion from './TipAccordion';
@@ -26,8 +16,6 @@ interface TeachingTipSection {
  */
 const TeachingTips: React.FC = () => {
   const { t } = useTranslation(['lessons']);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [searchTerm, setSearchTerm] = useState('');
 
   // Memoize the static tip sections data to prevent unnecessary dependency changes
@@ -130,13 +118,21 @@ const TeachingTips: React.FC = () => {
   }, [searchTerm, t, tipSections]);
 
   return (
-    <Paper sx={{ p: 3, height: '100%' }}>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h5" sx={{ mb: 2 }}>
+    <Paper
+      sx={{
+        p: 2,
+        pb: 0,
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="h5" sx={{ mb: 1 }}>
           {t('lessons:tips.title', 'Teaching Tips')}
         </Typography>
 
-        <Typography variant="body1" sx={{ mb: 2 }}>
+        <Typography variant="body1" sx={{ mb: 1 }}>
           {t(
             'lessons:tips.description',
             'Find teaching advice for various driving topics to help your students learn effectively.',
@@ -156,30 +152,35 @@ const TeachingTips: React.FC = () => {
               </InputAdornment>
             ),
           }}
-          sx={{ mb: 2 }}
+          sx={{ mb: 1 }}
         />
 
-        <Divider sx={{ mb: 3 }} />
+        <Divider sx={{ mb: 2 }} />
       </Box>
 
       <Box
         sx={{
-          maxHeight: isMobile ? 'calc(100vh - 300px)' : 'calc(100vh - 250px)',
+          flex: 1,
           overflowY: 'auto',
           pr: 1,
+          // Ensure this container can expand to fit content
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         {filteredSections.length > 0 ? (
-          filteredSections.map(section => (
-            <Box key={section.id} sx={{ mb: 2 }}>
-              <TipAccordion
-                id={section.id}
-                titleKey={section.titleKey}
-                overviewKey={section.overviewKey}
-                tips={section.tips}
-              />
-            </Box>
-          ))
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {filteredSections.map(section => (
+              <Box key={section.id}>
+                <TipAccordion
+                  id={section.id}
+                  titleKey={section.titleKey}
+                  overviewKey={section.overviewKey}
+                  tips={section.tips}
+                />
+              </Box>
+            ))}
+          </Box>
         ) : (
           <Alert severity="info">
             {t(

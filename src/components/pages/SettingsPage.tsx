@@ -18,22 +18,31 @@ import {
   DarkMode as DarkModeIcon,
   Notifications as NotificationsIcon,
   Storage as StorageIcon,
+  PrivacyTip as PrivacyTipIcon,
+  Gavel as GavelIcon,
+  Help as HelpIcon,
+  Info as InfoIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../';
 import { settingsService } from '../../services';
+import { Link as RouterLink } from 'react-router-dom';
 
 /**
  * Settings page component
  * Allows users to configure application settings like language, theme, etc.
  */
 const SettingsPage: React.FC = () => {
-  const { t } = useTranslation(['settings']);
+  const { t } = useTranslation(['settings', 'common']);
 
   // State for settings
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = React.useState(false);
   const [autoSaveEnabled, setAutoSaveEnabled] = React.useState(true);
+
+  // Current year and app version for footer links
+  const currentYear = new Date().getFullYear();
+  const appVersion = 'v0.1.0'; // This would typically come from environment variables
 
   // Load settings from storage when component mounts
   useEffect(() => {
@@ -43,7 +52,7 @@ const SettingsPage: React.FC = () => {
         const notificationsSetting = await settingsService.getSetting('notificationsEnabled');
         const darkModeSetting = await settingsService.getSetting('darkMode');
         const autoSaveSetting = await settingsService.getSetting('autoSave');
-        
+
         // Update state with loaded values
         setNotificationsEnabled(notificationsSetting);
         setDarkModeEnabled(darkModeSetting);
@@ -167,6 +176,99 @@ const SettingsPage: React.FC = () => {
           </CardContent>
         </Card>
       </Box>
+
+      {/* Links & Info Section (replaces footer on mobile) */}
+      <Card sx={{ flex: 1, mt: 3 }}>
+        <CardHeader title={t('settings:links.title', 'Links & Info')} />
+        <CardContent>
+          <List disablePadding>
+            <ListItem
+              component={RouterLink}
+              to="/privacy-policy"
+              sx={{
+                textDecoration: 'none',
+                color: 'text.primary',
+                '&:hover': {
+                  bgcolor: 'action.hover',
+                },
+              }}
+            >
+              <ListItemIcon>
+                <PrivacyTipIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('common:footer.privacyPolicy')}
+                secondary={t(
+                  'settings:links.privacyDescription',
+                  'View our privacy policy and data practices',
+                )}
+              />
+            </ListItem>
+
+            <Divider variant="inset" component="li" />
+
+            <ListItem
+              component={RouterLink}
+              to="/terms-of-service"
+              sx={{
+                textDecoration: 'none',
+                color: 'text.primary',
+                '&:hover': {
+                  bgcolor: 'action.hover',
+                },
+              }}
+            >
+              <ListItemIcon>
+                <GavelIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('common:footer.termsOfService')}
+                secondary={t(
+                  'settings:links.termsDescription',
+                  'Read our terms of service agreement',
+                )}
+              />
+            </ListItem>
+
+            <Divider variant="inset" component="li" />
+
+            <ListItem
+              component={RouterLink}
+              to="/help"
+              sx={{
+                textDecoration: 'none',
+                color: 'text.primary',
+                '&:hover': {
+                  bgcolor: 'action.hover',
+                },
+              }}
+            >
+              <ListItemIcon>
+                <HelpIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('common:footer.help')}
+                secondary={t(
+                  'settings:links.helpDescription',
+                  'Get help with using the application',
+                )}
+              />
+            </ListItem>
+
+            <Divider variant="inset" component="li" />
+
+            <ListItem>
+              <ListItemIcon>
+                <InfoIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('settings:links.appInfo', 'Application Info')}
+                secondary={`© ${currentYear} ${t('common:footer.copyright')} | ${t('common:footer.version')}: ${appVersion}`}
+              />
+            </ListItem>
+          </List>
+        </CardContent>
+      </Card>
 
       {/* Data Storage Info */}
       <Paper sx={{ mt: 3, p: 2 }}>

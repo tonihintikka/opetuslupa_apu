@@ -310,16 +310,8 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId: initia
           </Select>
         </FormControl>
 
-        {studentData && (
-          <>
-            <Typography variant="h4" sx={{ mb: 1, px: 1 }}>
-              {' '}
-              {/* Add horizontal padding */}
-              {studentData.name}
-            </Typography>
-            <Divider />
-          </>
-        )}
+        {/* Add divider to maintain visual separation */}
+        <Divider />
       </Box>
 
       {/* Start Session Button - Shown at the top for both mobile and desktop */}

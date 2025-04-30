@@ -43,7 +43,9 @@ const AppShell: React.FC = () => {
     );
     document.documentElement.style.setProperty(
       '--app-bar-height',
-      'calc(64px + var(--safe-area-inset-top))',
+      isMobile
+        ? 'calc(56px + var(--safe-area-inset-top))'
+        : 'calc(64px + var(--safe-area-inset-top))',
     );
   }, [isMobile]);
 
@@ -58,9 +60,16 @@ const AppShell: React.FC = () => {
         sx={{
           zIndex: theme.zIndex.drawer + 1,
           paddingTop: 'var(--safe-area-inset-top)',
+          height: isMobile ? '56px' : 'auto',
         }}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            minHeight: { xs: '56px', sm: '64px' },
+            paddingTop: { xs: 0, sm: 0 },
+            py: { xs: 0 },
+          }}
+        >
           {isMobile && (
             <IconButton
               color="inherit"
@@ -84,6 +93,7 @@ const AppShell: React.FC = () => {
         sx={{
           marginBottom: { xs: 0, sm: 1 },
           paddingTop: 'var(--safe-area-inset-top)',
+          minHeight: { xs: '56px', sm: '64px' },
         }}
       />
 
@@ -116,10 +126,10 @@ const AppShell: React.FC = () => {
           component="main"
           sx={{
             flexGrow: 1,
-            py: { xs: 1, md: 4 }, // Reduced top padding for mobile
+            py: { xs: '0px', md: 4 },
+            mt: { xs: 0, md: 0 },
             px: { xs: 2, md: 3 },
             width: '100%',
-            // Add padding bottom when on mobile to account for BottomNavigation
             pb: isMobile ? 'var(--bottom-nav-height)' : 'inherit',
           }}
         >

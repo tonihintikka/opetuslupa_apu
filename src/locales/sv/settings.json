@@ -14,6 +14,14 @@
   "dataManagement": "Datahantering",
   "aboutApp": "Om applikationen",
 
+  "links": {
+    "title": "Länkar och information",
+    "appInfo": "Applikationsinformation",
+    "privacyDescription": "Se vår integritetspolicy och datapraxis",
+    "termsDescription": "Läs vårt användaravtal",
+    "helpDescription": "Få hjälp med att använda applikationen"
+  },
+
   "appearance": {
     "title": "Utseende",
     "theme": "Tema",
