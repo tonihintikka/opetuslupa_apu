@@ -268,7 +268,33 @@
       "highwayDriving": {
         "title": "Maantie- ja moottoritieajo",
         "overview": "Maantie- ja moottoritieajo vaatii erityistaitoja.",
-        "tip1": "Opeta ennakoivaa tarkkailua: jatkuva peilien käyttö, katvealueiden tarkistus."
+        "tip1": "Opeta ennakoivaa tarkkailua: jatkuva peilien käyttö, katvealueiden tarkistus.",
+        "tip2": "Harjoittele liittymistä ja poistumista sopivalla nopeudella.",
+        "tip3": "Painota oikeaa kaistakuria (pysy oikealla paitsi ohittaessasi)."
+      },
+      "parking": {
+        "title": "Pysäköinti",
+        "overview": "Pysäköinti vaatii tarkkuutta ja tilanhahmotuskykyä.",
+        "tip1": "Jaa jokainen pysäköintitapa (taskuparkki, suoraparkki, vinoparkki) selkeisiin vaiheisiin.",
+        "tip2": "Käytä kiintopisteitä ohjauksessa (peilien kohdistus, tietyt kohdat autossa/parkkiruudussa).",
+        "tip3": "Painota hidasta, hallittua nopeutta liikkeiden aikana.",
+        "tip4": "Korosta kaikkien suuntien tarkistamisen tärkeyttä (peilit, katvealueet, katseen kääntäminen)."
+      },
+      "specialConditions": {
+        "title": "Erityisolosuhteet",
+        "overview": "Erityisolosuhteet vaativat ajotekniikan mukauttamista.",
+        "tip1": "Opeta valojen oikea käyttö (ajovalot, kaukovalot, sumuvalot).",
+        "tip2": "Selitä näkyvyyden heikkenemisen haasteet ja miten kompensoida (hitaampi nopeus, lisääntynyt etäisyys).",
+        "tip3": "Keskustele vesiliirron (sade) ja pidon menetyksen (jää/lumi) riskeistä.",
+        "tip4": "Korosta varovaista ohjausta liukkaissa olosuhteissa."
+      },
+      "riskManagement": {
+        "title": "Riskienhallinta",
+        "overview": "Riskien tunnistaminen ja hallinta on turvallisen ajamisen kulmakivi.",
+        "tip1": "Opeta järjestelmällistä vaarojen tunnistamista (katseen kulku, yleiset riskialueet).",
+        "tip2": "Keskustele riskien arvioinnista (todennäköisyys vs. vakavuus).",
+        "tip3": "Edistä ennakoivan ajon periaatteita (ennakointi, tilan hallinta).",
+        "tip4": "Harjoittele hätäjarrutusta turvallisessa ympäristössä."
       }
     }
   }
