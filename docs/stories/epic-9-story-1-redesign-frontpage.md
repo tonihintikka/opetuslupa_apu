@@ -31,7 +31,7 @@ Story Points: 3 (UI redesign, component updates, responsive layout adjustments)
 2. - [ ] **Design Student Selection Cards**
    1. - [ ] Replace dropdown with visual card-based student selection
    2. - [ ] Include student name and possibly avatar/icon
-   3. - [ ] Show quick-access buttons for common actions (view progress, add lesson)
+   3. - [ ] Show quick-access buttons for common actions (view progress, add lesson) when a student is selected
    4. - [ ] Implement responsive grid layout for multiple students
 
 3. - [ ] **Improve Empty State Experience**
@@ -44,6 +44,7 @@ Story Points: 3 (UI redesign, component updates, responsive layout adjustments)
    2. - [ ] Ensure all existing functionality is preserved
    3. - [ ] Maintain responsive behavior for all device sizes
    4. - [ ] Add smooth transitions/animations where appropriate
+   5. - [ ] Move timer functionality to be accessible only after selecting a student
 
 5. - [ ] **Update Navigation Flow**
    1. - [ ] Ensure proper routing when selecting a student
@@ -77,7 +78,7 @@ Story Points: 3 (UI redesign, component updates, responsive layout adjustments)
 │  Track and manage your students' driving       │
 │  progress with ease.                           │
 │                                                │
-│  [Add Student] [Start Timer]                   │
+│  [Add Student]                                 │
 │                                                │
 │  Select a student:                             │
 │  ┌─────────┐  ┌─────────┐  ┌─────────┐        │
@@ -85,8 +86,26 @@ Story Points: 3 (UI redesign, component updates, responsive layout adjustments)
 │  │ Student │  │ Student │  │ Student │        │
 │  │    A    │  │    B    │  │    C    │        │
 │  │         │  │         │  │         │        │
-│  │[Details]│  │[Details]│  │[Details]│        │
+│  │[View]   │  │[View]   │  │[View]   │        │
 │  └─────────┘  └─────────┘  └─────────┘        │
+│                                                │
+└────────────────────────────────────────────────┘
+```
+
+### Student Selected View
+```
+┌────────────────────────────────────────────────┐
+│ [Header/AppBar]                                │
+├────────────────────────────────────────────────┤
+│                                                │
+│  < Back to Students List                       │
+│                                                │
+│  Student A                                     │
+│                                                │
+│  [Start Lesson] [Start Timer] [View Progress]  │
+│                                                │
+│  [Student details and information will appear  │
+│   here, with tabs for different views]         │
 │                                                │
 └────────────────────────────────────────────────┘
 ```
@@ -119,4 +138,5 @@ Story Points: 3 (UI redesign, component updates, responsive layout adjustments)
 - Add subtle animation/hover effects for better interactivity
 - Use theme.spacing consistently for layout margins and padding
 - Ensure all text is properly translated through i18n
+- Make sure "Start Lesson" and "Start Timer" buttons are only available after selecting a student
 - Test thoroughly on different screen sizes and orientations 
