@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLessonForm } from '../lesson/useLessonForm';
 
@@ -14,27 +14,49 @@ interface HomeLinkProps {
 const HomeLink: React.FC<HomeLinkProps> = ({ isMobile }) => {
   const { t } = useTranslation(['common']);
   const navigate = useNavigate();
-  const { resetForm, setPreSelectedStudentId } = useLessonForm();
+  const location = useLocation();
+  const { resetForm, setPreSelectedStudentId, preSelectedStudentId } = useLessonForm();
+
+  // Use a ref to track the current location state to avoid dependency issues
+  const locationRef = useRef(location);
+  locationRef.current = location;
 
   // Use useCallback to prevent recreation of the function on each render
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
+      const currentLocation = locationRef.current;
 
-      // Reset the form state
-      resetForm();
+      // Check if we're coming from a "vinkit" (milestones) view
+      // This would be indicated in the URL path, hash, or state
+      const isFromVinkit =
+        currentLocation.pathname === '/milestones' ||
+        currentLocation.hash === '#vinkit' ||
+        (currentLocation.state &&
+          typeof currentLocation.state === 'object' &&
+          'activeTab' in currentLocation.state &&
+          currentLocation.state.activeTab === 2);
 
-      // Explicitly reset the selected student
-      setPreSelectedStudentId(undefined);
-
-      // Force a complete reset by navigating with replace instead of push
-      // with a simpler state object
-      navigate('/lessons', {
-        replace: true,
-        state: { forceReset: true },
-      });
+      if (isFromVinkit && preSelectedStudentId) {
+        // If coming from vinkit and we have a student selected, go to that student's tips tab
+        navigate('/lessons', {
+          replace: true,
+          state: {
+            redirectToStudentId: preSelectedStudentId,
+            activeTab: 2, // Tips tab index
+          },
+        });
+      } else {
+        // Otherwise reset form state and go to lessons page
+        resetForm();
+        setPreSelectedStudentId(undefined);
+        navigate('/lessons', {
+          replace: true,
+          state: { forceReset: true },
+        });
+      }
     },
-    [navigate, resetForm, setPreSelectedStudentId],
+    [navigate, resetForm, setPreSelectedStudentId, preSelectedStudentId],
   );
 
   return (

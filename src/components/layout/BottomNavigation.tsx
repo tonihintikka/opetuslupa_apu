@@ -26,7 +26,7 @@ const BottomNavigation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
-  const { resetForm, setPreSelectedStudentId } = useLessonForm();
+  const { resetForm, setPreSelectedStudentId, preSelectedStudentId } = useLessonForm();
 
   // Extract the first path segment to determine the active tab
   const currentPath = '/' + (location.pathname.split('/')[1] || '');
@@ -34,15 +34,34 @@ const BottomNavigation: React.FC = () => {
   // Use useCallback to prevent recreation of the function on each render
   const handleChange = useCallback(
     (event: React.SyntheticEvent, newValue: string) => {
-      // When going to lessons page, reset any selected student
+      // Check if this is the milestones/vinkit button
+      const isMilestonesButton =
+        event.currentTarget.getAttribute('data-testid') === 'milestones-button';
+
+      // When going to lessons page
       if (newValue === '/lessons') {
-        // Reset form state
+        // For the milestones/vinkit button
+        if (isMilestonesButton) {
+          if (preSelectedStudentId) {
+            // If we have a student selected, navigate to their tips tab
+            navigate('/lessons', {
+              replace: true,
+              state: {
+                redirectToStudentId: preSelectedStudentId,
+                activeTab: 2, // Tips tab index
+              },
+            });
+          } else {
+            // No student selected - redirect to MilestonesPage
+            // which will select the first student and show tips
+            navigate('/milestones', { replace: true });
+          }
+          return;
+        }
+
+        // For normal lessons navigation
         resetForm();
-
-        // Explicitly reset selected student
         setPreSelectedStudentId(undefined);
-
-        // Navigate with a simpler state object
         navigate('/lessons', {
           replace: true,
           state: { forceReset: true },
@@ -52,7 +71,7 @@ const BottomNavigation: React.FC = () => {
         navigate(newValue, { replace: true });
       }
     },
-    [navigate, resetForm, setPreSelectedStudentId],
+    [navigate, resetForm, setPreSelectedStudentId, preSelectedStudentId],
   );
 
   return (
@@ -81,21 +100,25 @@ const BottomNavigation: React.FC = () => {
           label={t('navigation.lessons')}
           value="/lessons"
           icon={<CalendarIcon />}
+          data-testid="lessons-button"
         />
         <BottomNavigationAction
           label={t('navigation.students')}
           value="/students"
           icon={<PeopleIcon />}
+          data-testid="students-button"
         />
         <BottomNavigationAction
           label={t('navigation.milestones')}
-          value="/milestones"
+          value="/lessons"
           icon={<MilestoneIcon />}
+          data-testid="milestones-button"
         />
         <BottomNavigationAction
           label={t('navigation.settings')}
           value="/settings"
           icon={<SettingsIcon />}
+          data-testid="settings-button"
         />
       </MuiBottomNavigation>
     </Paper>

@@ -126,11 +126,14 @@ const LessonsPage: React.FC = () => {
     }
 
     // Handle normal redirect with student ID
-    if (state.redirectToStudentId) {
+    if (state.redirectToStudentId !== undefined) {
       setSelectedStudentId(state.redirectToStudentId);
+
+      // Only update tab if explicitly provided in state
       if (state.activeTab !== undefined) {
         setActiveTab(state.activeTab);
       }
+
       // Clear location state
       window.history.replaceState({}, document.title);
     }
@@ -299,20 +302,20 @@ const LessonsPage: React.FC = () => {
     return (
       <>
         {/* App Description Section */}
-        <Box sx={{ mb: 4, textAlign: 'center' }}>
-          <Typography variant="h4" component="h1" gutterBottom>
+        <Box sx={{ mb: 2, textAlign: 'center', pt: { xs: 3, md: 0 } }}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ mt: { xs: 3, md: 0 } }}>
             {t('lessons:frontPage.appTitle')}
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, maxWidth: '800px', mx: 'auto' }}>
+          <Typography variant="body1" sx={{ mb: 2, maxWidth: '800px', mx: 'auto' }}>
             {t('lessons:frontPage.appDescription')}
           </Typography>
           <Button
             variant="contained"
             color="primary"
             startIcon={<PersonAddIcon />}
-            onClick={() => (window.location.href = '/students')} // Navigate to students page to add new student
+            onClick={() => (window.location.href = '/students')}
             size={isMobile ? 'medium' : 'large'}
-            sx={{ my: 2 }}
+            sx={{ my: 1 }}
           >
             {t('students:addStudent')}
           </Button>
@@ -321,7 +324,7 @@ const LessonsPage: React.FC = () => {
         {/* Students Selection Section */}
         {students.length > 0 ? (
           <>
-            <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+            <Typography variant="h5" component="h2" sx={{ mb: 2, mt: 1 }}>
               {t('lessons:frontPage.selectStudent')}
             </Typography>
             <Grid container spacing={3}>
@@ -403,14 +406,14 @@ const LessonsPage: React.FC = () => {
         overflowX: 'hidden',
         height: '100%',
         maxHeight: {
-          xs: 'calc(100vh - var(--app-bar-height) - var(--bottom-nav-height) - 16px)', // Reduced from 32px to 16px
+          xs: 'calc(100vh - var(--app-bar-height) - var(--bottom-nav-height))', // Removed subtraction entirely
           md: 'calc(100vh - var(--app-bar-height) - 48px)',
         },
         display: 'flex',
         flexDirection: 'column',
         pb: { xs: 'var(--bottom-nav-height)', md: 2 },
-        pt: { xs: 1, md: 2 }, // Less top padding on mobile
-        mt: { xs: 1, md: 0 }, // Add top margin on mobile
+        pt: { xs: 6, md: 2 }, // Increased from 5 to 6 for mobile
+        mt: { xs: 6, md: 0 }, // Increased from 4 to 6 for mobile
         px: 2,
         mx: 'auto',
         maxWidth: theme.breakpoints.values.lg,

@@ -16,7 +16,7 @@ import { useLessonForm } from '../lesson/useLessonForm';
 const Navigation: React.FC = () => {
   const { t } = useTranslation(['common']);
   const navigate = useNavigate();
-  const { resetForm, setPreSelectedStudentId } = useLessonForm();
+  const { resetForm, setPreSelectedStudentId, preSelectedStudentId } = useLessonForm();
 
   // Use useCallback to prevent recreation of the function on each render
   const handleLessonsClick = useCallback(
@@ -36,6 +36,30 @@ const Navigation: React.FC = () => {
       });
     },
     [navigate, resetForm, setPreSelectedStudentId],
+  );
+
+  // Handle milestones (Vinkit) button click
+  const handleMilestonesClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+
+      // If we have a selected student, navigate to their tips tab
+      if (preSelectedStudentId) {
+        // For the milestones/vinkit, always go to the tips tab
+        navigate('/lessons', {
+          replace: true,
+          state: {
+            redirectToStudentId: preSelectedStudentId,
+            activeTab: 2, // Tips tab index
+          },
+        });
+      } else {
+        // No student selected - redirect to the milestones page
+        // which will select the first student and show tips
+        navigate('/milestones', { replace: true });
+      }
+    },
+    [navigate, preSelectedStudentId],
   );
 
   return (
@@ -75,9 +99,10 @@ const Navigation: React.FC = () => {
 
       <Button
         component={NavLink}
-        to="/milestones"
+        to="/lessons"
         startIcon={<MilestoneIcon />}
         color="inherit"
+        onClick={handleMilestonesClick}
         sx={{
           textDecoration: 'none',
           '&.active': {
