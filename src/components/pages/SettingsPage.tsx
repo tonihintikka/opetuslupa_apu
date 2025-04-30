@@ -12,6 +12,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  useTheme,
 } from '@mui/material';
 import {
   Language as LanguageIcon,
@@ -34,6 +35,7 @@ import { Link as RouterLink } from 'react-router-dom';
  */
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation(['settings', 'common']);
+  const theme = useTheme();
 
   // State for settings
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
@@ -85,12 +87,32 @@ const SettingsPage: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        position: 'relative',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        height: 'auto',
+        minHeight: '100%',
+        maxHeight: {
+          xs: 'none',
+          md: 'calc(100vh - var(--app-bar-height) - 48px)',
+        },
+        display: 'flex',
+        flexDirection: 'column',
+        pb: { xs: 'calc(var(--bottom-nav-height) + 32px)', md: 3 },
+        pt: { xs: 1, md: 2 },
+        px: 2,
+        mx: 'auto',
+        width: '100%',
+        maxWidth: theme.breakpoints.values.lg,
+      }}
+    >
       <Typography variant="h4" gutterBottom>
         {t('title')}
       </Typography>
 
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, mt: 3 }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, mt: 2 }}>
         {/* Language Settings */}
         <Card sx={{ flex: 1 }}>
           <CardHeader title={t('language.title')} />
@@ -271,7 +293,7 @@ const SettingsPage: React.FC = () => {
       </Card>
 
       {/* Data Storage Info */}
-      <Paper sx={{ mt: 3, p: 2 }}>
+      <Paper sx={{ mt: 3, p: 2, mb: 2 }}>
         <Typography variant="subtitle2" gutterBottom>
           {t('storage.title')}
         </Typography>
