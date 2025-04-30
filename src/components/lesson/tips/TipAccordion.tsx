@@ -34,14 +34,18 @@ const TipAccordion: React.FC<TipAccordionProps> = ({ id, titleKey, overviewKey, 
         '&:before': { display: 'none' },
         mb: 1,
         '& .MuiAccordionDetails-root': {
-          overflowY: 'auto',
-          maxHeight: 'max-content',
+          overflowY: 'visible',
+          maxHeight: 'none',
           display: 'block',
           p: 1,
+          pb: 2,
         },
         '& .MuiAccordionSummary-root': {
           minHeight: 48,
           py: 0.5,
+        },
+        '&.Mui-expanded': {
+          mb: 2, // Add more margin when expanded
         },
       }}
     >
@@ -65,10 +69,10 @@ const TipAccordion: React.FC<TipAccordionProps> = ({ id, titleKey, overviewKey, 
             <ListItem
               key={index}
               sx={{
-                py: 0.25,
+                py: 0.5,
                 borderLeft: `3px solid ${theme.palette.primary.main}`,
                 pl: 1.5,
-                mb: 0.75,
+                mb: 1,
                 bgcolor: 'background.paper',
                 borderRadius: '0 4px 4px 0',
               }}

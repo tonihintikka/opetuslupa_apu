@@ -163,13 +163,14 @@ const TeachingTips: React.FC = () => {
           flex: 1,
           overflowY: 'auto',
           pr: 1,
+          pb: { xs: 'calc(56px + var(--safe-area-inset-bottom) + 16px)', md: 2 },
           // Ensure this container can expand to fit content
           display: 'flex',
           flexDirection: 'column',
         }}
       >
         {filteredSections.length > 0 ? (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pb: 2 }}>
             {filteredSections.map(section => (
               <Box key={section.id}>
                 <TipAccordion
