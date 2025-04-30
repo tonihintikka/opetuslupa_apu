@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Box,
   Typography,
@@ -55,6 +55,10 @@ const LessonsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const location = useLocation();
 
+  // Use refs to track state changes and prevent loops
+  const locationStateRef = useRef(location.state);
+  const selectedStudentIdRef = useRef(selectedStudentId);
+
   // Get the lesson form context
   const {
     isOpen: openFormFromContext,
@@ -70,23 +74,42 @@ const LessonsPage: React.FC = () => {
   // Use context's isOpen for dialog visibility
   const openForm = openFormFromContext;
 
-  // Reset the active tab when navigating to the page directly (not through state)
+  // Reset the active tab when navigating to the page directly
   useEffect(() => {
     if (!location.state && location.pathname === '/lessons') {
       setActiveTab(0);
     }
-  }, [location.pathname, location]);
+  }, [location.pathname]);
 
-  // Memoize the reset function to avoid recreating it on every render
-  const resetStudentSelection = useCallback(() => {
-    setSelectedStudentId('');
-    setActiveTab(0);
-    setPreSelectedStudentId(undefined);
-    resetForm();
-  }, [resetForm, setPreSelectedStudentId]);
-
-  // Handle state changes safely
+  // Update ref when selectedStudentId changes
   useEffect(() => {
+    selectedStudentIdRef.current = selectedStudentId;
+  }, [selectedStudentId]);
+
+  // Memoize the reset function with stable refs
+  const resetStudentSelection = useCallback(() => {
+    // Only reset if we actually have a selection
+    if (selectedStudentIdRef.current !== '') {
+      setSelectedStudentId('');
+      setActiveTab(0);
+
+      // Only update context if it has a value to avoid unnecessary renders
+      if (preSelectedStudentId !== undefined) {
+        setPreSelectedStudentId(undefined);
+      }
+
+      resetForm();
+    }
+  }, [resetForm, setPreSelectedStudentId, preSelectedStudentId]);
+
+  // Handle location state changes
+  useEffect(() => {
+    // Early exit if location.state hasn't actually changed (reference equality)
+    if (location.state === locationStateRef.current) return;
+
+    // Update our ref
+    locationStateRef.current = location.state;
+
     if (!location.state) return;
 
     const state = location.state as {
@@ -95,28 +118,29 @@ const LessonsPage: React.FC = () => {
       forceReset?: boolean;
     };
 
-    // Handle force reset from navigation components
+    // Handle force reset from navigation
     if (state.forceReset) {
       resetStudentSelection();
-      // Clear state after processing
+      // Clear state to prevent re-processing
       window.history.replaceState({}, document.title);
       return;
     }
 
-    // Handle normal redirect
+    // Handle normal redirect with student ID
     if (state.redirectToStudentId) {
       setSelectedStudentId(state.redirectToStudentId);
       if (state.activeTab !== undefined) {
         setActiveTab(state.activeTab);
       }
-      // Clear location state to prevent redirect on refresh
+      // Clear location state
       window.history.replaceState({}, document.title);
     }
   }, [location.state, resetStudentSelection]);
 
-  // Set the preselected student as the selected student when it changes
+  // Sync with preSelectedStudentId from context, but only when it changes
+  // and only if our local selection is different
   useEffect(() => {
-    if (preSelectedStudentId) {
+    if (preSelectedStudentId && preSelectedStudentId !== selectedStudentIdRef.current) {
       setSelectedStudentId(preSelectedStudentId);
     }
   }, [preSelectedStudentId]);
@@ -127,7 +151,7 @@ const LessonsPage: React.FC = () => {
 
   const handleCloseForm = () => {
     setOpenFormFromContext(false);
-    resetForm(); // Reset form state when closing
+    resetForm();
   };
 
   const handleStartTimer = () => {
@@ -138,24 +162,29 @@ const LessonsPage: React.FC = () => {
     try {
       await addLesson(lessonData);
       setOpenFormFromContext(false);
-      resetForm(); // Reset form state after successful submission
+      resetForm();
     } catch (error) {
       console.error('Failed to add lesson', error);
     }
   };
 
   const handleTimeUpdate = (_startTime: string, _endTime: string, _durationSeconds: number) => {
-    // Automatically open the form after stopping the timer
     setOpenFormFromContext(true);
   };
 
-  const handleStudentSelect = (studentId: number) => {
-    setSelectedStudentId(studentId);
-    setActiveTab(0); // Reset to first tab when changing student
+  // Memoize the student select handler
+  const handleStudentSelect = useCallback(
+    (studentId: number) => {
+      setSelectedStudentId(studentId);
+      setActiveTab(0); // Reset to first tab when changing student
 
-    // Also update the preSelectedStudentId in the form context
-    setPreSelectedStudentId(studentId);
-  };
+      // Only update context if the ID is different
+      if (studentId !== preSelectedStudentId) {
+        setPreSelectedStudentId(studentId);
+      }
+    },
+    [preSelectedStudentId, setPreSelectedStudentId],
+  );
 
   // Handle tab change
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -186,7 +215,9 @@ const LessonsPage: React.FC = () => {
                 color="inherit"
                 onClick={() => {
                   setSelectedStudentId('');
-                  setActiveTab(0); // Reset tab when navigating back
+                  setActiveTab(0);
+                  // Reset context explicitly
+                  setPreSelectedStudentId(undefined);
                 }}
                 sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
               >
