@@ -19,6 +19,14 @@
     "termsOfService": "Användarvillkor",
     "help": "Hjälp"
   },
+  "help": {
+    "title": "Hjälp",
+    "gettingStarted": "Komma igång",
+    "faq": "Vanliga frågor",
+    "features": "Funktioner",
+    "contact": "Behöver du mer hjälp? Kontakta utvecklaren:",
+    "emailAddress": "info@ajokamu.fi"
+  },
   "actions": {
     "add": "Lägg till",
     "edit": "Redigera",
@@ -31,14 +39,16 @@
     "filter": "Filtrera",
     "reset": "Återställ",
     "import": "Importera",
-    "export": "Exportera"
+    "export": "Exportera",
+    "close": "Stäng"
   },
   "validation": {
     "required": "Obligatoriskt fält",
     "email": "Ogiltig e-postadress",
     "minLength": "Minst {{count}} tecken",
     "maxLength": "Högst {{count}} tecken",
-    "invalidFormat": "Ogiltigt format"
+    "invalidFormat": "Ogiltigt format",
+    "checkFields": "Kontrollera obligatoriska fält"
   },
   "dateTime": {
     "today": "Idag",
@@ -75,7 +85,9 @@
     "cancel": "Avbryt",
     "delete": "Ta bort",
     "edit": "Redigera",
-    "add": "Lägg till"
+    "add": "Lägg till",
+    "update": "Uppdatera",
+    "confirm": "Bekräfta"
   },
   "errors": {
     "boundary": {
@@ -98,14 +110,20 @@
       "button": "Importera data"
     },
     "backup": {
-      "title": "Säkerhetskopia",
-      "description": "Skapa en säkerhetskopia av din data för senare användning.",
-      "button": "Skapa säkerhetskopia"
+      "title": "Skapa säkerhetskopia",
+      "description": "Skapa en fullständig säkerhetskopia av all data och inställningar för senare användning.",
+      "button": "Skapa säkerhetskopia",
+      "restoreTitle": "Återställ säkerhetskopia",
+      "restoreDescription": "Återställ en tidigare skapad säkerhetskopia, inklusive all data och inställningar.",
+      "restoreButton": "Återställ säkerhetskopia",
+      "restoreWarning": "Detta kommer att ersätta all nuvarande data och inställningar med de från säkerhetskopian. Denna åtgärd kan inte ångras.",
+      "reloadPrompt": "Inställningar har återställts. Vill du ladda om applikationen för att tillämpa alla ändringar?"
     },
     "dangerZone": {
       "title": "Riskzon",
       "description": "Denna åtgärd raderar all data. Åtgärden kan inte ångras.",
-      "button": "Rensa all data"
+      "button": "Rensa all data",
+      "successMessage": "All data har rensats framgångsrikt."
     }
   }
 }

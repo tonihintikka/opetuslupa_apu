@@ -19,6 +19,14 @@
     "termsOfService": "Terms of Service",
     "help": "Help"
   },
+  "help": {
+    "title": "Help",
+    "gettingStarted": "Getting Started",
+    "faq": "Frequently Asked Questions",
+    "features": "Features",
+    "contact": "Need additional help? Contact the developer:",
+    "emailAddress": "info@ajokamu.fi"
+  },
   "actions": {
     "add": "Add",
     "edit": "Edit",
@@ -31,14 +39,16 @@
     "filter": "Filter",
     "reset": "Reset",
     "import": "Import",
-    "export": "Export"
+    "export": "Export",
+    "close": "Close"
   },
   "validation": {
     "required": "Required field",
     "email": "Invalid email address",
     "minLength": "At least {{count}} characters",
     "maxLength": "Maximum {{count}} characters",
-    "invalidFormat": "Invalid format"
+    "invalidFormat": "Invalid format",
+    "checkFields": "Please check the required fields"
   },
   "dateTime": {
     "today": "Today",
@@ -76,6 +86,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "add": "Add",
+    "update": "Update",
     "confirm": "Confirm"
   },
   "errors": {
