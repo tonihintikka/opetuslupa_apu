@@ -85,6 +85,15 @@ const dataManagementService = {
   },
 
   /**
+   * Imports data from a JSON file - alias for importStudentData
+   * @param file - The JSON file to import
+   * @returns Promise resolving to success status and message
+   */
+  async importData(file: File): Promise<{ success: boolean; message: string }> {
+    return this.importStudentData(file);
+  },
+
+  /**
    * Imports student data from a JSON file
    * @param file - The JSON file to import
    * @returns Promise resolving to success status and message
@@ -100,9 +109,9 @@ const dataManagementService = {
       }
 
       if (data.type !== 'studentData' && data.type !== 'fullBackup') {
-        return { 
-          success: false, 
-          message: 'Invalid data format: File is not a valid student data export or backup' 
+        return {
+          success: false,
+          message: 'Invalid data format: File is not a valid student data export or backup',
         };
       }
 
@@ -125,23 +134,27 @@ const dataManagementService = {
       }
 
       // Import data into the database
-      await db.transaction('rw', [db.students, db.lessons, db.milestones, db.lessonDrafts], async () => {
-        // Clear existing data
-        await db.students.clear();
-        await db.lessons.clear();
-        await db.milestones.clear();
-        await db.lessonDrafts.clear();
+      await db.transaction(
+        'rw',
+        [db.students, db.lessons, db.milestones, db.lessonDrafts],
+        async () => {
+          // Clear existing data
+          await db.students.clear();
+          await db.lessons.clear();
+          await db.milestones.clear();
+          await db.lessonDrafts.clear();
 
-        // Add new data
-        if (data.students.length) await db.students.bulkAdd(data.students);
-        if (data.lessons.length) await db.lessons.bulkAdd(data.lessons);
-        if (data.milestones.length) await db.milestones.bulkAdd(data.milestones);
-        
-        // Add lesson drafts if they exist in the import
-        if (data.lessonDrafts && Array.isArray(data.lessonDrafts) && data.lessonDrafts.length) {
-          await db.lessonDrafts.bulkAdd(data.lessonDrafts);
-        }
-      });
+          // Add new data
+          if (data.students.length) await db.students.bulkAdd(data.students);
+          if (data.lessons.length) await db.lessons.bulkAdd(data.lessons);
+          if (data.milestones.length) await db.milestones.bulkAdd(data.milestones);
+
+          // Add lesson drafts if they exist in the import
+          if (data.lessonDrafts && Array.isArray(data.lessonDrafts) && data.lessonDrafts.length) {
+            await db.lessonDrafts.bulkAdd(data.lessonDrafts);
+          }
+        },
+      );
 
       return { success: true, message: 'Data imported successfully' };
     } catch (error) {
@@ -158,25 +171,27 @@ const dataManagementService = {
    * @param file - The backup file to restore
    * @returns Promise resolving to success status, message, and whether settings were restored
    */
-  async restoreFullBackup(file: File): Promise<{ success: boolean; message: string; settingsRestored: boolean }> {
+  async restoreFullBackup(
+    file: File,
+  ): Promise<{ success: boolean; message: string; settingsRestored: boolean }> {
     try {
       const fileContents = await file.text();
       const data = JSON.parse(fileContents);
 
       // Validate data structure
       if (!data || typeof data !== 'object') {
-        return { 
-          success: false, 
+        return {
+          success: false,
           message: 'Invalid backup format: Not a JSON object',
-          settingsRestored: false 
+          settingsRestored: false,
         };
       }
 
       if (data.type !== 'fullBackup') {
-        return { 
-          success: false, 
+        return {
+          success: false,
           message: 'Invalid backup format: File is not a valid full backup',
-          settingsRestored: false 
+          settingsRestored: false,
         };
       }
 
@@ -193,44 +208,49 @@ const dataManagementService = {
         return {
           success: false,
           message: 'Invalid backup format: Missing required data collections or settings',
-          settingsRestored: false
+          settingsRestored: false,
         };
       }
 
       // Import data into the database
-      await db.transaction('rw', [db.students, db.lessons, db.milestones, db.lessonDrafts], async () => {
-        // Clear existing data
-        await db.students.clear();
-        await db.lessons.clear();
-        await db.milestones.clear();
-        await db.lessonDrafts.clear();
+      await db.transaction(
+        'rw',
+        [db.students, db.lessons, db.milestones, db.lessonDrafts],
+        async () => {
+          // Clear existing data
+          await db.students.clear();
+          await db.lessons.clear();
+          await db.milestones.clear();
+          await db.lessonDrafts.clear();
 
-        // Add new data
-        if (data.students.length) await db.students.bulkAdd(data.students);
-        if (data.lessons.length) await db.lessons.bulkAdd(data.lessons);
-        if (data.milestones.length) await db.milestones.bulkAdd(data.milestones);
-        
-        // Add lesson drafts if they exist in the import
-        if (data.lessonDrafts && Array.isArray(data.lessonDrafts) && data.lessonDrafts.length) {
-          await db.lessonDrafts.bulkAdd(data.lessonDrafts);
-        }
-      });
+          // Add new data
+          if (data.students.length) await db.students.bulkAdd(data.students);
+          if (data.lessons.length) await db.lessons.bulkAdd(data.lessons);
+          if (data.milestones.length) await db.milestones.bulkAdd(data.milestones);
+
+          // Add lesson drafts if they exist in the import
+          if (data.lessonDrafts && Array.isArray(data.lessonDrafts) && data.lessonDrafts.length) {
+            await db.lessonDrafts.bulkAdd(data.lessonDrafts);
+          }
+        },
+      );
 
       // Restore settings
       await settingsService.clearAllSettings();
       await settingsService.saveAllSettings(data.settings);
 
-      return { 
-        success: true, 
-        message: 'Backup restored successfully. You may need to reload the application for all settings to take effect.',
-        settingsRestored: true
+      return {
+        success: true,
+        message:
+          'Backup restored successfully. You may need to reload the application for all settings to take effect.',
+        settingsRestored: true,
       };
     } catch (error) {
       console.error('Error restoring backup:', error);
       return {
         success: false,
         message: `Error restoring backup: ${error instanceof Error ? error.message : String(error)}`,
-        settingsRestored: false
+        settingsRestored: false,
       };
     }
   },
@@ -294,7 +314,7 @@ const dataManagementService = {
 
     try {
       const backups = JSON.parse(backupsListStr) as Backup[];
-      
+
       // Handle older backups without type field
       return backups.map(backup => ({
         ...backup,
@@ -309,7 +329,9 @@ const dataManagementService = {
   /**
    * Restores a backup by its timestamp
    */
-  async restoreBackup(timestamp: number): Promise<{ success: boolean; message: string; settingsRestored: boolean }> {
+  async restoreBackup(
+    timestamp: number,
+  ): Promise<{ success: boolean; message: string; settingsRestored: boolean }> {
     const backupKey = `backup_${timestamp}`;
     const backupStr = localStorage.getItem(backupKey);
 
@@ -317,7 +339,7 @@ const dataManagementService = {
       return {
         success: false,
         message: 'Backup not found',
-        settingsRestored: false
+        settingsRestored: false,
       };
     }
 
@@ -336,7 +358,7 @@ const dataManagementService = {
         return {
           success: false,
           message: 'Invalid backup format',
-          settingsRestored: false
+          settingsRestored: false,
         };
       }
 
@@ -345,22 +367,26 @@ const dataManagementService = {
       let settingsRestored = false;
 
       // Clear current data and restore from backup
-      await db.transaction('rw', [db.students, db.lessons, db.milestones, db.lessonDrafts], async () => {
-        await db.students.clear();
-        await db.lessons.clear();
-        await db.milestones.clear();
-        await db.lessonDrafts.clear();
+      await db.transaction(
+        'rw',
+        [db.students, db.lessons, db.milestones, db.lessonDrafts],
+        async () => {
+          await db.students.clear();
+          await db.lessons.clear();
+          await db.milestones.clear();
+          await db.lessonDrafts.clear();
 
-        // Import data
-        await db.students.bulkAdd(data.students);
-        await db.lessons.bulkAdd(data.lessons);
-        await db.milestones.bulkAdd(data.milestones);
-        
-        // Add lesson drafts if they exist in the backup
-        if (data.lessonDrafts && Array.isArray(data.lessonDrafts) && data.lessonDrafts.length) {
-          await db.lessonDrafts.bulkAdd(data.lessonDrafts);
-        }
-      });
+          // Import data
+          await db.students.bulkAdd(data.students);
+          await db.lessons.bulkAdd(data.lessons);
+          await db.milestones.bulkAdd(data.milestones);
+
+          // Add lesson drafts if they exist in the backup
+          if (data.lessonDrafts && Array.isArray(data.lessonDrafts) && data.lessonDrafts.length) {
+            await db.lessonDrafts.bulkAdd(data.lessonDrafts);
+          }
+        },
+      );
 
       // Restore settings if available
       if (isFullBackup) {
@@ -370,15 +396,15 @@ const dataManagementService = {
       }
 
       return {
-        success: true, 
+        success: true,
         message: `Backup restored successfully${settingsRestored ? '. You may need to reload the application for all settings to take effect.' : ''}`,
-        settingsRestored
+        settingsRestored,
       };
     } catch (error) {
       return {
         success: false,
         message: `Failed to restore backup: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        settingsRestored: false
+        settingsRestored: false,
       };
     }
   },
@@ -392,12 +418,16 @@ const dataManagementService = {
     await this.backupFullData();
 
     // Clear all tables
-    await db.transaction('rw', [db.students, db.lessons, db.milestones, db.lessonDrafts], async () => {
-      await db.students.clear();
-      await db.lessons.clear();
-      await db.milestones.clear();
-      await db.lessonDrafts.clear();
-    });
+    await db.transaction(
+      'rw',
+      [db.students, db.lessons, db.milestones, db.lessonDrafts],
+      async () => {
+        await db.students.clear();
+        await db.lessons.clear();
+        await db.milestones.clear();
+        await db.lessonDrafts.clear();
+      },
+    );
 
     // Clear settings if requested
     if (includeSettings) {

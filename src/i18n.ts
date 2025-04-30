@@ -2,11 +2,8 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Since we need to import JSON files, we'll create a type declaration for module augmentation
-declare module '*.json' {
-  const content: Record<string, unknown>;
-  export default content;
-}
+// Import types needed for specific declarations
+import { InitOptions } from 'i18next';
 
 // Finnish translations - import JSON files
 import commonFI from './locales/fi/common.json';
@@ -33,10 +30,10 @@ i18n
     // Define resources (initially only Finnish)
     resources: {
       fi: {
-        common: commonFI,
-        students: studentsFI,
-        lessons: lessonsFI,
-        settings: settingsFI,
+        common: commonFI as Record<string, unknown>,
+        students: studentsFI as Record<string, unknown>,
+        lessons: lessonsFI as Record<string, unknown>,
+        settings: settingsFI as Record<string, unknown>,
       },
       // English and Swedish will be added later and loaded dynamically
     },
@@ -108,6 +105,6 @@ i18n
     react: {
       useSuspense: true,
     },
-  });
+  } as InitOptions);
 
 export default i18n;

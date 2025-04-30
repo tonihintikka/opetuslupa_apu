@@ -31,7 +31,7 @@ const BottomNavigation: React.FC = () => {
 
   // Simple navigation handler
   const handleChange = useCallback(
-    (event: React.SyntheticEvent, newValue: string) => {
+    (_: React.SyntheticEvent, newValue: string) => {
       navigate(newValue, { replace: true });
     },
     [navigate],

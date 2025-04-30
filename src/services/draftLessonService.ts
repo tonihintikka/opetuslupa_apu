@@ -1,4 +1,4 @@
-import db, { LessonDraft, Lesson } from './db';
+import db, { LessonDraft, Lesson, TopicRating } from './db';
 import lessonService from './lessonService';
 
 /**
@@ -96,7 +96,7 @@ export const draftLessonService = {
         startTime: draft.startTime || '',
         endTime: draft.endTime || '',
         learningStage: draft.learningStage,
-        topics: draft.topics,
+        topicRatings: draft.topicRatings,
         subTopics: draft.subTopics,
         notes: draft.notes,
         kilometers: draft.kilometers,
@@ -116,20 +116,26 @@ export const draftLessonService = {
   /**
    * Create a new draft for a session
    * @param studentId The ID of the student
-   * @param topics The suggested topics for the session
+   * @param topicIds The suggested topic IDs for the session
    * @returns The ID of the newly created draft
    */
   createSessionDraft: async (
     studentId: number,
-    topics: string[],
+    topicIds: string[],
     subTopics?: string[],
     learningStage?: string,
   ): Promise<number> => {
     const now = new Date();
+    // Convert topic IDs to topic ratings
+    const topicRatings: TopicRating[] = topicIds.map(topicId => ({
+      topicId,
+      rating: 0,
+    }));
+
     const draft: Omit<LessonDraft, 'id'> = {
       studentId,
       date: now,
-      topics,
+      topicRatings,
       subTopics,
       learningStage: learningStage as LessonDraft['learningStage'], // Using indexed type for type safety
       draftCreatedAt: now,

@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import { Box, Typography, Button, Paper } from '@mui/material';
 import { Warning as WarningIcon } from '@mui/icons-material';
 import { WithTranslation, withTranslation } from 'react-i18next';
