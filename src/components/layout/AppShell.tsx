@@ -80,7 +80,12 @@ const AppShell: React.FC = () => {
       </AppBar>
 
       {/* Toolbar placeholder to push content below fixed app bar */}
-      <Toolbar sx={{ marginBottom: 1, paddingTop: 'var(--safe-area-inset-top)' }} />
+      <Toolbar
+        sx={{
+          marginBottom: { xs: 0, sm: 1 },
+          paddingTop: 'var(--safe-area-inset-top)',
+        }}
+      />
 
       <Box sx={{ display: 'flex', flexGrow: 1 }}>
         {/* Mobile drawer */}
@@ -111,7 +116,7 @@ const AppShell: React.FC = () => {
           component="main"
           sx={{
             flexGrow: 1,
-            py: { xs: 2, md: 4 },
+            py: { xs: 1, md: 4 }, // Reduced top padding for mobile
             px: { xs: 2, md: 3 },
             width: '100%',
             // Add padding bottom when on mobile to account for BottomNavigation

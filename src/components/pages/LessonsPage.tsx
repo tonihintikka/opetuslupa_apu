@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Box,
   Typography,
-  Container,
   Button,
   Grid,
   Dialog,
@@ -79,7 +78,7 @@ const LessonsPage: React.FC = () => {
     if (!location.state && location.pathname === '/lessons') {
       setActiveTab(0);
     }
-  }, [location.pathname]);
+  }, [location.pathname, location.state]);
 
   // Update ref when selectedStudentId changes
   useEffect(() => {
@@ -397,21 +396,24 @@ const LessonsPage: React.FC = () => {
   };
 
   return (
-    <Container
-      disableGutters
-      maxWidth={false}
+    <Box
       sx={{
         position: 'relative',
-        height: '100%',
-        maxHeight: {
-          xs: 'calc(100vh - var(--app-bar-height) - var(--bottom-nav-height))',
-          sm: 'calc(100vh - var(--app-bar-height))',
-        },
         overflowY: 'auto',
         overflowX: 'hidden',
-        pt: 4,
-        pb: { xs: 8, sm: 4 },
+        height: '100%',
+        maxHeight: {
+          xs: 'calc(100vh - var(--app-bar-height) - var(--bottom-nav-height) - 16px)', // Reduced from 32px to 16px
+          md: 'calc(100vh - var(--app-bar-height) - 48px)',
+        },
+        display: 'flex',
+        flexDirection: 'column',
+        pb: { xs: 'var(--bottom-nav-height)', md: 2 },
+        pt: { xs: 1, md: 2 }, // Less top padding on mobile
+        mt: { xs: 1, md: 0 }, // Add top margin on mobile
         px: 2,
+        mx: 'auto',
+        maxWidth: theme.breakpoints.values.lg,
       }}
     >
       {renderMainContent()}
@@ -449,7 +451,7 @@ const LessonsPage: React.FC = () => {
           />
         </DialogContent>
       </Dialog>
-    </Container>
+    </Box>
   );
 };
 
