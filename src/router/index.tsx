@@ -4,6 +4,7 @@ import AppShell from '../components/layout/AppShell';
 import {
   StudentsPage,
   LessonsPage,
+  VinkitPage,
   MilestonesPage,
   SettingsPage,
   DataManagementPage,
@@ -24,6 +25,7 @@ const Router: React.FC = () => {
           <Route index element={<Navigate to="/lessons" replace />} />
           <Route path="lessons" element={<LessonsPage />} />
           <Route path="students" element={<StudentsPage />} />
+          <Route path="vinkit" element={<VinkitPage />} />
           <Route path="milestones" element={<MilestonesPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="export-import" element={<DataManagementPage />} />

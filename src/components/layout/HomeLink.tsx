@@ -15,7 +15,7 @@ const HomeLink: React.FC<HomeLinkProps> = ({ isMobile }) => {
   const { t } = useTranslation(['common']);
   const navigate = useNavigate();
   const location = useLocation();
-  const { resetForm, setPreSelectedStudentId, preSelectedStudentId } = useLessonForm();
+  const { resetForm, setPreSelectedStudentId } = useLessonForm();
 
   // Use a ref to track the current location state to avoid dependency issues
   const locationRef = useRef(location);
@@ -25,38 +25,18 @@ const HomeLink: React.FC<HomeLinkProps> = ({ isMobile }) => {
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
-      const currentLocation = locationRef.current;
 
-      // Check if we're coming from a "vinkit" (milestones) view
-      // This would be indicated in the URL path, hash, or state
-      const isFromVinkit =
-        currentLocation.pathname === '/milestones' ||
-        currentLocation.hash === '#vinkit' ||
-        (currentLocation.state &&
-          typeof currentLocation.state === 'object' &&
-          'activeTab' in currentLocation.state &&
-          currentLocation.state.activeTab === 2);
+      // Reset form state
+      resetForm();
+      setPreSelectedStudentId(undefined);
 
-      if (isFromVinkit && preSelectedStudentId) {
-        // If coming from vinkit and we have a student selected, go to that student's tips tab
-        navigate('/lessons', {
-          replace: true,
-          state: {
-            redirectToStudentId: preSelectedStudentId,
-            activeTab: 2, // Tips tab index
-          },
-        });
-      } else {
-        // Otherwise reset form state and go to lessons page
-        resetForm();
-        setPreSelectedStudentId(undefined);
-        navigate('/lessons', {
-          replace: true,
-          state: { forceReset: true },
-        });
-      }
+      // Navigate to lessons page
+      navigate('/lessons', {
+        replace: true,
+        state: { forceReset: true },
+      });
     },
-    [navigate, resetForm, setPreSelectedStudentId, preSelectedStudentId],
+    [navigate, resetForm, setPreSelectedStudentId],
   );
 
   return (
