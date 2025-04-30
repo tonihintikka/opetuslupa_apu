@@ -23,9 +23,14 @@ import { useTranslation } from 'react-i18next';
 interface LessonTimerProps {
   onChange?: (durationInMinutes: number) => void;
   initialDuration?: number; // in minutes
+  onTimeUpdate?: (startTime: string, endTime: string, durationSeconds: number) => void;
 }
 
-export default function LessonTimer({ onChange, initialDuration = 0 }: LessonTimerProps) {
+export default function LessonTimer({
+  onChange,
+  initialDuration = 0,
+  onTimeUpdate,
+}: LessonTimerProps) {
   const { t } = useTranslation('lessons');
   const [isRunning, setIsRunning] = useState(false);
   const [seconds, setSeconds] = useState(initialDuration * 60);
@@ -78,6 +83,19 @@ export default function LessonTimer({ onChange, initialDuration = 0 }: LessonTim
     if (onChange) {
       onChange(durationInMinutes);
     }
+
+    // Use onTimeUpdate if provided
+    if (onTimeUpdate) {
+      // Generate start and end times for LessonsPage compatibility
+      const now = new Date();
+      const endTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+      // Calculate start time by subtracting seconds from now
+      const startDate = new Date(now.getTime() - seconds * 1000);
+      const startTime = `${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`;
+
+      onTimeUpdate(startTime, endTime, seconds);
+    }
   };
 
   const openEditDialog = () => {
@@ -95,6 +113,19 @@ export default function LessonTimer({ onChange, initialDuration = 0 }: LessonTim
     // Notify parent of change
     if (onChange) {
       onChange(editHours * 60 + editMinutes);
+    }
+
+    // Use onTimeUpdate if provided
+    if (onTimeUpdate) {
+      // Generate appropriate times for manual entry
+      const now = new Date();
+      const endTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+      // Calculate start time based on edited duration
+      const startDate = new Date(now.getTime() - newSeconds * 1000);
+      const startTime = `${startDate.getHours().toString().padStart(2, '0')}:${startDate.getMinutes().toString().padStart(2, '0')}`;
+
+      onTimeUpdate(startTime, endTime, newSeconds);
     }
   };
 

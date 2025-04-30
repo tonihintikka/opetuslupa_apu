@@ -5,33 +5,37 @@ import {
   Container,
   Button,
   Grid,
-  Divider,
   Dialog,
   DialogContent,
   DialogTitle,
   IconButton,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Paper,
-  SelectChangeEvent,
   Breadcrumbs,
   Link,
   Tabs,
   Tab,
+  Card,
+  CardContent,
+  CardActions,
+  useTheme,
+  useMediaQuery,
+  Avatar,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import {
   Add as AddIcon,
   Close as CloseIcon,
   NavigateNext as NavigateNextIcon,
+  PersonAdd as PersonAddIcon,
+  ChevronLeft as ChevronLeftIcon,
+  Timer as TimerIcon,
+  School as SchoolIcon,
+  ShowChart as ShowChartIcon,
 } from '@mui/icons-material';
 import { useLessons, useStudents } from '../../hooks';
 import LessonForm from '../lesson/LessonForm';
 import LessonTimer from '../lesson/LessonTimer';
 import LoadingIndicator from '../common/LoadingIndicator';
-import EmptyState from '../common/EmptyState';
 import { Lesson } from '../../services/db';
 import { useLessonForm } from '../lesson/useLessonForm';
 import ProgressDashboard from '../lesson/progress/ProgressDashboard';
@@ -43,20 +47,18 @@ import { useLocation } from 'react-router-dom';
  */
 const LessonsPage: React.FC = () => {
   const { t } = useTranslation(['common', 'lessons']);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { students, loading: loadingStudents } = useStudents();
-  const { lessons, loading: loadingLessons, addLesson } = useLessons();
+  const { loading: loadingLessons, addLesson } = useLessons();
   const [selectedStudentId, setSelectedStudentId] = useState<number | ''>('');
-  const [activeTab, setActiveTab] = useState(0); // New state for active tab
+  const [activeTab, setActiveTab] = useState(0);
   const location = useLocation();
 
   // Get the lesson form context
   const {
     isOpen: openFormFromContext,
     setIsOpen: setOpenFormFromContext,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    preSelectedTopics,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    preSelectedSubTopics,
     preSelectedStudentId,
     setPreSelectedStudentId,
     resetForm,
@@ -64,18 +66,12 @@ const LessonsPage: React.FC = () => {
 
   // Local state for timer
   const [showTimer, setShowTimer] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [timerStartTime, setTimerStartTime] = useState<string>('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [timerEndTime, setTimerEndTime] = useState<string>('');
 
   // Use context's isOpen for dialog visibility
   const openForm = openFormFromContext;
 
   // Reset the active tab when navigating to the page directly (not through state)
   useEffect(() => {
-    // If there's no redirectToStudentId in the state, and we're directly navigating to /lessons
-    // This means we're coming from another main navigation item (like bottom nav or sidebar)
     if (!location.state && location.pathname === '/lessons') {
       setActiveTab(0);
     }
@@ -124,23 +120,17 @@ const LessonsPage: React.FC = () => {
     }
   };
 
-  const handleTimeUpdate = (startTime: string, endTime: string, _durationSeconds: number) => {
-    setTimerStartTime(startTime);
-    setTimerEndTime(endTime);
-
+  const handleTimeUpdate = (_startTime: string, _endTime: string, _durationSeconds: number) => {
     // Automatically open the form after stopping the timer
     setOpenFormFromContext(true);
   };
 
-  const handleStudentChange = (event: SelectChangeEvent<number | string>) => {
-    const newStudentId = event.target.value as number | '';
-    setSelectedStudentId(newStudentId);
+  const handleStudentSelect = (studentId: number) => {
+    setSelectedStudentId(studentId);
     setActiveTab(0); // Reset to first tab when changing student
 
     // Also update the preSelectedStudentId in the form context
-    if (newStudentId !== '') {
-      setPreSelectedStudentId(newStudentId as number);
-    }
+    setPreSelectedStudentId(studentId);
   };
 
   // Handle tab change
@@ -155,11 +145,12 @@ const LessonsPage: React.FC = () => {
     return <LoadingIndicator />;
   }
 
-  return (
-    <Container disableGutters maxWidth={false}>
-      <Box sx={{ py: 4, overflowX: 'hidden', width: '100%' }}>
-        {/* Page header with breadcrumbs when student is selected */}
-        {selectedStudent ? (
+  // Main content based on whether a student is selected or not
+  const renderMainContent = () => {
+    if (selectedStudent) {
+      return (
+        <Box sx={{ width: '100%' }}>
+          {/* Breadcrumb navigation */}
           <Box sx={{ mb: 4 }}>
             <Breadcrumbs
               separator={<NavigateNextIcon fontSize="small" />}
@@ -173,20 +164,21 @@ const LessonsPage: React.FC = () => {
                   setSelectedStudentId('');
                   setActiveTab(0); // Reset tab when navigating back
                 }}
-                sx={{ cursor: 'pointer' }}
+                sx={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
               >
-                {t('navigation.lessons')}
+                <ChevronLeftIcon fontSize="small" sx={{ mr: 0.5 }} />
+                {t('lessons:frontPage.backToStudentsList')}
               </Link>
               <Typography color="text.primary">{selectedStudent.name}</Typography>
             </Breadcrumbs>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="h4">{selectedStudent.name}</Typography>
-              <Box>
+              <Box sx={{ display: 'flex', gap: 2 }}>
                 <Button
                   variant="outlined"
                   color="primary"
+                  startIcon={<TimerIcon />}
                   onClick={handleStartTimer}
-                  sx={{ mr: 1 }}
                 >
                   {t('lessons:startTimer')}
                 </Button>
@@ -201,158 +193,207 @@ const LessonsPage: React.FC = () => {
               </Box>
             </Box>
           </Box>
-        ) : (
-          <Box
-            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}
-          >
-            <Typography variant="h4">{t('navigation.lessons')}</Typography>
-            <Box>
-              <Button variant="outlined" color="primary" onClick={handleStartTimer} sx={{ mr: 1 }}>
-                {t('lessons:startTimer')}
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddIcon />}
-                onClick={handleOpenForm}
-              >
-                {t('lessons:addLesson')}
-              </Button>
+
+          {/* Only show tabs when not in the Teaching Tips view */}
+          {activeTab !== 2 && (
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+              <Tabs value={activeTab} onChange={handleTabChange} aria-label="student progress tabs">
+                <Tab
+                  label={t('lessons:tabs.overview', 'Overview')}
+                  id="tab-0"
+                  aria-controls="tabpanel-0"
+                />
+                <Tab
+                  label={t('lessons:tabs.topics', 'Topics')}
+                  id="tab-1"
+                  aria-controls="tabpanel-1"
+                />
+                <Tab label={t('lessons:tabs.tips', 'Tips')} id="tab-2" aria-controls="tabpanel-2" />
+              </Tabs>
             </Box>
+          )}
+
+          {/* Tab content panels */}
+          <Box role="tabpanel" hidden={activeTab !== 0} id="tabpanel-0" aria-labelledby="tab-0">
+            {activeTab === 0 && <ProgressDashboard studentId={selectedStudentId as number} />}
           </Box>
-        )}
 
-        {/* Student Selection Dropdown (only show when no student is selected) */}
-        {!selectedStudent && (
-          <Paper sx={{ p: 2, mb: 4 }}>
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel id="student-select-label">{t('lessons:forms.studentLabel')}</InputLabel>
-              <Select
-                labelId="student-select-label"
-                id="student-select"
-                value={selectedStudentId}
-                label={t('lessons:forms.studentLabel')}
-                onChange={handleStudentChange}
-              >
-                <MenuItem value="">{t('lessons:forms.studentPlaceholder')}</MenuItem>
-                {students.map(student => (
-                  <MenuItem key={student.id} value={student.id}>
-                    {student.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Paper>
-        )}
-
-        {/* Display Tabs and content when a student is selected */}
-        {selectedStudentId ? (
-          <Box sx={{ width: '100%' }}>
-            {/* Only show tabs when not in the Teaching Tips view */}
-            {activeTab !== 2 && (
-              <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-                <Tabs
-                  value={activeTab}
-                  onChange={handleTabChange}
-                  aria-label="student progress tabs"
-                >
-                  <Tab
-                    label={t('lessons:tabs.overview', 'Overview')}
-                    id="tab-0"
-                    aria-controls="tabpanel-0"
-                  />
-                  <Tab
-                    label={t('lessons:tabs.topics', 'Topics')}
-                    id="tab-1"
-                    aria-controls="tabpanel-1"
-                  />
-                  <Tab
-                    label={t('lessons:tabs.tips', 'Tips')}
-                    id="tab-2"
-                    aria-controls="tabpanel-2"
-                  />
-                </Tabs>
-              </Box>
+          <Box role="tabpanel" hidden={activeTab !== 1} id="tabpanel-1" aria-labelledby="tab-1">
+            {activeTab === 1 && (
+              <Paper sx={{ p: 3 }}>
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                  {t('lessons:tabs.topicsContent', 'Topics View')}
+                </Typography>
+                <Typography>
+                  {t(
+                    'lessons:tabs.topicsDescription',
+                    'Detailed view of student progress by topic will be displayed here.',
+                  )}
+                </Typography>
+              </Paper>
             )}
-
-            {/* Tab content panels */}
-            <Box role="tabpanel" hidden={activeTab !== 0} id="tabpanel-0" aria-labelledby="tab-0">
-              {activeTab === 0 && <ProgressDashboard studentId={selectedStudentId as number} />}
-            </Box>
-
-            <Box role="tabpanel" hidden={activeTab !== 1} id="tabpanel-1" aria-labelledby="tab-1">
-              {activeTab === 1 && (
-                <Paper sx={{ p: 3 }}>
-                  <Typography variant="h5" sx={{ mb: 2 }}>
-                    {t('lessons:tabs.topicsContent', 'Topics View')}
-                  </Typography>
-                  <Typography>
-                    {t(
-                      'lessons:tabs.topicsDescription',
-                      'Detailed view of student progress by topic will be displayed here.',
-                    )}
-                  </Typography>
-                </Paper>
-              )}
-            </Box>
-
-            <Box role="tabpanel" hidden={activeTab !== 2} id="tabpanel-2" aria-labelledby="tab-2">
-              {activeTab === 2 && <TeachingTips />}
-            </Box>
           </Box>
-        ) : // Show default lessons list view when no student is selected
-        lessons.length === 0 ? (
-          <EmptyState
-            title={t('emptyStates.noLessons')}
-            message={t('lessons:emptyState.addYourFirst')}
-            actionText={t('common:buttons.add')}
-            onAction={handleOpenForm}
-          />
-        ) : (
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12 }}>
-              <Typography variant="h6">{t('lessons:recentLessons')}</Typography>
-              <Divider sx={{ mb: 2 }} />
-              <Typography>{t('lessons:lessonsFeature')}</Typography>
-              {/* Lesson list will be implemented here in the future */}
+
+          <Box role="tabpanel" hidden={activeTab !== 2} id="tabpanel-2" aria-labelledby="tab-2">
+            {activeTab === 2 && <TeachingTips />}
+          </Box>
+        </Box>
+      );
+    }
+
+    // No student selected - show the front page
+    return (
+      <>
+        {/* App Description Section */}
+        <Box sx={{ mb: 4, textAlign: 'center' }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            {t('lessons:frontPage.appTitle')}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 3, maxWidth: '800px', mx: 'auto' }}>
+            {t('lessons:frontPage.appDescription')}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<PersonAddIcon />}
+            onClick={() => (window.location.href = '/students')} // Navigate to students page to add new student
+            size={isMobile ? 'medium' : 'large'}
+            sx={{ my: 2 }}
+          >
+            {t('students:addStudent')}
+          </Button>
+        </Box>
+
+        {/* Students Selection Section */}
+        {students.length > 0 ? (
+          <>
+            <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+              {t('lessons:frontPage.selectStudent')}
+            </Typography>
+            <Grid container spacing={3}>
+              {students.map(student => (
+                <Grid key={student.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                  <Card
+                    sx={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      transition: 'transform 0.2s, box-shadow 0.2s',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: 4,
+                      },
+                    }}
+                  >
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                        <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                          {student.name.charAt(0).toUpperCase()}
+                        </Avatar>
+                        <Typography variant="h6" component="div">
+                          {student.name}
+                        </Typography>
+                      </Box>
+                      <Typography variant="body2" color="text.secondary">
+                        {student.email && `Email: ${student.email}`}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {student.phone && `Phone: ${student.phone}`}
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button
+                        size="small"
+                        startIcon={<ShowChartIcon />}
+                        onClick={() => handleStudentSelect(student.id!)}
+                        fullWidth
+                      >
+                        {t('lessons:frontPage.viewStudent')}
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              ))}
             </Grid>
-          </Grid>
+          </>
+        ) : (
+          // Empty state when no students exist
+          <Box sx={{ my: 4, textAlign: 'center' }}>
+            <SchoolIcon sx={{ fontSize: 80, color: 'primary.main', opacity: 0.7, mb: 2 }} />
+            <Typography variant="h5" component="h2" gutterBottom>
+              {t('lessons:frontPage.noStudentsYet')}
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 3 }}>
+              {t('lessons:frontPage.addFirstStudent')}
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<PersonAddIcon />}
+              onClick={() => (window.location.href = '/students')}
+              size="large"
+            >
+              {t('students:addStudent')}
+            </Button>
+          </Box>
         )}
+      </>
+    );
+  };
 
-        {/* Timer Dialog */}
-        <Dialog open={showTimer} onClose={() => setShowTimer(false)} fullWidth maxWidth="sm">
-          <DialogTitle>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-              <Typography variant="h6">{t('lessons:timer.title')}</Typography>
-              <IconButton edge="end" onClick={() => setShowTimer(false)}>
-                <CloseIcon />
-              </IconButton>
-            </Box>
-          </DialogTitle>
-          <DialogContent>
-            <LessonTimer onTimeUpdate={handleTimeUpdate} />
-          </DialogContent>
-        </Dialog>
+  return (
+    <Container
+      disableGutters
+      maxWidth={false}
+      sx={{
+        position: 'relative',
+        height: '100%',
+        maxHeight: {
+          xs: 'calc(100vh - var(--app-bar-height) - var(--bottom-nav-height))',
+          sm: 'calc(100vh - var(--app-bar-height))',
+        },
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        pt: 4,
+        pb: { xs: 8, sm: 4 },
+        px: 2,
+      }}
+    >
+      {renderMainContent()}
 
-        {/* Lesson Form Dialog */}
-        <Dialog open={openForm} onClose={handleCloseForm} fullWidth maxWidth="md">
-          <DialogTitle>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-              <Typography variant="h6">{t('lessons:addLesson')}</Typography>
-              <IconButton edge="end" onClick={handleCloseForm}>
-                <CloseIcon />
-              </IconButton>
-            </Box>
-          </DialogTitle>
-          <DialogContent>
-            <LessonForm
-              students={students}
-              onSubmit={handleSubmitLesson}
-              onCancel={handleCloseForm}
-            />
-          </DialogContent>
-        </Dialog>
-      </Box>
+      {/* Timer Dialog */}
+      <Dialog open={showTimer} onClose={() => setShowTimer(false)} fullWidth maxWidth="sm">
+        <DialogTitle>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h6">{t('lessons:timer.title')}</Typography>
+            <IconButton edge="end" onClick={() => setShowTimer(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <LessonTimer onTimeUpdate={handleTimeUpdate} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Lesson Form Dialog */}
+      <Dialog open={openForm} onClose={handleCloseForm} fullWidth maxWidth="md">
+        <DialogTitle>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h6">{t('lessons:addLesson')}</Typography>
+            <IconButton edge="end" onClick={handleCloseForm}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <LessonForm
+            students={students}
+            onSubmit={handleSubmitLesson}
+            onCancel={handleCloseForm}
+          />
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 };

@@ -13,6 +13,17 @@
   "lessonsFeature": "Ajotunnit-ominaisuus on työn alla.",
   "recentLessons": "Viimeisimmät ajotunnit",
 
+  "frontPage": {
+    "appTitle": "AjoKamu - Ajo-opetuksen seurantatyökalu",
+    "appDescription": "Seuraa ja hallinnoi oppilaiden ajo-opetuksen edistymistä helposti.",
+    "selectStudent": "Valitse oppilas:",
+    "viewStudent": "Avaa oppilaan tiedot",
+    "viewProgress": "Näytä edistyminen",
+    "noStudentsYet": "Ei vielä oppilaita",
+    "addFirstStudent": "Aloita lisäämällä ensimmäinen oppilas",
+    "backToStudentsList": "Takaisin oppilaiden listaan"
+  },
+
   "lessonInfo": {
     "student": "Oppilas",
     "date": "Päivämäärä",
