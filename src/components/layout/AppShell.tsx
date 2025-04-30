@@ -3,7 +3,6 @@ import {
   Box,
   AppBar,
   Toolbar,
-  Typography,
   Container,
   useMediaQuery,
   useTheme,
@@ -11,19 +10,18 @@ import {
   Drawer,
 } from '@mui/material';
 import { Outlet } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Menu as MenuIcon } from '@mui/icons-material';
 import { LanguageSwitcher } from '../';
 import Navigation from './Navigation';
 import Footer from './Footer';
 import Sidebar from './Sidebar';
 import BottomNavigation from './BottomNavigation';
+import HomeLink from './HomeLink';
 
 /**
  * AppShell component that wraps the entire application and provides common layout elements
  */
 const AppShell: React.FC = () => {
-  const { t } = useTranslation(['common']);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -74,13 +72,7 @@ const AppShell: React.FC = () => {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: isMobile ? 1 : 0, mr: isMobile ? 0 : 4 }}
-          >
-            {t('app.name')}
-          </Typography>
+          <HomeLink isMobile={isMobile} />
           {!isMobile && <Navigation />}
           <Box sx={{ flexGrow: isMobile ? 0 : 1 }} />
           <LanguageSwitcher />

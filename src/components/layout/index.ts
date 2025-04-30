@@ -1,9 +1,8 @@
 // Export layout components from this file
-import AppShell from './AppShell';
-import Navigation from './Navigation';
-import Footer from './Footer';
-import Sidebar from './Sidebar';
-import ErrorBoundary from './ErrorBoundary';
-import BottomNavigation from './BottomNavigation';
-
-export { AppShell, Navigation, Footer, Sidebar, ErrorBoundary, BottomNavigation };
+export { default as AppShell } from './AppShell';
+export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as Footer } from './Footer';
+export { default as Navigation } from './Navigation';
+export { default as Sidebar } from './Sidebar';
+export { default as BottomNavigation } from './BottomNavigation';
+export { default as HomeLink } from './HomeLink';
