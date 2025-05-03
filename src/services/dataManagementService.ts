@@ -35,6 +35,14 @@ interface Backup {
  */
 const dataManagementService = {
   /**
+   * Exports data - alias for exportStudentData
+   * @returns Promise resolving to a Blob containing the exported data
+   */
+  async exportData(): Promise<Blob> {
+    return this.exportStudentData();
+  },
+
+  /**
    * Exports only student and lesson data from the database as a JSON file blob
    */
   async exportStudentData(): Promise<Blob> {

@@ -36,15 +36,12 @@ interface ProgressIndicatorProps {
   topicProgress: TopicProgress[];
   overallProgress: number;
   studentId?: number; // Add studentId to be able to start a lesson for the student
-  studentName?: string; // Add studentName for display
 }
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   topicProgress,
   overallProgress,
   studentId,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  studentName,
 }) => {
   const { t } = useTranslation(['common', 'lessons']);
   const { openWithSelections } = useLessonForm();

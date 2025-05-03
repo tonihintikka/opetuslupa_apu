@@ -217,7 +217,7 @@ const ExercisesStep: React.FC<ExercisesStepProps> = ({ formData, updateFormData 
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Rating
                           value={rating}
-                          onChange={(event, newValue) => handleRatingChange(topicKey, newValue)}
+                          onChange={(_, newValue) => handleRatingChange(topicKey, newValue)}
                           precision={1}
                         />
                         {topicSubTopics.length > 0 && (

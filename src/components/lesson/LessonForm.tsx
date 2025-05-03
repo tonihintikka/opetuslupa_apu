@@ -508,7 +508,7 @@ const LessonForm: React.FC<{
                     <Rating
                       name={`rating-${topicId}`}
                       value={topicRatingsMap[topicId] || 0}
-                      onChange={(event, newValue) => handleRatingChange(topicId, newValue)}
+                      onChange={(_, newValue) => handleRatingChange(topicId, newValue)}
                       precision={1}
                     />
                     <Typography

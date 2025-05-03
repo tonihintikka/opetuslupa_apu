@@ -6,7 +6,8 @@ export interface AppSettings {
   darkMode: boolean;
   notificationsEnabled: boolean;
   autoSave: boolean;
-  // Add any other settings as needed
+  // Add an index signature to allow any string key with any value
+  [key: string]: unknown;
 }
 
 // Default settings to use if none are found
@@ -33,7 +34,8 @@ const settingsService = {
         // Initialize with default settings
         await this.saveAllSettings(defaultSettings);
       }
-    } catch (_error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       console.error('Settings table may not exist yet:');
       // Settings table will be created in the next DB version upgrade
     }
@@ -54,7 +56,8 @@ const settingsService = {
         // Create new setting if it doesn't exist
         await db.table('settings').put({ key, value });
       }
-    } catch (_error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       // Fallback to localStorage if Dexie table doesn't exist yet
       localStorage.setItem(`setting_${key}`, JSON.stringify(value));
       console.warn(`Saved setting ${key} to localStorage as fallback`);
@@ -73,7 +76,8 @@ const settingsService = {
       if (setting) {
         return setting.value;
       }
-    } catch (_error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       // Fallback to localStorage if Dexie table doesn't exist yet
       const localValue = localStorage.getItem(`setting_${key}`);
       if (localValue) {
@@ -97,7 +101,7 @@ const settingsService = {
     try {
       // Try to get from Dexie
       const settingsArray = await db.table('settings').toArray();
-      
+
       if (settingsArray.length > 0) {
         // Convert array of {key, value} objects to a single settings object
         return settingsArray.reduce((acc, curr) => {
@@ -105,22 +109,27 @@ const settingsService = {
           return acc;
         }, {} as AppSettings);
       }
-    } catch (_error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       // Fallback to localStorage if Dexie table doesn't exist yet
       const settings = { ...defaultSettings };
-      
+
       // Try to get each setting from localStorage
       for (const key in defaultSettings) {
         const localValue = localStorage.getItem(`setting_${key}`);
         if (localValue) {
           try {
-            settings[key as keyof AppSettings] = JSON.parse(localValue);
+            // Using proper type assertion with the specific key
+            const typedKey = key as keyof AppSettings;
+            const parsedValue = JSON.parse(localValue);
+            // Set the value with proper typing based on the default settings as a guide
+            settings[typedKey] = parsedValue;
           } catch (e) {
             console.error(`Error parsing localStorage setting ${key}:`, e);
           }
         }
       }
-      
+
       return settings;
     }
 
@@ -136,16 +145,17 @@ const settingsService = {
     try {
       // Clear existing settings
       await db.table('settings').clear();
-      
+
       // Create array of {key, value} pairs for bulk insert
       const settingsArray = Object.entries(settings).map(([key, value]) => ({
         key,
         value,
       }));
-      
+
       // Insert all settings at once
       await db.table('settings').bulkPut(settingsArray);
-    } catch (_error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       // Fallback to localStorage if Dexie table doesn't exist yet
       for (const [key, value] of Object.entries(settings)) {
         localStorage.setItem(`setting_${key}`, JSON.stringify(value));
@@ -160,7 +170,8 @@ const settingsService = {
   async clearAllSettings(): Promise<void> {
     try {
       await db.table('settings').clear();
-    } catch (_error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       // Clear localStorage fallback
       for (const key in defaultSettings) {
         localStorage.removeItem(`setting_${key}`);
@@ -169,4 +180,4 @@ const settingsService = {
   },
 };
 
-export default settingsService; 
+export default settingsService;
