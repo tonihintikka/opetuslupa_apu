@@ -348,7 +348,6 @@ const ProgressDashboard: React.FC<ProgressDashboardProps> = ({ studentId: initia
               topicProgress={topicProgress}
               overallProgress={getOverallProgress()}
               studentId={selectedStudentId}
-              studentName={studentData?.name}
             />
           ) : (
             <ProgressMatrix lessons={lessons} studentId={selectedStudentId} />
