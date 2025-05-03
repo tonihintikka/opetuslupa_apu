@@ -5,6 +5,8 @@
   "addNewStudent": "Lägg till ny elev",
   "noStudentsFound": "Inga elever hittades. Lägg till din första elev för att komma igång.",
   "confirmDelete": "Är du säker på att du vill ta bort den här eleven?",
+  "deleteSuccess": "Eleven har tagits bort",
+  "deleteError": "Det gick inte att ta bort eleven: {{error}}",
   "name": "Namn",
   "email": "E-post",
   "phone": "Telefonnummer",

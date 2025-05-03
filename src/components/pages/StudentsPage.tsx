@@ -32,12 +32,14 @@ import ProgressDashboard from '../lesson/progress/ProgressDashboard';
 import LessonForm from '../lesson/LessonForm';
 import { useLessonForm } from '../lesson/useLessonForm';
 import lessonService from '../../services/lessonService';
+import { useSnackbar } from 'notistack';
 
 const StudentsPage: React.FC = () => {
-  const { t } = useTranslation(['common', 'students', 'lessons']);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { t } = useTranslation(['common', 'students', 'lessons']);
   const { students, loading, error, addStudent, updateStudent, deleteStudent } = useStudents();
+  const { enqueueSnackbar } = useSnackbar();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [formData, setFormData] = useState<Partial<Student>>({
@@ -127,8 +129,25 @@ const StudentsPage: React.FC = () => {
     if (window.confirm(t('students:confirmDelete'))) {
       try {
         await deleteStudent(id);
+        enqueueSnackbar(
+          t('students:deleteSuccess', { defaultValue: 'Student deleted successfully' }),
+          {
+            variant: 'success',
+            autoHideDuration: 3000,
+          },
+        );
       } catch (error) {
         console.error('Error deleting student:', error);
+        enqueueSnackbar(
+          t('students:deleteError', {
+            defaultValue: 'Failed to delete student',
+            error: error instanceof Error ? error.message : 'Unknown error',
+          }),
+          {
+            variant: 'error',
+            autoHideDuration: 5000,
+          },
+        );
       }
     }
   };

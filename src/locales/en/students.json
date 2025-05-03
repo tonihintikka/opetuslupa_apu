@@ -5,6 +5,8 @@
   "addNewStudent": "Add New Student",
   "noStudentsFound": "No students found. Add your first student to get started.",
   "confirmDelete": "Are you sure you want to delete this student?",
+  "deleteSuccess": "Student deleted successfully",
+  "deleteError": "Failed to delete student: {{error}}",
   "name": "Name",
   "email": "Email",
   "phone": "Phone Number",

@@ -43,10 +43,29 @@ export const studentService = {
   },
 
   /**
-   * Delete a student
+   * Delete a student and all associated records (cascade deletion)
    */
   delete: async (id: number): Promise<void> => {
-    await db.students.delete(id);
+    // Use transaction to ensure all operations succeed or fail together
+    await db.transaction(
+      'rw',
+      [db.students, db.lessons, db.milestones, db.lessonDrafts],
+      async () => {
+        // Delete all lessons associated with this student
+        await db.lessons.where('studentId').equals(id).delete();
+
+        // Delete all milestones associated with this student
+        await db.milestones.where('studentId').equals(id).delete();
+
+        // Delete all lesson drafts associated with this student
+        await db.lessonDrafts.where('studentId').equals(id).delete();
+
+        // Finally, delete the student
+        await db.students.delete(id);
+
+        console.log(`Deleted student ${id} and all associated records`);
+      },
+    );
   },
 };
 

@@ -5,6 +5,8 @@
   "addNewStudent": "Lisää uusi oppilas",
   "noStudentsFound": "Oppilaita ei löytynyt. Lisää ensimmäinen oppilas aloittaaksesi.",
   "confirmDelete": "Haluatko varmasti poistaa tämän oppilaan?",
+  "deleteSuccess": "Oppilas poistettu onnistuneesti",
+  "deleteError": "Oppilaan poistaminen epäonnistui: {{error}}",
   "name": "Nimi",
   "email": "Sähköposti",
   "phone": "Puhelinnumero",
