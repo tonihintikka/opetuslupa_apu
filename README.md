@@ -150,3 +150,11 @@ Planned improvements include:
 - [BMad's Cursor Custom Agents and Rules Generator](https://github.com/bmadcode/cursor-custom-agents-rules-generator) for development methodology
 - Various AI models (Claude 3.7 Sonnet, Gemini 2.5 Pro) that contributed to development
 - Finnish driving education resources for domain knowledge
+
+## Known Issues
+
+### Mobile Layout
+
+- **Settings Page Header Spacing**: There's an inconsistency in how the settings page header is displayed on iOS devices. While other pages (Students, Lessons, Tips) display correctly, the Settings page may require additional padding/margin adjustments for the first element to be properly visible. This is related to how iOS Safari handles safe areas and status bar spacing in PWA mode.
+
+- **iOS PWA Display**: On iOS when running as a PWA, some devices may experience layout variations due to differences in status bar height, notch dimensions, and safe area insets.
