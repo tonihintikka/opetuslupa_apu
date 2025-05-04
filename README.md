@@ -4,6 +4,8 @@ A Progressive Web Application (PWA) designed to assist driving instructors in te
 
 ![AjoKamu App Icon](public/ajokamu-icon.svg)
 
+![AjoKamu Screenshot](docs/Screenshot%202025-04-28%20at%2016.20.06.png)
+
 ## Project Overview
 
 AjoKamu is a driving instruction management tool that runs as a PWA with complete offline functionality, storing all data locally on the device. It allows instructors to:
@@ -50,6 +52,8 @@ As of May 4, 2025, the project is functional but still under development. Key fe
 - Import/export functionality
 - Full mobile responsiveness
 - Offline capability
+
+![AjoKamu Mobile View](docs/Screenshot%202025-04-30%20at%2015.40.02.png)
 
 Recent development work has focused on:
 - Fixing TypeScript build errors
