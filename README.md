@@ -155,6 +155,42 @@ Planned improvements include:
 
 ### Mobile Layout
 
-- **Settings Page Header Spacing**: There's an inconsistency in how the settings page header is displayed on iOS devices. While other pages (Students, Lessons, Tips) display correctly, the Settings page may require additional padding/margin adjustments for the first element to be properly visible. This is related to how iOS Safari handles safe areas and status bar spacing in PWA mode.
+#### Fixed Issues
 
-- **iOS PWA Display**: On iOS when running as a PWA, some devices may experience layout variations due to differences in status bar height, notch dimensions, and safe area insets.
+- **iOS PWA Scrolling**: Previously, there were issues with automatic scrolling to the top on iOS devices in PWA mode, particularly on the Settings page. This has been fixed by implementing proper `overscroll-behavior: none` CSS rules and using `-webkit-overflow-scrolling: touch` for smooth scrolling.
+
+- **Hamburger Menu Positioning**: The hamburger menu icon was previously positioned too close to the left edge on iOS devices with notches. This has been fixed by adding proper safe area inset spacing using CSS environment variables (`env(safe-area-inset-left)`).
+
+- **Background Color Consistency**: Fixed inconsistent background color display in PWA mode by ensuring all components use the theme's background color consistently.
+
+#### Current Issues
+
+- **iOS PWA Display**: On iOS when running as a PWA, some devices may experience layout variations due to differences in status bar height, notch dimensions, and safe area insets. While we've implemented CSS environment variables to handle these variations, some device-specific edge cases may still exist.
+
+- **iOS PWA Testing Challenges**: Due to the lack of Safari developer tools for PWA debugging, identifying and fixing iOS-specific issues remains challenging. We've implemented best practices based on research and testing on available devices, but some edge cases may remain on untested devices.
+
+## iOS PWA Implementation Notes
+
+For developers working on this project, here are important notes about the iOS PWA implementation:
+
+### Safe Area Handling
+
+- We use CSS environment variables (`env(safe-area-inset-*)`) to adapt to device-specific notches and home indicators.
+- These variables are stored as CSS custom properties for easier reference throughout the app.
+- The AppShell component handles most of the safe area adaptations.
+
+### Preventing Unwanted Scrolling
+
+- iOS PWAs may scroll unexpectedly due to DOM reflows or scroll position resets.
+- We prevent this using `overscroll-behavior: none` on container elements.
+- For scrollable containers, we use `-webkit-overflow-scrolling: touch` for smooth scrolling.
+
+### Fixed Position Elements
+
+- To prevent issues with fixed elements (AppBar, BottomNavigation), we use `transform: translateZ(0)` and `will-change: transform`.
+- This creates a new stacking context and prevents unexpected layout issues.
+
+### PWA Detection
+
+- We detect iOS PWA mode using `window.navigator.standalone` and the CSS media query `(display-mode: standalone)`.
+- This allows us to apply PWA-specific styling when needed.
