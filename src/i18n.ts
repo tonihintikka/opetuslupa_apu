@@ -11,6 +11,18 @@ import studentsFI from './locales/fi/students.json';
 import lessonsFI from './locales/fi/lessons.json';
 import settingsFI from './locales/fi/settings.json';
 
+// English translations - import JSON files
+import commonEN from './locales/en/common.json';
+import studentsEN from './locales/en/students.json';
+import lessonsEN from './locales/en/lessons.json';
+import settingsEN from './locales/en/settings.json';
+
+// Swedish translations - import JSON files
+import commonSV from './locales/sv/common.json';
+import studentsSV from './locales/sv/students.json';
+import lessonsSV from './locales/sv/lessons.json';
+import settingsSV from './locales/sv/settings.json';
+
 /**
  * Initialize i18next with the necessary configuration for the driving-lesson tracker
  *
@@ -35,7 +47,18 @@ i18n
         lessons: lessonsFI as Record<string, unknown>,
         settings: settingsFI as Record<string, unknown>,
       },
-      // English and Swedish will be added later and loaded dynamically
+      en: {
+        common: commonEN as Record<string, unknown>,
+        students: studentsEN as Record<string, unknown>,
+        lessons: lessonsEN as Record<string, unknown>,
+        settings: settingsEN as Record<string, unknown>,
+      },
+      sv: {
+        common: commonSV as Record<string, unknown>,
+        students: studentsSV as Record<string, unknown>,
+        lessons: lessonsSV as Record<string, unknown>,
+        settings: settingsSV as Record<string, unknown>,
+      },
     },
     // Language to use if translations in user language are not available
     fallbackLng: 'fi',
