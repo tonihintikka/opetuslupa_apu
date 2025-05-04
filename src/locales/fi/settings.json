@@ -11,8 +11,20 @@
     "autoSaveDescription": "Tallenna muutokset automaattisesti"
   },
   "account": "Tili",
-  "dataManagement": "Tietojen hallinta",
+  "dataManagement": "Sovelluksen hallinta",
   "aboutApp": "Tietoja sovelluksesta",
+
+  "updates": {
+    "checkForUpdates": "Tarkista päivitykset",
+    "description": "Tarkista ja lataa sovelluksen viimeisin versio",
+    "checking": "Tarkistetaan päivityksiä...",
+    "refreshing": "Ladataan resursseja uudelleen...",
+    "upToDate": "Sovellus on ajan tasalla!",
+    "error": "Virhe päivityksien tarkistamisessa",
+    "notSupported": "Päivitykset eivät ole tuettuja tässä selaimessa",
+    "check": "Tarkista",
+    "newVersionAvailable": "Uusi versio saatavilla!"
+  },
 
   "links": {
     "title": "Linkit ja tiedot",
@@ -49,7 +61,7 @@
   "dataExport": {
     "title": "Tietojen vienti",
     "exportData": "Vie tiedot",
-    "exportHelp": "Vie kaikki oppilas- ja ajotuntitiedot JSON-tiedostona",
+    "exportHelp": "Vie tai tuo oppilastietosi",
     "lastExport": "Viimeisin vienti"
   },
 

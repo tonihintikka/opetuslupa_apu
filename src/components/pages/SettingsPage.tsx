@@ -13,6 +13,7 @@ import {
   CardContent,
   CardHeader,
   useTheme,
+  Button,
 } from '@mui/material';
 import {
   Language as LanguageIcon,
@@ -23,11 +24,14 @@ import {
   Gavel as GavelIcon,
   Help as HelpIcon,
   Info as InfoIcon,
+  Update as UpdateIcon,
+  ImportExport as ImportExportIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../';
 import { settingsService } from '../../services';
 import { Link as RouterLink } from 'react-router-dom';
+import { APP_VERSION } from '../../sw-register';
 
 /**
  * Settings page component
@@ -41,10 +45,11 @@ const SettingsPage: React.FC = () => {
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const [darkModeEnabled, setDarkModeEnabled] = React.useState(false);
   const [autoSaveEnabled, setAutoSaveEnabled] = React.useState(true);
+  const [updateMessage, setUpdateMessage] = React.useState<string | null>(null);
 
   // Current year and app version for footer links
   const currentYear = new Date().getFullYear();
-  const appVersion = 'v0.1.0'; // This would typically come from environment variables
+  const appVersion = APP_VERSION; // Using the version from service worker
 
   // Load settings from storage when component mounts
   useEffect(() => {
@@ -84,6 +89,43 @@ const SettingsPage: React.FC = () => {
     const newValue = !autoSaveEnabled;
     setAutoSaveEnabled(newValue);
     await settingsService.saveSetting('autoSave', newValue);
+  };
+
+  // Check for updates
+  const checkForUpdates = async () => {
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      setUpdateMessage(t('settings:updates.checking', 'Tarkistetaan päivityksiä...'));
+
+      try {
+        // Request cache update and registration update
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        if (registrations.length > 0) {
+          for (const registration of registrations) {
+            await registration.update();
+          }
+        }
+
+        // Force reload resources
+        setUpdateMessage(t('settings:updates.refreshing', 'Ladataan resursseja uudelleen...'));
+        if (window.caches) {
+          const cacheNames = await window.caches.keys();
+          await Promise.all(cacheNames.map(cacheName => window.caches.delete(cacheName)));
+        }
+
+        // Success message
+        setUpdateMessage(t('settings:updates.upToDate', 'Sovellus on ajan tasalla!'));
+        setTimeout(() => setUpdateMessage(null), 3000);
+      } catch (error) {
+        console.error('Error checking for updates:', error);
+        setUpdateMessage(t('settings:updates.error', 'Virhe päivityksien tarkistamisessa'));
+        setTimeout(() => setUpdateMessage(null), 3000);
+      }
+    } else {
+      setUpdateMessage(
+        t('settings:updates.notSupported', 'Päivitykset eivät ole tuettuja tässä selaimessa'),
+      );
+      setTimeout(() => setUpdateMessage(null), 3000);
+    }
   };
 
   return (
@@ -199,9 +241,57 @@ const SettingsPage: React.FC = () => {
         </Card>
       </Box>
 
+      {/* Application Management */}
+      <Card sx={{ flex: 1, mt: 3 }}>
+        <CardHeader title={t('settings:dataManagement', 'Sovelluksen hallinta')} />
+        <CardContent>
+          <List disablePadding>
+            {/* Check for Updates */}
+            <ListItem>
+              <ListItemIcon>
+                <UpdateIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('settings:updates.checkForUpdates', 'Tarkista päivitykset')}
+                secondary={
+                  updateMessage ||
+                  t('settings:updates.description', 'Tarkista sovelluksen päivitykset')
+                }
+              />
+              <Button variant="outlined" size="small" onClick={checkForUpdates} sx={{ ml: 2 }}>
+                {t('settings:updates.check', 'Tarkista')}
+              </Button>
+            </ListItem>
+
+            <Divider variant="inset" component="li" />
+
+            {/* Data Export/Import */}
+            <ListItem
+              component={RouterLink}
+              to="/export-import"
+              sx={{
+                textDecoration: 'none',
+                color: 'text.primary',
+                '&:hover': {
+                  bgcolor: 'action.hover',
+                },
+              }}
+            >
+              <ListItemIcon>
+                <ImportExportIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={t('common:navigation.exportImport', 'Vienti/Tuonti')}
+                secondary={t('settings:dataExport.exportHelp', 'Vie tai tuo tietosi')}
+              />
+            </ListItem>
+          </List>
+        </CardContent>
+      </Card>
+
       {/* Links & Info Section (replaces footer on mobile) */}
       <Card sx={{ flex: 1, mt: 3 }}>
-        <CardHeader title={t('settings:links.title', 'Links & Info')} />
+        <CardHeader title={t('settings:links.title', 'Linkit & Info')} />
         <CardContent>
           <List disablePadding>
             <ListItem
