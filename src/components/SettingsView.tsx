@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -18,6 +18,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { dataManagementService } from '../services';
+import { isIOS } from '../utils/platformDetection';
 
 interface Backup {
   date: string;
@@ -25,6 +26,7 @@ interface Backup {
 }
 
 const SettingsView: React.FC = () => {
+  const [isIOSDevice, setIsIOSDevice] = useState(false);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
@@ -39,6 +41,10 @@ const SettingsView: React.FC = () => {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
   const [confirmMessage, setConfirmMessage] = useState('');
+
+  useEffect(() => {
+    setIsIOSDevice(isIOS());
+  }, []);
 
   const handleExportData = async () => {
     try {
@@ -177,7 +183,18 @@ const SettingsView: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 2, maxWidth: 800, mx: 'auto' }}>
+    <Box
+      sx={{
+        padding: { xs: 2, sm: 3 },
+        maxWidth: 800,
+        margin: '0 auto',
+        height: 'auto',
+        overscrollBehavior: isIOSDevice ? 'none' : 'auto',
+        WebkitOverflowScrolling: 'touch',
+        // Prevent automatic scrolling on iOS
+        position: 'relative',
+      }}
+    >
       <Typography variant="h4" component="h1" gutterBottom>
         Asetukset
       </Typography>
@@ -267,7 +284,7 @@ const SettingsView: React.FC = () => {
       </Dialog>
 
       <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
           {snackbar.message}
         </Alert>
       </Snackbar>
