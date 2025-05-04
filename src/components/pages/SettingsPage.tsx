@@ -131,22 +131,13 @@ const SettingsPage: React.FC = () => {
   return (
     <Box
       sx={{
-        position: 'relative',
+        width: '100%',
         overflowY: 'auto',
-        overflowX: 'hidden',
-        height: '100%',
-        maxHeight: {
-          xs: 'calc(100vh - var(--app-bar-height))',
-          md: 'calc(100vh - var(--app-bar-height) - 48px)',
-        },
         display: 'flex',
         flexDirection: 'column',
-        pb: { xs: 'calc(var(--bottom-nav-height) + 64px)', md: 3 },
-        pt: { xs: 1, md: 2 },
-        mt: { xs: 0, md: 0 },
         px: 2,
+        pb: { xs: 'calc(var(--bottom-nav-height) + 100px)', md: 4 },
         mx: 'auto',
-        width: '100%',
         maxWidth: theme.breakpoints.values.lg,
       }}
     >
@@ -156,7 +147,7 @@ const SettingsPage: React.FC = () => {
 
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, mt: 2 }}>
         {/* Language Settings */}
-        <Card sx={{ flex: 1 }}>
+        <Card sx={{ flex: 1, mt: '16px' }}>
           <CardHeader title={t('language.title')} />
           <CardContent>
             <List disablePadding>
@@ -175,7 +166,7 @@ const SettingsPage: React.FC = () => {
         </Card>
 
         {/* App Preferences */}
-        <Card sx={{ flex: 1 }}>
+        <Card sx={{ flex: 1, mt: '16px' }}>
           <CardHeader title={t('preferences.title')} />
           <CardContent>
             <List disablePadding>
@@ -242,7 +233,7 @@ const SettingsPage: React.FC = () => {
       </Box>
 
       {/* Application Management */}
-      <Card sx={{ flex: 1, mt: 3 }}>
+      <Card sx={{ flex: 1, mt: '16px' }}>
         <CardHeader title={t('settings:dataManagement', 'Sovelluksen hallinta')} />
         <CardContent>
           <List disablePadding>
@@ -290,7 +281,7 @@ const SettingsPage: React.FC = () => {
       </Card>
 
       {/* Links & Info Section (replaces footer on mobile) */}
-      <Card sx={{ flex: 1, mt: 3 }}>
+      <Card sx={{ flex: 1, mt: '16px' }}>
         <CardHeader title={t('settings:links.title', 'Linkit & Info')} />
         <CardContent>
           <List disablePadding>
@@ -383,7 +374,7 @@ const SettingsPage: React.FC = () => {
       </Card>
 
       {/* Data Storage Info */}
-      <Paper sx={{ mt: 3, p: 2, mb: 2 }}>
+      <Paper sx={{ mt: '16px', p: 2, mb: 2 }}>
         <Typography variant="subtitle2" gutterBottom>
           {t('storage.title')}
         </Typography>
