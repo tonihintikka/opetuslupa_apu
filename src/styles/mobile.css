@@ -22,7 +22,8 @@ body {
 /* iOS PWA standalone mode fixes */
 @media all and (display-mode: standalone) {
   html {
-    background-color: #1976d2; /* Match primary color */
+    /* Removed full page blue background */
+    background-color: initial;
   }
 
   body:before {
@@ -82,7 +83,8 @@ textarea {
 
   @media all and (display-mode: standalone) {
     body {
-      background-color: var(--pwa-status-bar-bg);
+      /* Removed full page blue background */
+      background-color: initial;
     }
   }
 }
@@ -95,7 +97,8 @@ textarea {
 
   @media all and (display-mode: standalone) {
     body {
-      background-color: var(--pwa-status-bar-bg);
+      /* Removed full page blue background */
+      background-color: initial;
     }
   }
 }
