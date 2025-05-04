@@ -122,7 +122,13 @@ const AppShell: React.FC = () => {
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2 }}
+              sx={{
+                mr: 2,
+                // Add more left margin on iOS devices
+                ...(isIOSDevice && {
+                  ml: { xs: 2, sm: 2 },
+                }),
+              }}
             >
               <MenuIcon />
             </IconButton>
