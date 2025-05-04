@@ -19,6 +19,24 @@ body {
   user-select: none;
 }
 
+/* iOS PWA standalone mode fixes */
+@media all and (display-mode: standalone) {
+  html {
+    background-color: #1976d2; /* Match primary color */
+  }
+
+  body:before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top, 0);
+    background-color: #1976d2; /* Match primary color */
+    z-index: 9998; /* Just below AppBar */
+  }
+}
+
 /* Allow text selection in input elements */
 input,
 textarea {
@@ -59,21 +77,25 @@ textarea {
 /* iOS specific PWA status bar style for dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
-    --pwa-status-bar-bg: #121212; /* Match dark theme background */
+    --pwa-status-bar-bg: #1976d2; /* Match primary color */
   }
 
-  body {
-    background-color: var(--pwa-status-bar-bg);
+  @media all and (display-mode: standalone) {
+    body {
+      background-color: var(--pwa-status-bar-bg);
+    }
   }
 }
 
 /* iOS specific PWA status bar style for light mode */
 @media (prefers-color-scheme: light) {
   :root {
-    --pwa-status-bar-bg: #ffffff; /* Match light theme background */
+    --pwa-status-bar-bg: #1976d2; /* Match primary color */
   }
 
-  body {
-    background-color: var(--pwa-status-bar-bg);
+  @media all and (display-mode: standalone) {
+    body {
+      background-color: var(--pwa-status-bar-bg);
+    }
   }
 }
