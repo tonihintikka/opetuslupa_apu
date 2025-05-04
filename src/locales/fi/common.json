@@ -149,5 +149,9 @@
   "Selected Topics": "Valitut aiheet",
   "High Priority": "Korkea prioriteetti",
   "Medium Priority": "Keskitason prioriteetti",
-  "Low Priority": "Matala prioriteetti"
+  "Low Priority": "Matala prioriteetti",
+  "updateNotification": {
+    "newVersion": "Sovelluksesta on saatavilla uusi versio",
+    "refresh": "Päivitä sivu"
+  }
 }

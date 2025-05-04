@@ -7,6 +7,7 @@ import theme from './theme';
 import Router from './router';
 import { ErrorBoundary } from './components/layout';
 import { LessonFormProvider } from './components/lesson/LessonFormContext';
+import UpdateNotification from './components/UpdateNotification';
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <ErrorBoundary>
             <LessonFormProvider>
               <Router />
+              <UpdateNotification />
             </LessonFormProvider>
           </ErrorBoundary>
         </SnackbarProvider>

@@ -12,11 +12,21 @@ import { initializeDatabase } from './services';
 import { getContrastRatio, meetsWCAGAA } from './utils/accessibilityUtils';
 import theme from './theme';
 import { isIOS } from './utils/platformDetection';
+// Import service worker registration
+import { registerServiceWorker, listenForServiceWorkerUpdates } from './sw-register';
 
 // Initialize the database
 initializeDatabase().catch(error => {
   console.error('Failed to initialize database:', error);
 });
+
+// Register service worker
+registerServiceWorker().catch(error => {
+  console.error('Failed to register service worker:', error);
+});
+
+// Listen for service worker updates
+listenForServiceWorkerUpdates();
 
 // Test contrast ratio
 if (process.env.NODE_ENV === 'development') {
