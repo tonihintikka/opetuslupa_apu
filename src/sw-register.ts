@@ -6,7 +6,7 @@
  */
 
 // Sovelluksen versio (pidetään samana kuin service workerissa)
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.0.1';
 
 /**
  * Rekisteröi service workerin
