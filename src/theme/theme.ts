@@ -8,6 +8,7 @@ const theme = createTheme({
       main: blue[700],
       light: blue[500],
       dark: blue[900],
+      contrastText: '#ffffff',
     },
     secondary: {
       main: orange[500],
@@ -93,6 +94,15 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
+          '@supports (-webkit-touch-callout: none)': {
+            backgroundColor: blue[900],
+            '& .MuiToolbar-root': {
+              '& .MuiTypography-root, & .MuiIconButton-root, & .MuiButton-root': {
+                color: '#ffffff',
+                textShadow: '0px 1px 2px rgba(0, 0, 0, 0.2)',
+              },
+            },
+          },
         },
       },
     },
