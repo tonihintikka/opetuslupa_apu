@@ -65,6 +65,21 @@ Recent development work has focused on:
 
 This project serves as a case study for a Master's thesis on agent-based software development, demonstrating that modern AI tools can generate functional, production-quality code when guided by someone with domain knowledge and clear requirements.
 
+## Development Timeline
+
+This project was developed in a remarkably short timeframe using agent-based development approaches:
+
+- **Total Development Time**: Approximately 14 hours
+  - Initial intensive session: ~7 hours on April 27, 2025 (28 commits)
+  - Additional development: ~7 hours spread across April 28 - May 4, 2025
+
+The git history shows active development across the following dates:
+- April 27, 2025: Initial project setup and core functionality
+- April 28-30, 2025: Feature expansion and refinement
+- May 3-4, 2025: Bug fixes, TypeScript error resolution, and documentation improvements
+
+This efficient development timeline demonstrates the potential of agent-based software development to dramatically reduce development time while maintaining code quality.
+
 ## Project Structure
 
 ```
