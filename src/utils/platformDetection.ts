@@ -27,3 +27,14 @@ export const isIOS = (): boolean => {
 export const isSafari = (): boolean => {
   return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 };
+
+/**
+ * Detect if app is running in standalone PWA mode
+ * Works for both iOS and Android
+ */
+export const isPWAStandalone = (): boolean => {
+  return (
+    (window.navigator as any).standalone || // iOS
+    window.matchMedia('(display-mode: standalone)').matches // Android/other browsers
+  );
+};
