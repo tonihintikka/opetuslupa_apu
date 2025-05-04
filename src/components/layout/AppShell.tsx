@@ -17,6 +17,7 @@ import Footer from './Footer';
 import Sidebar from './Sidebar';
 import BottomNavigation from './BottomNavigation';
 import HomeLink from './HomeLink';
+import { isIOS } from '../../utils/platformDetection';
 
 /**
  * AppShell component that wraps the entire application and provides common layout elements
@@ -25,6 +26,12 @@ const AppShell: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isIOSDevice, setIsIOSDevice] = useState(false);
+
+  // Check if running on iOS device
+  useEffect(() => {
+    setIsIOSDevice(isIOS());
+  }, []);
 
   // Add CSS variables for safe area insets for iOS devices
   useEffect(() => {
@@ -41,16 +48,33 @@ const AppShell: React.FC = () => {
       '--safe-area-inset-top',
       'env(safe-area-inset-top, 0px)',
     );
+
+    // Increase the app bar height on iOS
+    const iosExtraHeight = isIOSDevice ? 10 : 0;
+
     document.documentElement.style.setProperty(
       '--app-bar-height',
       isMobile
-        ? 'calc(56px + var(--safe-area-inset-top))'
-        : 'calc(64px + var(--safe-area-inset-top))',
+        ? `calc(${56 + iosExtraHeight}px + var(--safe-area-inset-top))`
+        : `calc(${64 + iosExtraHeight}px + var(--safe-area-inset-top))`,
     );
-  }, [isMobile]);
+
+    // Update body background for iOS PWA to match the AppBar color
+    if (isIOSDevice && (window.navigator as any).standalone) {
+      document.body.style.backgroundColor = theme.palette.primary.dark;
+    }
+  }, [isMobile, isIOSDevice, theme.palette.primary.dark]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  // Get the appropriate background color based on device
+  const getAppBarColor = () => {
+    if (isIOSDevice) {
+      return theme.palette.primary.dark;
+    }
+    return theme.palette.primary.main;
   };
 
   return (
@@ -60,14 +84,29 @@ const AppShell: React.FC = () => {
         sx={{
           zIndex: theme.zIndex.drawer + 1,
           paddingTop: 'var(--safe-area-inset-top)',
-          height: isMobile ? '56px' : 'auto',
+          height: 'auto', // Changed from fixed height to auto
+          backgroundColor: getAppBarColor(),
+          // iOS PWA specific styles
+          ...(isIOSDevice && {
+            // Ensure the AppBar extends to edges on iOS
+            left: 0,
+            right: 0,
+            top: 0,
+            width: '100%',
+          }),
         }}
       >
         <Toolbar
           sx={{
-            minHeight: { xs: '56px', sm: '64px' },
-            paddingTop: { xs: 0, sm: 0 },
-            py: { xs: 0 },
+            minHeight: {
+              xs: isIOSDevice ? '66px' : '56px',
+              sm: isIOSDevice ? '74px' : '64px',
+            },
+            paddingTop: {
+              xs: isIOSDevice ? 'env(safe-area-inset-top, 10px)' : 0,
+              sm: isIOSDevice ? 'env(safe-area-inset-top, 10px)' : 0,
+            },
+            py: { xs: isIOSDevice ? 1 : 0 },
           }}
         >
           {isMobile && (
@@ -93,7 +132,14 @@ const AppShell: React.FC = () => {
         sx={{
           marginBottom: { xs: 0, sm: 1 },
           paddingTop: 'var(--safe-area-inset-top)',
-          minHeight: { xs: '56px', sm: '64px' },
+          minHeight: {
+            xs: isIOSDevice ? '66px' : '56px',
+            sm: isIOSDevice ? '74px' : '64px',
+          },
+          // Add extra space for iOS in PWA mode
+          ...(isIOSDevice && {
+            paddingTop: 'env(safe-area-inset-top, 10px)',
+          }),
         }}
       />
 
