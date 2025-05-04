@@ -17,7 +17,7 @@ import Footer from './Footer';
 import Sidebar from './Sidebar';
 import BottomNavigation from './BottomNavigation';
 import HomeLink from './HomeLink';
-import { isIOS, isPWAStandalone } from '../../utils/platformDetection';
+import { isIOS } from '../../utils/platformDetection';
 
 /**
  * AppShell component that wraps the entire application and provides common layout elements
@@ -27,12 +27,10 @@ const AppShell: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isIOSDevice, setIsIOSDevice] = useState(false);
-  const [isPWA, setIsPWA] = useState(false);
 
-  // Check if running on iOS device and in PWA mode
+  // Check if running on iOS device
   useEffect(() => {
     setIsIOSDevice(isIOS());
-    setIsPWA(isPWAStandalone());
   }, []);
 
   // Add CSS variables for safe area insets for iOS devices
@@ -69,11 +67,9 @@ const AppShell: React.FC = () => {
         : `calc(${64 + iosExtraHeight}px + var(--safe-area-inset-top))`,
     );
 
-    // Update body background for iOS PWA to match the AppBar color
-    if (isIOSDevice && isPWA) {
-      document.body.style.backgroundColor = theme.palette.primary.main;
-    }
-  }, [isMobile, isIOSDevice, isPWA, theme.palette.primary.main]);
+    // Ensure consistent background color across all platforms
+    document.body.style.backgroundColor = theme.palette.background.default;
+  }, [isMobile, isIOSDevice, theme.palette.background.default]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -87,7 +83,7 @@ const AppShell: React.FC = () => {
           zIndex: theme.zIndex.drawer + 1,
           paddingTop: 'var(--safe-area-inset-top)',
           height: 'auto', // Changed from fixed height to auto
-          // iOS PWA specific styles
+          // iOS-specific styles for proper safe area handling
           ...(isIOSDevice && {
             // Ensure the AppBar extends to edges on iOS
             left: 0,
@@ -96,16 +92,6 @@ const AppShell: React.FC = () => {
             width: '100%',
             paddingLeft: 'env(safe-area-inset-left, 0px)',
             paddingRight: 'env(safe-area-inset-right, 0px)',
-          }),
-          // Additional PWA styles
-          ...(isPWA && {
-            // Ensure good contrast for text elements in PWA mode
-            '& .MuiToolbar-root': {
-              '& .MuiTypography-root, & .MuiIconButton-root, & .MuiButton-root': {
-                color: '#ffffff',
-                textShadow: '0px 1px 2px rgba(0, 0, 0, 0.3)',
-              },
-            },
           }),
         }}
       >
@@ -128,15 +114,6 @@ const AppShell: React.FC = () => {
               sm: isIOSDevice ? 'env(safe-area-inset-right, 16px)' : 2,
             },
             py: { xs: isIOSDevice ? 1 : 0 },
-            // Additional PWA-specific styles
-            ...(isPWA &&
-              isIOSDevice && {
-                backgroundClip: 'padding-box',
-                // Ensure good separation for better visibility
-                '& .MuiTypography-root, & .MuiIconButton-root, & .MuiButton-root': {
-                  fontWeight: 500, // Slightly bolder text for better visibility
-                },
-              }),
           }}
         >
           {isMobile && (
@@ -166,17 +143,12 @@ const AppShell: React.FC = () => {
             xs: isIOSDevice ? '66px' : '56px',
             sm: isIOSDevice ? '74px' : '64px',
           },
-          // Add extra space for iOS in PWA mode
+          // Add extra space for iOS
           ...(isIOSDevice && {
             paddingTop: 'env(safe-area-inset-top, 10px)',
             paddingLeft: 'env(safe-area-inset-left, 0px)',
             paddingRight: 'env(safe-area-inset-right, 0px)',
           }),
-          // Additional padding for PWA mode
-          ...(isPWA &&
-            isIOSDevice && {
-              paddingTop: 'calc(env(safe-area-inset-top, 10px) + 4px)', // Additional padding in PWA mode
-            }),
         }}
       />
 
