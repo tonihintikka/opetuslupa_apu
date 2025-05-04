@@ -95,7 +95,7 @@ const theme = createTheme({
         root: {
           boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
           '@supports (-webkit-touch-callout: none)': {
-            backgroundColor: blue[900],
+            backgroundColor: blue[700],
             '& .MuiToolbar-root': {
               '& .MuiTypography-root, & .MuiIconButton-root, & .MuiButton-root': {
                 color: '#ffffff',

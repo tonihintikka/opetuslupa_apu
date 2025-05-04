@@ -61,20 +61,12 @@ const AppShell: React.FC = () => {
 
     // Update body background for iOS PWA to match the AppBar color
     if (isIOSDevice && (window.navigator as any).standalone) {
-      document.body.style.backgroundColor = theme.palette.primary.dark;
+      document.body.style.backgroundColor = theme.palette.primary.main;
     }
-  }, [isMobile, isIOSDevice, theme.palette.primary.dark]);
+  }, [isMobile, isIOSDevice, theme.palette.primary.main]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
-  };
-
-  // Get the appropriate background color based on device
-  const getAppBarColor = () => {
-    if (isIOSDevice) {
-      return theme.palette.primary.dark;
-    }
-    return theme.palette.primary.main;
   };
 
   return (
@@ -85,7 +77,6 @@ const AppShell: React.FC = () => {
           zIndex: theme.zIndex.drawer + 1,
           paddingTop: 'var(--safe-area-inset-top)',
           height: 'auto', // Changed from fixed height to auto
-          backgroundColor: getAppBarColor(),
           // iOS PWA specific styles
           ...(isIOSDevice && {
             // Ensure the AppBar extends to edges on iOS
